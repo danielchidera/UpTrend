@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+.DS_Store
+Backup/
+*.backup
+*.before-step8-final
+*.backup.css

@@ -1,0 +1,5660 @@
+========== PROJECT: UpTrend ==========
+========== JAVASCRIPT / JSX SOURCE FILES ==========
+
+
+============================================================
+FILE: src/App.jsx
+============================================================
+import { useState } from "react";
+import "./App.css";
+
+import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
+import Dashboard from "./components/Dashboard";
+import RecordSale from "./components/RecordSale";
+import Expenses from "./components/Expenses";
+import Products from "./components/Products";
+import Sales from "./components/Sales";
+import Reports from "./components/Reports";
+import Finance from "./components/Finance";
+
+
+
+
+
+function App() {
+  const [activePage, setActivePage] =
+    useState("dashboard");
+
+  const [sidebarOpen, setSidebarOpen] =
+    useState(false);
+
+  const [editingSale, setEditingSale] =
+    useState(null);
+
+  const handleRecordSale = () => {
+    setEditingSale(null);
+    setActivePage("record");
+    setSidebarOpen(false);
+  };
+  
+  const handleRecordExpense = () => {
+  setActivePage("expenses");
+  setSidebarOpen(false);
+};
+
+const handleAddProduct = () => {
+  setActivePage("products");
+  setSidebarOpen(false);
+};
+
+  const handleEditSale = (sale) => {
+    setEditingSale(sale);
+    setActivePage("record");
+    setSidebarOpen(false);
+  };
+
+  const goToDashboard = () => {
+    setEditingSale(null);
+    setActivePage("dashboard");
+    setSidebarOpen(false);
+  };
+
+  const renderPage = () => {
+    switch (activePage) {
+      case "dashboard":
+  return (
+    <Dashboard
+      onRecordSale={handleRecordSale}
+      onRecordExpense={handleRecordExpense}
+      onAddProduct={handleAddProduct}
+    />
+  );
+
+      case "sales":
+        return (
+          <Sales
+            onEditSale={
+              handleEditSale
+            }
+          />
+        );
+
+      case "record":
+        return (
+          <RecordSale
+            onBack={goToDashboard}
+            editingSale={editingSale}
+          />
+        );
+        
+        case "finance":
+  return <Finance />;
+
+      case "expenses":
+        return <Expenses />;
+
+      case "products":
+        return <Products />;
+
+      case "reports":
+  return <Reports />;
+
+      default:
+        return (
+          <Dashboard
+            onRecordSale={
+              handleRecordSale
+            }
+          />
+        );
+    }
+  };
+
+  return (
+    <div className="command-app">
+      <Sidebar
+        activePage={activePage}
+        setActivePage={setActivePage}
+        isOpen={sidebarOpen}
+        setIsOpen={setSidebarOpen}
+      />
+
+      <main className="command-main">
+        <Header
+          activePage={activePage}
+          setIsOpen={setSidebarOpen}
+          onRecordSale={
+            handleRecordSale
+          }
+        />
+
+        <section className="command-content">
+          {renderPage()}
+        </section>
+      </main>
+
+      <nav className="mobile-bottom-nav">
+        <button
+          className={
+            activePage === "dashboard"
+              ? "active"
+              : ""
+          }
+          onClick={() =>
+            setActivePage("dashboard")
+          }
+        >
+          <span>⌂</span>
+          <small>Home</small>
+        </button>
+
+        <button
+          className={
+            activePage === "sales"
+              ? "active"
+              : ""
+          }
+          onClick={() =>
+            setActivePage("sales")
+          }
+        >
+          <span>↗</span>
+          <small>Sales</small>
+        </button>
+
+        <button
+          className={
+            activePage === "record"
+              ? "active"
+              : ""
+          }
+          onClick={handleRecordSale}
+        >
+          <span>＋</span>
+          <small>Record</small>
+        </button>
+
+        <button
+          className={
+            activePage === "products"
+              ? "active"
+              : ""
+          }
+          onClick={() =>
+            setActivePage("products")
+          }
+        >
+          <span>▣</span>
+          <small>Products</small>
+        </button>
+
+        <button
+          className={
+            activePage === "reports"
+              ? "active"
+              : ""
+          }
+          onClick={() =>
+            setActivePage("reports")
+          }
+        >
+          <span>▤</span>
+          <small>Reports</small>
+        </button>
+      </nav>
+    </div>
+  );
+}
+
+export default App;
+============================================================
+END FILE: src/App.jsx
+============================================================
+
+============================================================
+FILE: src/components/Dashboard.jsx
+============================================================
+import { useEffect, useMemo, useState } from "react";
+import { getSales, getProducts } from "../utils/uptrendStore";
+import {
+  getFinance,
+  saveFinance,
+  calculateCashFlow,
+} from "../utils/financeStore";
+
+function Dashboard({
+  onRecordSale,
+  onRecordExpense,
+  onAddProduct,
+}) {
+  const [sales, setSales] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [finance, setFinance] = useState(getFinance());
+  const [openingInput, setOpeningInput] = useState(
+    String(getFinance().openingBalance || "")
+  );
+  const [showOpeningForm, setShowOpeningForm] = useState(false);
+
+  const loadData = () => {
+    setSales(getSales());
+    setProducts(getProducts());
+
+    try {
+      const saved = localStorage.getItem("uptrend_expenses");
+      setExpenses(saved ? JSON.parse(saved) : []);
+    } catch {
+      setExpenses([]);
+    }
+
+    const currentFinance = getFinance();
+    setFinance(currentFinance);
+    setOpeningInput(
+      String(currentFinance.openingBalance || "")
+    );
+  };
+
+  useEffect(() => {
+    loadData();
+
+    const refresh = () => loadData();
+
+    window.addEventListener("focus", refresh);
+    window.addEventListener("storage", refresh);
+
+    return () => {
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("storage", refresh);
+    };
+  }, []);
+
+  const formatMoney = (value) =>
+    `₦${Number(value || 0).toLocaleString("en-NG", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    })}`;
+
+  /* =====================================================
+     CASH
+     ===================================================== */
+
+  const cashFlow = useMemo(
+    () =>
+      calculateCashFlow(
+        sales,
+        expenses,
+        finance
+      ),
+    [sales, expenses, finance]
+  );
+
+  /* =====================================================
+     SALES
+     ===================================================== */
+
+  const totalSales = sales.reduce(
+    (sum, sale) =>
+      sum + Number(sale.totalSelling || 0),
+    0
+  );
+
+  const grossProfit = sales.reduce(
+    (sum, sale) =>
+      sum + Number(sale.grossProfit || 0),
+    0
+  );
+
+  /* =====================================================
+     EXPENSES
+     ===================================================== */
+
+  const totalExpenses = expenses.reduce(
+    (sum, expense) =>
+      sum + Number(expense.amount || 0),
+    0
+  );
+
+  const netProfit =
+    grossProfit - totalExpenses;
+
+  /* =====================================================
+     LOCAL DATE — IMPORTANT
+     ===================================================== */
+
+  const getLocalDateKey = (date) => {
+    const year = date.getFullYear();
+    const month = String(
+      date.getMonth() + 1
+    ).padStart(2, "0");
+    const day = String(
+      date.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const today = getLocalDateKey(new Date());
+
+  const todaySales = sales
+    .filter((sale) => sale.date === today)
+    .reduce(
+      (sum, sale) =>
+        sum + Number(sale.totalSelling || 0),
+      0
+    );
+
+  const todayProfit = sales
+    .filter((sale) => sale.date === today)
+    .reduce(
+      (sum, sale) =>
+        sum + Number(sale.grossProfit || 0),
+      0
+    );
+
+  /* =====================================================
+     INVENTORY
+     ===================================================== */
+
+  const stockUnits = products.reduce(
+    (sum, product) =>
+      sum + Number(product.stock || 0),
+    0
+  );
+
+  const inventoryValue = products.reduce(
+    (sum, product) =>
+      sum +
+      Number(product.stock || 0) *
+        Number(product.costPrice || 0),
+    0
+  );
+
+  const lowStock = products.filter(
+    (product) =>
+      Number(product.stock || 0) <=
+      Number(product.lowStockAt || 0)
+  ).length;
+
+  /* =====================================================
+     RECENT SALES
+     ===================================================== */
+
+  const recentSales = [...sales]
+    .sort((a, b) => {
+      const aDate = new Date(
+        `${a.date}T${a.time || "00:00"}`
+      );
+
+      const bDate = new Date(
+        `${b.date}T${b.time || "00:00"}`
+      );
+
+      return bDate - aDate;
+    })
+    .slice(0, 5);
+
+  /* =====================================================
+     REAL 7-DAY SALES CHART
+     ===================================================== */
+
+  const chartData = useMemo(() => {
+    const result = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+
+      date.setHours(0, 0, 0, 0);
+      date.setDate(
+        date.getDate() - i
+      );
+
+      const dateKey =
+        getLocalDateKey(date);
+
+      const amount = sales
+        .filter(
+          (sale) =>
+            sale.date === dateKey
+        )
+        .reduce(
+          (sum, sale) =>
+            sum +
+            Number(
+              sale.totalSelling || 0
+            ),
+          0
+        );
+
+      result.push({
+        date: dateKey,
+        label: date.toLocaleDateString(
+          "en-NG",
+          {
+            weekday: "short",
+          }
+        ),
+        amount,
+      });
+    }
+
+    return result;
+  }, [sales]);
+
+  const chartMax = Math.max(
+    ...chartData.map(
+      (day) => day.amount
+    ),
+    1
+  );
+
+  /* =====================================================
+     CHART POINTS
+     ===================================================== */
+
+  const chartPoints = chartData.map(
+    (day, index) => {
+      const x =
+        (index / 6) * 100;
+
+      const y =
+        88 -
+        (day.amount / chartMax) * 68;
+
+      return {
+        ...day,
+        x,
+        y,
+      };
+    }
+  );
+
+  const linePoints = chartPoints
+    .map(
+      (point) =>
+        `${point.x},${point.y}`
+    )
+    .join(" ");
+
+  const areaPoints = [
+    "0,88",
+    ...chartPoints.map(
+      (point) =>
+        `${point.x},${point.y}`
+    ),
+    "100,88",
+  ].join(" ");
+
+  /* =====================================================
+     OPENING CASH
+     ===================================================== */
+
+  const saveOpeningBalance = (event) => {
+    event.preventDefault();
+
+    const amount = Number(
+      openingInput
+    );
+
+    if (
+      !Number.isFinite(amount) ||
+      amount < 0
+    ) {
+      return;
+    }
+
+    const updated = {
+      ...finance,
+      openingBalance: amount,
+    };
+
+    saveFinance(updated);
+    setFinance(updated);
+    setShowOpeningForm(false);
+    loadData();
+  };
+
+  return (
+    <div className="dashboard-page">
+
+      {/* HERO */}
+
+      <section className="dashboard-hero">
+
+        <div className="dashboard-hero-copy">
+
+          <span className="eyebrow">
+            BUSINESS OVERVIEW
+          </span>
+
+          <h1>
+            Your business,
+            <br />
+            <span>
+              moving forward.
+            </span>
+          </h1>
+
+          <p>
+            Track your cash, sales, profit
+            and inventory from one place.
+          </p>
+
+        </div>
+
+        <div className="hero-balance-card">
+
+          <div className="hero-balance-top">
+
+            <span>
+              CASH AT HAND
+            </span>
+
+            <button
+              type="button"
+              className="hero-balance-edit"
+              onClick={() =>
+                setShowOpeningForm(
+                  (value) => !value
+                )
+              }
+            >
+              ⚙
+            </button>
+
+          </div>
+
+          <strong>
+            {formatMoney(
+              cashFlow.balance
+            )}
+          </strong>
+
+          <div className="hero-balance-flow">
+
+            <span>
+              ↑{" "}
+              {formatMoney(
+                cashFlow.cashIn
+              )}
+            </span>
+
+            <span>
+              ↓{" "}
+              {formatMoney(
+                cashFlow.cashOut
+              )}
+            </span>
+
+          </div>
+
+          {showOpeningForm && (
+            <form
+              className="opening-balance-form"
+              onSubmit={
+                saveOpeningBalance
+              }
+            >
+
+              <label>
+                STARTING CASH AT HAND
+              </label>
+
+              <div className="opening-balance-row">
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={
+                    openingInput
+                  }
+                  onChange={(event) =>
+                    setOpeningInput(
+                      event.target.value
+                    )
+                  }
+                  placeholder="Enter starting cash"
+                />
+
+                <button type="submit">
+                  Update Cash
+                </button>
+
+              </div>
+
+            </form>
+          )}
+
+        </div>
+
+      </section>
+
+      {/* KPI */}
+
+      <section className="dashboard-kpi-grid">
+
+        <article className="dashboard-kpi-card">
+          <span>
+            Today's Sales
+          </span>
+          <strong>
+            {formatMoney(
+              todaySales
+            )}
+          </strong>
+          <small>
+            Revenue generated today
+          </small>
+        </article>
+
+        <article className="dashboard-kpi-card">
+          <span>
+            Today's Profit
+          </span>
+          <strong>
+            {formatMoney(
+              todayProfit
+            )}
+          </strong>
+          <small>
+            Gross profit today
+          </small>
+        </article>
+
+        <article className="dashboard-kpi-card">
+          <span>
+            Net Profit
+          </span>
+          <strong>
+            {formatMoney(
+              netProfit
+            )}
+          </strong>
+          <small>
+            After recorded expenses
+          </small>
+        </article>
+
+        <article className="dashboard-kpi-card">
+          <span>
+            Inventory Value
+          </span>
+          <strong>
+            {formatMoney(
+              inventoryValue
+            )}
+          </strong>
+          <small>
+            {stockUnits} units in stock
+          </small>
+        </article>
+
+      </section>
+
+      {/* MONEY FLOW */}
+
+      <section className="dashboard-money-flow">
+
+        <div className="section-heading">
+
+          <div>
+            <span className="eyebrow">
+              MONEY FLOW
+            </span>
+
+            <h2>
+              Cash position
+            </h2>
+          </div>
+
+          <span className="live-pill">
+            ● LIVE
+          </span>
+
+        </div>
+
+        <div className="money-flow-grid">
+
+          <div className="money-flow-item money-flow-in">
+
+            <div className="money-flow-icon">
+              ↑
+            </div>
+
+            <div>
+              <span>
+                Cash In
+              </span>
+
+              <strong>
+                {formatMoney(
+                  cashFlow.cashIn
+                )}
+              </strong>
+
+              <small>
+                Sales received
+              </small>
+            </div>
+
+          </div>
+
+          <div className="money-flow-arrow">
+            →
+          </div>
+
+          <div className="money-flow-item money-flow-out">
+
+            <div className="money-flow-icon">
+              ↓
+            </div>
+
+            <div>
+              <span>
+                Cash Out
+              </span>
+
+              <strong>
+                {formatMoney(
+                  cashFlow.cashOut
+                )}
+              </strong>
+
+              <small>
+                Recorded expenses
+              </small>
+            </div>
+
+          </div>
+
+          <div className="money-flow-arrow">
+            →
+          </div>
+
+          <div className="money-flow-item money-flow-balance">
+
+            <div className="money-flow-icon">
+              ₦
+            </div>
+
+            <div>
+              <span>
+                Cash At Hand
+              </span>
+
+              <strong>
+                {formatMoney(
+                  cashFlow.balance
+                )}
+              </strong>
+
+              <small>
+                Starting cash + inflow − outflow
+              </small>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* MAIN */}
+
+      <section className="dashboard-main-grid">
+
+        {/* REAL SALES CHART */}
+
+        <div className="dashboard-panel performance-panel">
+
+          <div className="panel-heading">
+
+            <div>
+
+              <span className="eyebrow">
+                PERFORMANCE
+              </span>
+
+              <h2>
+                Sales Performance
+              </h2>
+
+            </div>
+
+            <span className="panel-period">
+              7 DAYS
+            </span>
+
+          </div>
+
+          <div className="real-sales-chart">
+
+            <div className="real-chart-grid">
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+
+            <svg
+              className="real-chart-svg"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+
+              <defs>
+
+                <linearGradient
+                  id="uptrendChartFill"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+
+                  <stop
+                    offset="0%"
+                    stopColor="rgba(91,217,143,0.22)"
+                  />
+
+                  <stop
+                    offset="100%"
+                    stopColor="rgba(91,217,143,0)"
+                  />
+
+                </linearGradient>
+
+              </defs>
+
+              <polygon
+                className="real-chart-area"
+                points={areaPoints}
+              />
+
+              <polyline
+                className="real-chart-line"
+                points={linePoints}
+              />
+
+            </svg>
+
+            <div className="real-chart-points">
+
+              {chartPoints.map(
+                (point) => (
+                  <span
+                    key={point.date}
+                    className="real-chart-point"
+                    style={{
+                      left:
+                        `${point.x}%`,
+                      top:
+                        `${point.y}%`,
+                    }}
+                    title={`${point.label}: ${formatMoney(
+                      point.amount
+                    )}`}
+                  />
+                )
+              )}
+
+            </div>
+
+            <div className="real-chart-labels">
+
+              {chartData.map(
+                (day) => (
+                  <span key={day.date}>
+                    {day.label}
+                  </span>
+                )
+              )}
+
+            </div>
+
+          </div>
+
+          <div className="performance-summary">
+
+            <div>
+              <span>
+                Total Sales
+              </span>
+
+              <strong>
+                {formatMoney(
+                  totalSales
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Gross Profit
+              </span>
+
+              <strong>
+                {formatMoney(
+                  grossProfit
+                )}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* QUICK ACTIONS */}
+
+        <div className="dashboard-panel quick-panel">
+
+          <div className="panel-heading">
+
+            <div>
+
+              <span className="eyebrow">
+                QUICK ACTIONS
+              </span>
+
+              <h2>
+                Move faster
+              </h2>
+
+            </div>
+
+          </div>
+
+          <div className="quick-action-list">
+
+            <button
+              type="button"
+              onClick={
+                onRecordSale
+              }
+              className="quick-action primary"
+            >
+              <span>＋</span>
+
+              <div>
+                <strong>
+                  Record Sale
+                </strong>
+
+                <small>
+                  Add a new transaction
+                </small>
+              </div>
+
+              <b>→</b>
+            </button>
+
+            <button
+              type="button"
+              onClick={
+                onRecordExpense
+              }
+              className="quick-action"
+            >
+              <span>↓</span>
+
+              <div>
+                <strong>
+                  Record Expense
+                </strong>
+
+                <small>
+                  Track business spending
+                </small>
+              </div>
+
+              <b>→</b>
+            </button>
+
+            <button
+              type="button"
+              onClick={
+                onAddProduct
+              }
+              className="quick-action"
+            >
+              <span>＋</span>
+
+              <div>
+                <strong>
+                  Add Product
+                </strong>
+
+                <small>
+                  Update your inventory
+                </small>
+              </div>
+
+              <b>→</b>
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* BOTTOM */}
+
+      <section className="dashboard-bottom-grid">
+
+        <div className="dashboard-panel recent-sales-panel">
+
+          <div className="panel-heading">
+
+            <div>
+
+              <span className="eyebrow">
+                TRANSACTIONS
+              </span>
+
+              <h2>
+                Recent Sales
+              </h2>
+
+            </div>
+
+          </div>
+
+          {recentSales.length === 0 ? (
+
+            <div className="empty-dashboard-state">
+
+              <div>＋</div>
+
+              <strong>
+                No sales recorded yet
+              </strong>
+
+              <span>
+                Your latest transactions
+                will appear here.
+              </span>
+
+            </div>
+
+          ) : (
+
+            <div className="recent-sales-list">
+
+              {recentSales.map(
+                (sale) => (
+
+                  <div
+                    className="recent-sale-row"
+                    key={sale.id}
+                  >
+
+                    <div className="recent-sale-product">
+
+                      <div className="recent-sale-avatar">
+                        {(sale.productName ||
+                          "S")
+                          .charAt(0)
+                          .toUpperCase()}
+                      </div>
+
+                      <div>
+
+                        <strong>
+                          {sale.productName ||
+                            "Sale"}
+                        </strong>
+
+                        <span>
+                          {sale.quantity} unit
+                          {Number(
+                            sale.quantity
+                          ) !== 1
+                            ? "s"
+                            : ""}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                    <div className="recent-sale-value">
+
+                      <strong>
+                        {formatMoney(
+                          sale.totalSelling
+                        )}
+                      </strong>
+
+                      <span>
+                        +
+                        {formatMoney(
+                          sale.grossProfit
+                        )}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                )
+              )}
+
+            </div>
+
+          )}
+
+        </div>
+
+        <div className="dashboard-panel health-panel">
+
+          <div className="panel-heading">
+
+            <div>
+
+              <span className="eyebrow">
+                BUSINESS HEALTH
+              </span>
+
+              <h2>
+                Overview
+              </h2>
+
+            </div>
+
+          </div>
+
+          <div className="health-score">
+
+            <div className="health-ring">
+
+              <span>
+                {lowStock === 0 &&
+                netProfit >= 0 &&
+                sales.length > 0
+                  ? "GOOD"
+                  : "WATCH"}
+              </span>
+
+            </div>
+
+            <div>
+
+              <strong>
+                {lowStock === 0 &&
+                netProfit >= 0 &&
+                sales.length > 0
+                  ? "Business is healthy"
+                  : "Needs attention"}
+              </strong>
+
+              <p>
+                {lowStock > 0
+                  ? `${lowStock} product${
+                      lowStock > 1
+                        ? "s"
+                        : ""
+                    } need${
+                      lowStock === 1
+                        ? "s"
+                        : ""
+                    } restocking.`
+                  : "Inventory levels are looking good."}
+              </p>
+
+            </div>
+
+          </div>
+
+          <div className="health-metrics">
+
+            <div>
+              <span>
+                Products
+              </span>
+
+              <strong>
+                {products.length}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Low Stock
+              </span>
+
+              <strong>
+                {lowStock}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Expenses
+              </span>
+
+              <strong>
+                {formatMoney(
+                  totalExpenses
+                )}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  );
+}
+
+export default Dashboard;
+============================================================
+END FILE: src/components/Dashboard.jsx
+============================================================
+
+============================================================
+FILE: src/components/Expenses.jsx
+============================================================
+import { useMemo, useState } from "react";
+
+const STORAGE_KEY = "uptrend_expenses";
+
+function getToday() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function getExpenses() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
+function Expenses() {
+  const [expenses, setExpenses] = useState(getExpenses);
+
+  const [form, setForm] = useState({
+    date: getToday(),
+    name: "",
+    category: "General",
+    amount: "",
+    note: "",
+  });
+
+  const [editingId, setEditingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const formatMoney = (value) =>
+    `₦${Number(value || 0).toLocaleString()}`;
+
+  const totals = useMemo(() => {
+    const total = expenses.reduce(
+      (sum, expense) =>
+        sum + Number(expense.amount || 0),
+      0
+    );
+
+    return {
+      total,
+      count: expenses.length,
+    };
+  }, [expenses]);
+
+  const updateField = (field, value) => {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  };
+
+  const resetForm = () => {
+    setForm({
+      date: getToday(),
+      name: "",
+      category: "General",
+      amount: "",
+      note: "",
+    });
+
+    setEditingId(null);
+    setShowForm(false);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (
+      !form.date ||
+      !form.name.trim() ||
+      !form.amount
+    ) {
+      return;
+    }
+
+    const expense = {
+      id:
+        editingId ||
+        `expense-${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2, 8)}`,
+
+      date: form.date,
+
+      name: form.name.trim(),
+
+      category: form.category,
+
+      amount: Number(form.amount),
+
+      note: form.note.trim(),
+
+      createdAt:
+        editingId
+          ? expenses.find(
+              (item) =>
+                item.id === editingId
+            )?.createdAt ||
+            new Date().toISOString()
+          : new Date().toISOString(),
+    };
+
+    setExpenses((current) => {
+      const updated = editingId
+        ? current.map((item) =>
+            item.id === editingId
+              ? expense
+              : item
+          )
+        : [expense, ...current];
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(updated)
+      );
+
+      return updated;
+    });
+
+    resetForm();
+  };
+
+  const handleEdit = (expense) => {
+    setForm({
+      date: expense.date,
+      name: expense.name,
+      category:
+        expense.category || "General",
+      amount: String(expense.amount),
+      note: expense.note || "",
+    });
+
+    setEditingId(expense.id);
+    setShowForm(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handleDelete = (id) => {
+    const expense = expenses.find(
+      (item) => item.id === id
+    );
+
+    if (!expense) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Delete the ${expense.name} expense?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setExpenses((current) => {
+      const updated = current.filter(
+        (item) => item.id !== id
+      );
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(updated)
+      );
+
+      return updated;
+    });
+
+    if (editingId === id) {
+      resetForm();
+    }
+  };
+
+  return (
+    <div className="expenses-page">
+      <div className="expenses-page-top">
+        <div>
+          <div className="mini-label">
+            CASH OUTFLOW
+          </div>
+
+          <h2>Expenses</h2>
+
+          <p>
+            Record and track the money your
+            business spends.
+          </p>
+        </div>
+
+        <button
+          className="expense-add-button"
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+        >
+          <span>+</span>
+          Record Expense
+        </button>
+      </div>
+
+      <section className="expense-overview">
+        <div className="expense-stat premium-card">
+          <div className="expense-stat-icon">
+            ↓
+          </div>
+
+          <div>
+            <span>Total Expenses</span>
+
+            <strong>
+              {formatMoney(totals.total)}
+            </strong>
+
+            <small>
+              All recorded expenses
+            </small>
+          </div>
+        </div>
+
+        <div className="expense-stat premium-card">
+          <div className="expense-stat-icon">
+            #
+          </div>
+
+          <div>
+            <span>Transactions</span>
+
+            <strong>{totals.count}</strong>
+
+            <small>
+              Expense records
+            </small>
+          </div>
+        </div>
+
+        <div className="expense-stat premium-card">
+          <div className="expense-stat-icon">
+            ₦
+          </div>
+
+          <div>
+            <span>Business Outflow</span>
+
+            <strong>
+              {formatMoney(totals.total)}
+            </strong>
+
+            <small>
+              Money leaving the business
+            </small>
+          </div>
+        </div>
+      </section>
+
+      {showForm && (
+        <section className="expense-form-card premium-card">
+          <div className="expense-form-heading">
+            <div>
+              <div className="mini-label">
+                {editingId
+                  ? "UPDATE EXPENSE"
+                  : "NEW EXPENSE"}
+              </div>
+
+              <h3>
+                {editingId
+                  ? "Edit expense"
+                  : "Record an expense"}
+              </h3>
+            </div>
+
+            <button
+              className="expense-close"
+              onClick={resetForm}
+            >
+              ×
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="expense-form-grid">
+              <label className="expense-field">
+                <span>Date</span>
+
+                <input
+                  type="date"
+                  value={form.date}
+                  onChange={(event) =>
+                    updateField(
+                      "date",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+
+              <label className="expense-field">
+                <span>Expense name</span>
+
+                <input
+                  type="text"
+                  placeholder="e.g. Transport"
+                  value={form.name}
+                  onChange={(event) =>
+                    updateField(
+                      "name",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+
+              <label className="expense-field">
+                <span>Category</span>
+
+                <select
+                  value={form.category}
+                  onChange={(event) =>
+                    updateField(
+                      "category",
+                      event.target.value
+                    )
+                  }
+                >
+                  <option>General</option>
+                  <option>Transport</option>
+                  <option>Purchases</option>
+                  <option>Food</option>
+                  <option>Rent</option>
+                  <option>Utilities</option>
+                  <option>Marketing</option>
+                  <option>Salary</option>
+                  <option>Other</option>
+                </select>
+              </label>
+
+              <label className="expense-field">
+                <span>Amount</span>
+
+                <div className="expense-money-input">
+                  <b>₦</b>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="0"
+                    value={form.amount}
+                    onChange={(event) =>
+                      updateField(
+                        "amount",
+                        event.target.value
+                      )
+                    }
+                  />
+                </div>
+              </label>
+
+              <label className="expense-field expense-field-full">
+                <span>Note</span>
+
+                <textarea
+                  placeholder="Optional note..."
+                  value={form.note}
+                  onChange={(event) =>
+                    updateField(
+                      "note",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+            </div>
+
+            <div className="expense-form-footer">
+              <p>
+                Expenses will later be deducted
+                automatically from gross profit to
+                calculate net profit.
+              </p>
+
+              <div>
+                <button
+                  type="button"
+                  className="expense-cancel"
+                  onClick={resetForm}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="expense-save"
+                >
+                  {editingId
+                    ? "Update Expense"
+                    : "Save Expense"}
+
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
+      )}
+
+      <section className="expenses-list-card premium-card">
+        <div className="panel-heading">
+          <div>
+            <div className="mini-label">
+              EXPENSE HISTORY
+            </div>
+
+            <h2>Recorded expenses</h2>
+          </div>
+
+          <span className="expenses-count">
+            {expenses.length} record
+            {expenses.length === 1
+              ? ""
+              : "s"}
+          </span>
+        </div>
+
+        {expenses.length === 0 ? (
+          <div className="expenses-empty">
+            <div>↓</div>
+
+            <strong>
+              No expenses recorded
+            </strong>
+
+            <span>
+              Your business expenses will appear
+              here after your first record.
+            </span>
+
+            <button
+              onClick={() => {
+                resetForm();
+                setShowForm(true);
+              }}
+            >
+              + Record Expense
+            </button>
+          </div>
+        ) : (
+          <div className="expenses-table-wrap">
+            <table className="expenses-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Expense</th>
+                  <th>Category</th>
+                  <th>Note</th>
+                  <th>Amount</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {expenses.map((expense) => (
+                  <tr key={expense.id}>
+                    <td>{expense.date}</td>
+
+                    <td>
+                      <strong>
+                        {expense.name}
+                      </strong>
+                    </td>
+
+                    <td>
+                      <span className="expense-category">
+                        {expense.category}
+                      </span>
+                    </td>
+
+                    <td>
+                      <span className="expense-note">
+                        {expense.note || "—"}
+                      </span>
+                    </td>
+
+                    <td>
+                      <strong className="expense-amount">
+                        -
+                        {formatMoney(
+                          expense.amount
+                        )}
+                      </strong>
+                    </td>
+
+                    <td>
+                      <div className="expense-actions">
+                        <button
+                          onClick={() =>
+                            handleEdit(
+                              expense
+                            )
+                          }
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          className="expense-delete"
+                          onClick={() =>
+                            handleDelete(
+                              expense.id
+                            )
+                          }
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+export default Expenses;
+============================================================
+END FILE: src/components/Expenses.jsx
+============================================================
+
+============================================================
+FILE: src/components/Finance.jsx
+============================================================
+import { useEffect, useMemo, useState } from "react";
+import {
+  getFinance,
+  saveFinance,
+  calculateCashFlow,
+} from "../utils/financeStore";
+import { getSales } from "../utils/uptrendStore";
+
+const EXPENSES_KEY = "uptrend_expenses";
+
+function Finance() {
+  const [sales, setSales] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [finance, setFinance] = useState(getFinance());
+  const [openingInput, setOpeningInput] = useState(
+    String(getFinance().openingBalance || "")
+  );
+
+  const loadData = () => {
+    setSales(getSales());
+
+    try {
+      const saved = localStorage.getItem(EXPENSES_KEY);
+      setExpenses(saved ? JSON.parse(saved) : []);
+    } catch {
+      setExpenses([]);
+    }
+
+    const current = getFinance();
+    setFinance(current);
+    setOpeningInput(
+      String(current.openingBalance || "")
+    );
+  };
+
+  useEffect(() => {
+    loadData();
+
+    window.addEventListener("focus", loadData);
+    window.addEventListener("storage", loadData);
+
+    return () => {
+      window.removeEventListener("focus", loadData);
+      window.removeEventListener("storage", loadData);
+    };
+  }, []);
+
+  const formatMoney = (value) =>
+    `₦${Number(value || 0).toLocaleString("en-NG", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    })}`;
+
+  const cashFlow = useMemo(
+    () =>
+      calculateCashFlow(
+        sales,
+        expenses,
+        finance
+      ),
+    [sales, expenses, finance]
+  );
+
+  const totalGrossProfit = sales.reduce(
+    (sum, sale) =>
+      sum + Number(sale.grossProfit || 0),
+    0
+  );
+
+  const netProfit =
+    totalGrossProfit - cashFlow.cashOut;
+
+  const saveOpeningBalance = (event) => {
+    event.preventDefault();
+
+    const amount = Number(openingInput);
+
+    if (!Number.isFinite(amount) || amount < 0) {
+      return;
+    }
+
+    const updated = {
+      ...finance,
+      openingBalance: amount,
+    };
+
+    saveFinance(updated);
+    setFinance(updated);
+  };
+
+  return (
+    <div className="inner-page finance-page">
+
+      <div className="inner-page-header">
+        <div>
+          <span className="eyebrow">
+            FINANCIAL CONTROL
+          </span>
+
+          <h1>Finance</h1>
+
+          <p>
+            Understand exactly where your business
+            money is coming from and where it is going.
+          </p>
+        </div>
+      </div>
+
+      {/* CASH POSITION */}
+
+      <section className="finance-hero-card">
+
+        <div>
+          <span className="finance-label">
+            CURRENT CASH AT HAND
+          </span>
+
+          <strong className="finance-balance">
+            {formatMoney(cashFlow.balance)}
+          </strong>
+
+          <p>
+            Opening cash + money received − money spent
+          </p>
+        </div>
+
+        <div className="finance-flow-mini">
+
+          <div>
+            <span>Cash In</span>
+            <strong>
+              {formatMoney(cashFlow.cashIn)}
+            </strong>
+          </div>
+
+          <div>
+            <span>Cash Out</span>
+            <strong>
+              {formatMoney(cashFlow.cashOut)}
+            </strong>
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* OPENING BALANCE */}
+
+      <section className="finance-panel">
+
+        <div className="finance-section-heading">
+          <div>
+            <span className="eyebrow">
+              STARTING POSITION
+            </span>
+
+            <h2>Opening Cash</h2>
+          </div>
+        </div>
+
+        <form
+          className="finance-opening-form"
+          onSubmit={saveOpeningBalance}
+        >
+          <div>
+            <label>
+              Cash available before UpTrend tracking
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={openingInput}
+              onChange={(event) =>
+                setOpeningInput(event.target.value)
+              }
+              placeholder="0"
+            />
+          </div>
+
+          <button type="submit">
+            Save Opening Balance
+          </button>
+        </form>
+
+      </section>
+
+      {/* FINANCIAL SUMMARY */}
+
+      <section className="finance-summary-grid">
+
+        <article className="finance-summary-card">
+          <span>Opening Balance</span>
+
+          <strong>
+            {formatMoney(
+              cashFlow.openingBalance
+            )}
+          </strong>
+        </article>
+
+        <article className="finance-summary-card">
+          <span>Total Cash In</span>
+
+          <strong>
+            {formatMoney(cashFlow.cashIn)}
+          </strong>
+        </article>
+
+        <article className="finance-summary-card">
+          <span>Total Cash Out</span>
+
+          <strong>
+            {formatMoney(cashFlow.cashOut)}
+          </strong>
+        </article>
+
+        <article className="finance-summary-card">
+          <span>Net Profit</span>
+
+          <strong>
+            {formatMoney(netProfit)}
+          </strong>
+        </article>
+
+      </section>
+
+      {/* EXPLANATION */}
+
+      <section className="finance-panel finance-explanation">
+
+        <div className="finance-section-heading">
+          <div>
+            <span className="eyebrow">
+              HOW YOUR MONEY WORKS
+            </span>
+
+            <h2>Cash vs Profit</h2>
+          </div>
+        </div>
+
+        <div className="finance-explanation-grid">
+
+          <div>
+            <span>Cash At Hand</span>
+
+            <strong>
+              {formatMoney(cashFlow.balance)}
+            </strong>
+
+            <p>
+              The amount currently represented by
+              your tracked opening cash, sales inflow
+              and recorded expenses.
+            </p>
+          </div>
+
+          <div>
+            <span>Gross Profit</span>
+
+            <strong>
+              {formatMoney(totalGrossProfit)}
+            </strong>
+
+            <p>
+              Sales revenue minus the cost of the
+              products sold.
+            </p>
+          </div>
+
+          <div>
+            <span>Net Profit</span>
+
+            <strong>
+              {formatMoney(netProfit)}
+            </strong>
+
+            <p>
+              Gross profit after recorded business
+              expenses.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  );
+}
+
+export default Finance;
+============================================================
+END FILE: src/components/Finance.jsx
+============================================================
+
+============================================================
+FILE: src/components/Header.jsx
+============================================================
+import { useEffect, useState } from "react";
+
+function Header({
+  activePage,
+  setIsOpen,
+  onRecordSale,
+}) {
+  const [loaded, setLoaded] = useState(false);
+
+  const pageTitles = {
+    dashboard: "Business Dashboard",
+    sales: "Sales",
+    record: "Record Sale",
+    products: "Products",
+    reports: "Reports",
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoaded(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <header
+      className={`command-header ${
+        loaded ? "header-loaded" : ""
+      }`}
+    >
+      <div className="header-left">
+        <button
+          className="mobile-menu"
+          onClick={() => setIsOpen(true)}
+          aria-label="Open menu"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+        <div className="header-title-wrap">
+          <div className="header-overline">
+            <span className="overline-dot" />
+            UPTREND
+          </div>
+
+          <h1>
+            {pageTitles[activePage] ||
+              "Business Dashboard"}
+          </h1>
+        </div>
+      </div>
+
+      <div className="header-actions">
+        <button
+          className="header-icon notification"
+          aria-label="Notifications"
+        >
+          <span className="notification-icon">
+            ♢
+          </span>
+
+          <i />
+        </button>
+
+        <button
+          className="primary-action header-record-button"
+          onClick={onRecordSale}
+        >
+          <span className="record-plus">+</span>
+          <span>Record Sale</span>
+          <span className="record-arrow">→</span>
+        </button>
+      </div>
+    </header>
+  );
+}
+
+export default Header;
+============================================================
+END FILE: src/components/Header.jsx
+============================================================
+
+============================================================
+FILE: src/components/Products.jsx
+============================================================
+import { useMemo, useState } from "react";
+import {
+  generateId,
+  getProducts,
+  saveProducts,
+} from "../utils/uptrendStore";
+
+function Products() {
+  const [products, setProducts] = useState(
+    getProducts
+  );
+
+  const [form, setForm] = useState({
+    name: "",
+    costPrice: "",
+    sellingPrice: "",
+    stock: "",
+    lowStockAt: "5",
+  });
+
+  const [editingId, setEditingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const updateField = (field, value) => {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  };
+
+  const resetForm = () => {
+    setForm({
+      name: "",
+      costPrice: "",
+      sellingPrice: "",
+      stock: "",
+      lowStockAt: "5",
+    });
+
+    setEditingId(null);
+    setShowForm(false);
+  };
+
+  const formatMoney = (value) =>
+    `₦${Number(value || 0).toLocaleString()}`;
+
+  const totals = useMemo(() => {
+    const inventoryValue = products.reduce(
+      (total, product) =>
+        total +
+        Number(product.costPrice) *
+          Number(product.stock),
+      0
+    );
+
+    const stockUnits = products.reduce(
+      (total, product) =>
+        total + Number(product.stock),
+      0
+    );
+
+    const lowStock = products.filter(
+      (product) =>
+        Number(product.stock) <=
+        Number(product.lowStockAt)
+    ).length;
+
+    return {
+      inventoryValue,
+      stockUnits,
+      lowStock,
+    };
+  }, [products]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (
+      !form.name.trim() ||
+      !form.costPrice ||
+      !form.sellingPrice ||
+      form.stock === ""
+    ) {
+      return;
+    }
+
+    const product = {
+      id:
+        editingId ||
+        generateId("product"),
+
+      name: form.name.trim(),
+
+      costPrice:
+        Number(form.costPrice),
+
+      sellingPrice:
+        Number(form.sellingPrice),
+
+      stock:
+        Number(form.stock),
+
+      lowStockAt:
+        Number(form.lowStockAt) || 5,
+    };
+
+    setProducts((current) => {
+      const updated = editingId
+        ? current.map((item) =>
+            item.id === editingId
+              ? product
+              : item
+          )
+        : [product, ...current];
+
+      saveProducts(updated);
+
+      return updated;
+    });
+
+    resetForm();
+  };
+
+  const handleEdit = (product) => {
+    setForm({
+      name: product.name,
+      costPrice: String(product.costPrice),
+      sellingPrice: String(
+        product.sellingPrice
+      ),
+      stock: String(product.stock),
+      lowStockAt: String(
+        product.lowStockAt
+      ),
+    });
+
+    setEditingId(product.id);
+    setShowForm(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handleDelete = (id) => {
+    const product = products.find(
+      (item) => item.id === id
+    );
+
+    if (!product) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Delete ${product.name} from your products?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setProducts((current) => {
+      const updated = current.filter(
+        (item) => item.id !== id
+      );
+
+      saveProducts(updated);
+
+      return updated;
+    });
+
+    if (editingId === id) {
+      resetForm();
+    }
+  };
+
+  const getStockStatus = (product) => {
+    const stock = Number(product.stock);
+    const low = Number(product.lowStockAt);
+
+    if (stock <= low) {
+      return {
+        label: "Low stock",
+        className: "stock-low",
+      };
+    }
+
+    if (stock <= low * 2) {
+      return {
+        label: "Watch",
+        className: "stock-watch",
+      };
+    }
+
+    return {
+      label: "Healthy",
+      className: "stock-good",
+    };
+  };
+
+  return (
+    <div className="products-page">
+      <div className="products-page-top">
+        <div>
+          <div className="mini-label">
+            INVENTORY CONTROL
+          </div>
+
+          <h2>Products & Stock</h2>
+
+          <p>
+            Manage your products, fixed costs,
+            selling prices and available stock.
+          </p>
+        </div>
+
+        <button
+          className="products-add-button"
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+        >
+          <span>+</span>
+          Add Product
+        </button>
+      </div>
+
+      <section className="inventory-overview">
+        <div className="inventory-stat premium-card">
+          <div className="inventory-stat-icon">
+            ▣
+          </div>
+
+          <div>
+            <span>Products</span>
+            <strong>{products.length}</strong>
+            <small>Active products</small>
+          </div>
+        </div>
+
+        <div className="inventory-stat premium-card">
+          <div className="inventory-stat-icon">
+            #
+          </div>
+
+          <div>
+            <span>Stock Units</span>
+            <strong>
+              {totals.stockUnits}
+            </strong>
+            <small>Total units available</small>
+          </div>
+        </div>
+
+        <div className="inventory-stat premium-card">
+          <div className="inventory-stat-icon">
+            ₦
+          </div>
+
+          <div>
+            <span>Inventory Value</span>
+            <strong>
+              {formatMoney(
+                totals.inventoryValue
+              )}
+            </strong>
+            <small>At cost price</small>
+          </div>
+        </div>
+
+        <div className="inventory-stat premium-card">
+          <div className="inventory-stat-icon warning">
+            !
+          </div>
+
+          <div>
+            <span>Low Stock</span>
+            <strong>
+              {totals.lowStock}
+            </strong>
+            <small>Needs attention</small>
+          </div>
+        </div>
+      </section>
+
+      {showForm && (
+        <section className="product-form-card premium-card">
+          <div className="product-form-heading">
+            <div>
+              <div className="mini-label">
+                {editingId
+                  ? "UPDATE PRODUCT"
+                  : "NEW PRODUCT"}
+              </div>
+
+              <h3>
+                {editingId
+                  ? "Edit product"
+                  : "Add a product"}
+              </h3>
+            </div>
+
+            <button
+              className="product-close"
+              onClick={resetForm}
+            >
+              ×
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="product-form-grid">
+              <label className="product-field">
+                <span>Product name</span>
+
+                <input
+                  type="text"
+                  placeholder="e.g. Sneakers"
+                  value={form.name}
+                  onChange={(event) =>
+                    updateField(
+                      "name",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+
+              <label className="product-field">
+                <span>Cost price per item</span>
+
+                <div className="product-money-input">
+                  <b>₦</b>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="0"
+                    value={form.costPrice}
+                    onChange={(event) =>
+                      updateField(
+                        "costPrice",
+                        event.target.value
+                      )
+                    }
+                  />
+                </div>
+              </label>
+
+              <label className="product-field">
+                <span>Selling price per item</span>
+
+                <div className="product-money-input">
+                  <b>₦</b>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="0"
+                    value={form.sellingPrice}
+                    onChange={(event) =>
+                      updateField(
+                        "sellingPrice",
+                        event.target.value
+                      )
+                    }
+                  />
+                </div>
+              </label>
+
+              <label className="product-field">
+                <span>Current stock</span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="0"
+                  value={form.stock}
+                  onChange={(event) =>
+                    updateField(
+                      "stock",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+
+              <label className="product-field">
+                <span>Low-stock alert at</span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.lowStockAt}
+                  onChange={(event) =>
+                    updateField(
+                      "lowStockAt",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+            </div>
+
+            <div className="product-form-footer">
+              <p>
+                The cost price becomes the fixed
+                cost used automatically when this
+                product is sold.
+              </p>
+
+              <div>
+                <button
+                  type="button"
+                  className="product-cancel"
+                  onClick={resetForm}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="product-save"
+                >
+                  {editingId
+                    ? "Update Product"
+                    : "Save Product"}
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
+      )}
+
+      <section className="products-list-card premium-card">
+        <div className="panel-heading">
+          <div>
+            <div className="mini-label">
+              PRODUCT CATALOG
+            </div>
+
+            <h2>Inventory</h2>
+          </div>
+
+          <span className="products-count">
+            {products.length} product
+            {products.length === 1
+              ? ""
+              : "s"}
+          </span>
+        </div>
+
+        {products.length === 0 ? (
+          <div className="products-empty">
+            <div>▣</div>
+
+            <strong>
+              No products yet
+            </strong>
+
+            <span>
+              Add your first product to start
+              managing inventory.
+            </span>
+
+            <button
+              onClick={() => {
+                resetForm();
+                setShowForm(true);
+              }}
+            >
+              + Add Product
+            </button>
+          </div>
+        ) : (
+          <div className="products-table-wrap">
+            <table className="products-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Cost</th>
+                  <th>Selling</th>
+                  <th>Margin</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {products.map((product) => {
+                  const status =
+                    getStockStatus(product);
+
+                  const margin =
+                    Number(
+                      product.sellingPrice
+                    ) -
+                    Number(
+                      product.costPrice
+                    );
+
+                  return (
+                    <tr key={product.id}>
+                      <td>
+                        <div className="product-name-cell">
+                          <div className="product-letter">
+                            {product.name
+                              .charAt(0)
+                              .toUpperCase()}
+                          </div>
+
+                          <strong>
+                            {product.name}
+                          </strong>
+                        </div>
+                      </td>
+
+                      <td>
+                        {formatMoney(
+                          product.costPrice
+                        )}
+                      </td>
+
+                      <td>
+                        {formatMoney(
+                          product.sellingPrice
+                        )}
+                      </td>
+
+                      <td>
+                        <strong className="product-margin">
+                          +
+                          {formatMoney(margin)}
+                        </strong>
+                      </td>
+
+                      <td>
+                        <strong>
+                          {product.stock}
+                        </strong>
+                      </td>
+
+                      <td>
+                        <span
+                          className={`stock-badge ${status.className}`}
+                        >
+                          <i />
+                          {status.label}
+                        </span>
+                      </td>
+
+                      <td>
+                        <div className="product-actions">
+                          <button
+                            onClick={() =>
+                              handleEdit(
+                                product
+                              )
+                            }
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            className="product-delete"
+                            onClick={() =>
+                              handleDelete(
+                                product.id
+                              )
+                            }
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+export default Products;
+============================================================
+END FILE: src/components/Products.jsx
+============================================================
+
+============================================================
+FILE: src/components/RecordSale.jsx
+============================================================
+import { useEffect, useMemo, useState } from "react";
+
+import {
+  getProducts,
+  saveProducts,
+  getSales,
+  saveSales,
+} from "../utils/uptrendStore";
+
+function getToday() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function RecordSale({
+  onBack,
+  editingSale,
+}) {
+  const [products, setProducts] = useState(
+    getProducts
+  );
+
+  const [sales, setSales] = useState(
+    getSales
+  );
+
+  const [form, setForm] = useState({
+    date:
+      editingSale?.date ||
+      getToday(),
+
+    productId:
+      editingSale?.productId || "",
+
+    quantity:
+      editingSale?.quantity
+        ? String(
+            editingSale.quantity
+          )
+        : "1",
+
+    sellingPrice:
+      editingSale?.sellingPrice
+        ? String(
+            editingSale.sellingPrice
+          )
+        : "",
+  });
+
+  const [editingId, setEditingId] =
+    useState(
+      editingSale?.id || null
+    );
+
+  const [saved, setSaved] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  useEffect(() => {
+    const freshProducts =
+      getProducts();
+
+    const freshSales =
+      getSales();
+
+    setProducts(freshProducts);
+    setSales(freshSales);
+  }, [editingSale]);
+
+  useEffect(() => {
+    setEditingId(
+      editingSale?.id || null
+    );
+
+    setForm({
+      date:
+        editingSale?.date ||
+        getToday(),
+
+      productId:
+        editingSale?.productId || "",
+
+      quantity:
+        editingSale?.quantity
+          ? String(
+              editingSale.quantity
+            )
+          : "1",
+
+      sellingPrice:
+        editingSale?.sellingPrice
+          ? String(
+              editingSale.sellingPrice
+            )
+          : "",
+    });
+
+    setError("");
+    setSaved(false);
+  }, [editingSale]);
+
+  const selectedProduct =
+    products.find(
+      (product) =>
+        product.id ===
+        form.productId
+    );
+
+  const selectedCost =
+    selectedProduct
+      ? Number(
+          selectedProduct.costPrice
+        )
+      : 0;
+
+  const calculation = useMemo(() => {
+    const quantity =
+      Number(form.quantity) || 0;
+
+    const sellingPrice =
+      Number(
+        form.sellingPrice
+      ) || 0;
+
+    const totalCost =
+      selectedCost * quantity;
+
+    const totalSelling =
+      sellingPrice * quantity;
+
+    const grossProfit =
+      totalSelling - totalCost;
+
+    return {
+      quantity,
+      totalCost,
+      totalSelling,
+      grossProfit,
+    };
+  }, [
+    form.quantity,
+    form.sellingPrice,
+    selectedCost,
+  ]);
+
+  const formatMoney = (value) =>
+    `₦${Number(value || 0).toLocaleString()}`;
+
+  const updateField = (
+    field,
+    value
+  ) => {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
+
+    setSaved(false);
+    setError("");
+  };
+
+  const handleProductChange = (
+    productId
+  ) => {
+    const product =
+      products.find(
+        (item) =>
+          item.id === productId
+      );
+
+    setForm((current) => ({
+      ...current,
+      productId,
+
+      sellingPrice: product
+        ? String(
+            product.sellingPrice
+          )
+        : "",
+    }));
+
+    setSaved(false);
+    setError("");
+  };
+
+  const resetForm = () => {
+    setForm({
+      date: getToday(),
+      productId: "",
+      quantity: "1",
+      sellingPrice: "",
+    });
+
+    setEditingId(null);
+    setSaved(false);
+    setError("");
+  };
+
+  const handleSubmit = (
+    event
+  ) => {
+    event.preventDefault();
+
+    setError("");
+    setSaved(false);
+
+    if (
+      !form.date ||
+      !form.productId ||
+      !form.quantity ||
+      !form.sellingPrice
+    ) {
+      setError(
+        "Please complete all required fields."
+      );
+
+      return;
+    }
+
+    const product =
+      products.find(
+        (item) =>
+          item.id ===
+          form.productId
+      );
+
+    if (!product) {
+      setError(
+        "Please select a valid product."
+      );
+
+      return;
+    }
+
+    const quantity =
+      Number(form.quantity);
+
+    if (quantity < 1) {
+      setError(
+        "Quantity must be at least 1."
+      );
+
+      return;
+    }
+
+    const oldSale = editingId
+      ? sales.find(
+          (sale) =>
+            sale.id === editingId
+        )
+      : null;
+
+    const availableStock =
+      Number(product.stock) +
+      (oldSale &&
+      oldSale.productId ===
+        product.id
+        ? Number(
+            oldSale.quantity
+          )
+        : 0);
+
+    if (
+      quantity >
+      availableStock
+    ) {
+      setError(
+        `Only ${availableStock} unit${
+          availableStock === 1
+            ? ""
+            : "s"
+        } of ${
+          product.name
+        } available.`
+      );
+
+      return;
+    }
+
+    const sale = {
+      id:
+        editingId ||
+        `sale-${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2, 8)}`,
+
+      date: form.date,
+
+      productId: product.id,
+
+      product: product.name,
+
+      quantity,
+
+      costPrice:
+        Number(
+          product.costPrice
+        ),
+
+      totalCost:
+        Number(
+          product.costPrice
+        ) * quantity,
+
+      sellingPrice:
+        Number(
+          form.sellingPrice
+        ),
+
+      totalSelling:
+        Number(
+          form.sellingPrice
+        ) * quantity,
+
+      grossProfit:
+        Number(
+          form.sellingPrice
+        ) *
+          quantity -
+        Number(
+          product.costPrice
+        ) *
+          quantity,
+
+      createdAt:
+        oldSale?.createdAt ||
+        new Date().toISOString(),
+    };
+
+    const updatedProducts =
+      products.map(
+        (item) => {
+          if (
+            oldSale &&
+            oldSale.productId ===
+              item.id &&
+            item.id !==
+              product.id
+          ) {
+            return {
+              ...item,
+              stock:
+                Number(
+                  item.stock
+                ) +
+                Number(
+                  oldSale.quantity
+                ),
+            };
+          }
+
+          if (
+            item.id ===
+            product.id
+          ) {
+            const restoredStock =
+              oldSale &&
+              oldSale.productId ===
+                product.id
+                ? Number(
+                    item.stock
+                  ) +
+                  Number(
+                    oldSale.quantity
+                  )
+                : Number(
+                    item.stock
+                  );
+
+            return {
+              ...item,
+              stock:
+                restoredStock -
+                quantity,
+            };
+          }
+
+          return item;
+        }
+      );
+
+    const updatedSales =
+      editingId
+        ? sales.map(
+            (item) =>
+              item.id ===
+              editingId
+                ? sale
+                : item
+          )
+        : [
+            sale,
+            ...sales,
+          ];
+
+    saveProducts(
+      updatedProducts
+    );
+
+    saveSales(
+      updatedSales
+    );
+
+    setProducts(
+      updatedProducts
+    );
+
+    setSales(
+      updatedSales
+    );
+
+    setSaved(true);
+
+    setTimeout(() => {
+      resetForm();
+    }, 900);
+  };
+
+  const handleDelete = (
+    id
+  ) => {
+    const sale =
+      sales.find(
+        (item) =>
+          item.id === id
+      );
+
+    if (!sale) {
+      return;
+    }
+
+    const confirmed =
+      window.confirm(
+        `Delete the ${sale.product} sale?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const updatedProducts =
+      products.map(
+        (product) =>
+          product.id ===
+          sale.productId
+            ? {
+                ...product,
+                stock:
+                  Number(
+                    product.stock
+                  ) +
+                  Number(
+                    sale.quantity
+                  ),
+              }
+            : product
+      );
+
+    const updatedSales =
+      sales.filter(
+        (item) =>
+          item.id !== id
+      );
+
+    saveProducts(
+      updatedProducts
+    );
+
+    saveSales(
+      updatedSales
+    );
+
+    setProducts(
+      updatedProducts
+    );
+
+    setSales(
+      updatedSales
+    );
+
+    if (
+      editingId === id
+    ) {
+      resetForm();
+    }
+  };
+
+  return (
+    <div className="record-page">
+      <div className="record-page-top">
+        <div>
+          <div className="mini-label">
+            {editingId
+              ? "UPDATE TRANSACTION"
+              : "NEW TRANSACTION"}
+          </div>
+
+          <h2>
+            {editingId
+              ? "Update Sale"
+              : "Record Sale"}
+          </h2>
+
+          <p>
+            Record each sale and let
+            UpTrend calculate your
+            gross profit automatically.
+          </p>
+        </div>
+
+        <button
+          className="record-back-button"
+          onClick={onBack}
+        >
+          ← Dashboard
+        </button>
+      </div>
+
+      <div className="record-layout">
+        <form
+          className="record-form-card premium-card"
+          onSubmit={
+            handleSubmit
+          }
+        >
+          <div className="record-card-heading">
+            <div className="record-heading-icon">
+              +
+            </div>
+
+            <div>
+              <strong>
+                {editingId
+                  ? "Edit sale"
+                  : "New sale"}
+              </strong>
+
+              <span>
+                Cost price is automatically
+                taken from your product.
+              </span>
+            </div>
+          </div>
+
+          <div className="record-fields">
+            <label className="record-field full">
+              <span>Date</span>
+
+              <input
+                type="date"
+                value={form.date}
+                onChange={(event) =>
+                  updateField(
+                    "date",
+                    event.target
+                      .value
+                  )
+                }
+              />
+            </label>
+
+            <label className="record-field full">
+              <span>
+                Item sold
+              </span>
+
+              <select
+                value={
+                  form.productId
+                }
+                onChange={(event) =>
+                  handleProductChange(
+                    event.target
+                      .value
+                  )
+                }
+              >
+                <option value="">
+                  Select product
+                </option>
+
+                {products.map(
+                  (product) => (
+                    <option
+                      key={
+                        product.id
+                      }
+                      value={
+                        product.id
+                      }
+                      disabled={
+                        Number(
+                          product.stock
+                        ) <= 0 &&
+                        product.id !==
+                          editingSale?.productId
+                      }
+                    >
+                      {
+                        product.name
+                      }{" "}
+                      — Stock{" "}
+                      {
+                        product.stock
+                      }
+                    </option>
+                  )
+                )}
+              </select>
+            </label>
+
+            <div className="record-field-grid">
+              <label className="record-field">
+                <span>
+                  Quantity sold
+                </span>
+
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={
+                    form.quantity
+                  }
+                  onChange={(
+                    event
+                  ) =>
+                    updateField(
+                      "quantity",
+                      event.target
+                        .value
+                    )
+                  }
+                />
+              </label>
+
+              <div className="record-field">
+                <span>
+                  Fixed cost price
+                </span>
+
+                <div className="record-fixed-value">
+                  {formatMoney(
+                    selectedCost
+                  )}
+
+                  <small>
+                    per item
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <label className="record-field full">
+              <span>
+                Selling price per item
+              </span>
+
+              <div className="money-input">
+                <b>₦</b>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="0"
+                  value={
+                    form.sellingPrice
+                  }
+                  onChange={(
+                    event
+                  ) =>
+                    updateField(
+                      "sellingPrice",
+                      event.target
+                        .value
+                    )
+                  }
+                />
+              </div>
+            </label>
+          </div>
+
+          {selectedProduct && (
+            <div className="record-stock-info">
+              <span>
+                AVAILABLE STOCK
+              </span>
+
+              <strong>
+                {
+                  selectedProduct.stock
+                }{" "}
+                units
+              </strong>
+            </div>
+          )}
+
+          {error && (
+            <div className="record-error">
+              <span>!</span>
+              {error}
+            </div>
+          )}
+
+          <div className="record-form-actions">
+            <button
+              type="button"
+              className="record-cancel"
+              onClick={
+                editingId
+                  ? resetForm
+                  : onBack
+              }
+            >
+              {editingId
+                ? "Cancel Edit"
+                : "Cancel"}
+            </button>
+
+            <button
+              type="submit"
+              className="record-submit"
+            >
+              <span>
+                {editingId
+                  ? "Update Sale"
+                  : "Save Sale"}
+              </span>
+
+              <b>→</b>
+            </button>
+          </div>
+
+          {saved && (
+            <div className="record-success">
+              <span>✓</span>
+
+              Sale{" "}
+              {editingId
+                ? "updated"
+                : "recorded"}{" "}
+              successfully.
+            </div>
+          )}
+        </form>
+
+        <aside className="sale-summary premium-card">
+          <div className="mini-label">
+            LIVE CALCULATION
+          </div>
+
+          <h3>
+            Sale summary
+          </h3>
+
+          <div className="summary-product">
+            <div className="summary-product-icon">
+              {selectedProduct
+                ? selectedProduct.name
+                    .charAt(0)
+                    .toUpperCase()
+                : "U"}
+            </div>
+
+            <div>
+              <strong>
+                {selectedProduct
+                  ? selectedProduct.name
+                  : "Select a product"}
+              </strong>
+
+              <span>
+                {
+                  calculation.quantity
+                }{" "}
+                item
+                {calculation.quantity ===
+                1
+                  ? ""
+                  : "s"}
+              </span>
+            </div>
+          </div>
+
+          <div className="summary-lines">
+            <div>
+              <span>
+                Cost / item
+              </span>
+
+              <strong>
+                {formatMoney(
+                  selectedCost
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Total cost
+              </span>
+
+              <strong>
+                {formatMoney(
+                  calculation.totalCost
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Selling / item
+              </span>
+
+              <strong>
+                {formatMoney(
+                  form.sellingPrice
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Total sales
+              </span>
+
+              <strong>
+                {formatMoney(
+                  calculation.totalSelling
+                )}
+              </strong>
+            </div>
+          </div>
+
+          <div className="summary-total">
+            <span>
+              Gross profit
+            </span>
+
+            <strong
+              className={
+                calculation.grossProfit <
+                0
+                  ? "record-loss"
+                  : "record-profit"
+              }
+            >
+              {calculation.grossProfit <
+              0
+                ? "-"
+                : "+"}
+
+              {formatMoney(
+                Math.abs(
+                  calculation.grossProfit
+                )
+              )}
+            </strong>
+          </div>
+
+          <div className="summary-note">
+            <span>✦</span>
+
+            <p>
+              Stock automatically adjusts
+              when a sale is saved, updated
+              or deleted.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <section className="sales-history premium-card">
+        <div className="panel-heading">
+          <div>
+            <div className="mini-label">
+              SALES HISTORY
+            </div>
+
+            <h2>
+              Recorded sales
+            </h2>
+          </div>
+
+          <span className="sales-count">
+            {sales.length} record
+            {sales.length ===
+            1
+              ? ""
+              : "s"}
+          </span>
+        </div>
+
+        {sales.length === 0 ? (
+          <div className="sales-empty">
+            <div>↗</div>
+
+            <strong>
+              No sales recorded yet
+            </strong>
+
+            <span>
+              Your sales will appear
+              here after you save your
+              first transaction.
+            </span>
+          </div>
+        ) : (
+          <div className="sales-table-wrap">
+            <table className="sales-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>
+                    Item
+                  </th>
+                  <th>
+                    Qty
+                  </th>
+                  <th>
+                    Cost
+                  </th>
+                  <th>
+                    Sales
+                  </th>
+                  <th>
+                    Gross Profit
+                  </th>
+                  <th>
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {sales.map(
+                  (sale) => (
+                    <tr
+                      key={
+                        sale.id
+                      }
+                    >
+                      <td>
+                        {
+                          sale.date
+                        }
+                      </td>
+
+                      <td>
+                        <strong>
+                          {
+                            sale.product
+                          }
+                        </strong>
+                      </td>
+
+                      <td>
+                        {
+                          sale.quantity
+                        }
+                      </td>
+
+                      <td>
+                        {formatMoney(
+                          sale.totalCost
+                        )}
+                      </td>
+
+                      <td>
+                        {formatMoney(
+                          sale.totalSelling
+                        )}
+                      </td>
+
+                      <td>
+                        <strong
+                          className={
+                            Number(
+                              sale.grossProfit
+                            ) <
+                            0
+                              ? "record-loss"
+                              : "record-profit"
+                          }
+                        >
+                          {Number(
+                            sale.grossProfit
+                          ) <
+                          0
+                            ? "-"
+                            : "+"}
+
+                          {formatMoney(
+                            Math.abs(
+                              Number(
+                                sale.grossProfit
+                              )
+                            )
+                          )}
+                        </strong>
+                      </td>
+
+                      <td>
+                        <div className="sale-actions">
+                          <button
+                            onClick={() =>
+                              handleEdit(
+                                sale
+                              )
+                            }
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            className="delete-sale"
+                            onClick={() =>
+                              handleDelete(
+                                sale.id
+                              )
+                            }
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+export default RecordSale;
+============================================================
+END FILE: src/components/RecordSale.jsx
+============================================================
+
+============================================================
+FILE: src/components/Reports.jsx
+============================================================
+import { useMemo, useState } from "react";
+
+import {
+  getSales,
+  getProducts,
+} from "../utils/uptrendStore";
+
+const EXPENSES_KEY = "uptrend_expenses";
+
+function getExpenses() {
+  try {
+    const saved =
+      localStorage.getItem(EXPENSES_KEY);
+
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
+function getToday() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function getDateDaysAgo(days) {
+  const date = new Date();
+
+  date.setDate(
+    date.getDate() - days
+  );
+
+  return date
+    .toISOString()
+    .split("T")[0];
+}
+
+function Reports() {
+  const [sales] = useState(getSales);
+  const [expenses] =
+    useState(getExpenses);
+  const [products] =
+    useState(getProducts);
+
+  const [period, setPeriod] =
+    useState("30days");
+
+  const [startDate, setStartDate] =
+    useState(getDateDaysAgo(29));
+
+  const [endDate, setEndDate] =
+    useState(getToday());
+
+  const filteredSales = useMemo(() => {
+    return sales.filter(
+      (sale) =>
+        sale.date >= startDate &&
+        sale.date <= endDate
+    );
+  }, [sales, startDate, endDate]);
+
+  const filteredExpenses =
+    useMemo(() => {
+      return expenses.filter(
+        (expense) =>
+          expense.date >= startDate &&
+          expense.date <= endDate
+      );
+    }, [
+      expenses,
+      startDate,
+      endDate,
+    ]);
+
+  const totals = useMemo(() => {
+    const revenue =
+      filteredSales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(
+            sale.totalSelling || 0
+          ),
+        0
+      );
+
+    const cost =
+      filteredSales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(
+            sale.totalCost || 0
+          ),
+        0
+      );
+
+    const grossProfit =
+      filteredSales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(
+            sale.grossProfit || 0
+          ),
+        0
+      );
+
+    const expenseTotal =
+      filteredExpenses.reduce(
+        (sum, expense) =>
+          sum +
+          Number(
+            expense.amount || 0
+          ),
+        0
+      );
+
+    const netProfit =
+      grossProfit - expenseTotal;
+
+    const unitsSold =
+      filteredSales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(
+            sale.quantity || 0
+          ),
+        0
+      );
+
+    const margin =
+      revenue > 0
+        ? (grossProfit / revenue) *
+          100
+        : 0;
+
+    return {
+      revenue,
+      cost,
+      grossProfit,
+      expenseTotal,
+      netProfit,
+      unitsSold,
+      margin,
+    };
+  }, [
+    filteredSales,
+    filteredExpenses,
+  ]);
+
+  const productPerformance =
+    useMemo(() => {
+      const map = {};
+
+      filteredSales.forEach(
+        (sale) => {
+          const id =
+            sale.productId ||
+            sale.product;
+
+          if (!map[id]) {
+            map[id] = {
+              name: sale.product,
+              units: 0,
+              revenue: 0,
+              profit: 0,
+            };
+          }
+
+          map[id].units +=
+            Number(
+              sale.quantity || 0
+            );
+
+          map[id].revenue +=
+            Number(
+              sale.totalSelling ||
+                0
+            );
+
+          map[id].profit +=
+            Number(
+              sale.grossProfit ||
+                0
+            );
+        }
+      );
+
+      return Object.values(map)
+        .sort(
+          (a, b) =>
+            b.units - a.units
+        );
+    }, [filteredSales]);
+
+  const bestSeller =
+    productPerformance[0];
+
+  const slowProducts =
+    products
+      .filter((product) => {
+        const sold =
+          productPerformance.find(
+            (item) =>
+              item.name ===
+              product.name
+          );
+
+        return !sold || sold.units <= 2;
+      })
+      .slice(0, 5);
+
+  const dailyPerformance =
+    useMemo(() => {
+      const days = [];
+
+      const start =
+        new Date(`${startDate}T00:00:00`);
+
+      const end =
+        new Date(`${endDate}T00:00:00`);
+
+      const cursor = new Date(start);
+
+      while (cursor <= end) {
+        const date =
+          cursor
+            .toISOString()
+            .split("T")[0];
+
+        const daySales =
+          filteredSales
+            .filter(
+              (sale) =>
+                sale.date === date
+            )
+            .reduce(
+              (sum, sale) =>
+                sum +
+                Number(
+                  sale.totalSelling ||
+                    0
+                ),
+              0
+            );
+
+        days.push({
+          date,
+          value: daySales,
+        });
+
+        cursor.setDate(
+          cursor.getDate() + 1
+        );
+      }
+
+      return days.slice(-14);
+    }, [
+      filteredSales,
+      startDate,
+      endDate,
+    ]);
+
+  const maxDailySales =
+    Math.max(
+      ...dailyPerformance.map(
+        (day) => day.value
+      ),
+      1
+    );
+
+  const formatMoney = (value) =>
+    `₦${Number(
+      value || 0
+    ).toLocaleString()}`;
+
+  const applyPeriod = (value) => {
+    setPeriod(value);
+
+    const today = getToday();
+
+    if (value === "7days") {
+      setStartDate(
+        getDateDaysAgo(6)
+      );
+
+      setEndDate(today);
+    }
+
+    if (value === "30days") {
+      setStartDate(
+        getDateDaysAgo(29)
+      );
+
+      setEndDate(today);
+    }
+
+    if (value === "90days") {
+      setStartDate(
+        getDateDaysAgo(89)
+      );
+
+      setEndDate(today);
+    }
+  };
+
+  return (
+    <div className="reports-page">
+      <div className="reports-page-top">
+        <div>
+          <div className="mini-label">
+            BUSINESS INTELLIGENCE
+          </div>
+
+          <h2>Reports</h2>
+
+          <p>
+            Understand your revenue, profit,
+            expenses and product performance.
+          </p>
+        </div>
+      </div>
+
+      <section className="report-period-card premium-card">
+        <div className="report-period-buttons">
+          <button
+            className={
+              period === "7days"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              applyPeriod("7days")
+            }
+          >
+            7 Days
+          </button>
+
+          <button
+            className={
+              period === "30days"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              applyPeriod("30days")
+            }
+          >
+            30 Days
+          </button>
+
+          <button
+            className={
+              period === "90days"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              applyPeriod("90days")
+            }
+          >
+            90 Days
+          </button>
+
+          <button
+            className={
+              period === "custom"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setPeriod("custom")
+            }
+          >
+            Custom
+          </button>
+        </div>
+
+        <div className="report-custom-dates">
+          <label>
+            <span>From</span>
+
+            <input
+              type="date"
+              value={startDate}
+              onChange={(event) => {
+                setPeriod("custom");
+                setStartDate(
+                  event.target.value
+                );
+              }}
+            />
+          </label>
+
+          <label>
+            <span>To</span>
+
+            <input
+              type="date"
+              value={endDate}
+              onChange={(event) => {
+                setPeriod("custom");
+                setEndDate(
+                  event.target.value
+                );
+              }}
+            />
+          </label>
+        </div>
+      </section>
+
+      <section className="report-kpi-grid">
+        <div className="report-kpi premium-card">
+          <span>REVENUE</span>
+
+          <strong>
+            {formatMoney(
+              totals.revenue
+            )}
+          </strong>
+
+          <small>
+            Total sales value
+          </small>
+        </div>
+
+        <div className="report-kpi premium-card">
+          <span>GROSS PROFIT</span>
+
+          <strong className="record-profit">
+            +
+            {formatMoney(
+              totals.grossProfit
+            )}
+          </strong>
+
+          <small>
+            Revenue minus product cost
+          </small>
+        </div>
+
+        <div className="report-kpi premium-card">
+          <span>EXPENSES</span>
+
+          <strong className="expense-report-value">
+            {formatMoney(
+              totals.expenseTotal
+            )}
+          </strong>
+
+          <small>
+            Business operating costs
+          </small>
+        </div>
+
+        <div className="report-kpi premium-card">
+          <span>NET PROFIT</span>
+
+          <strong
+            className={
+              totals.netProfit >= 0
+                ? "record-profit"
+                : "record-loss"
+            }
+          >
+            {totals.netProfit >= 0
+              ? "+"
+              : "-"}
+
+            {formatMoney(
+              Math.abs(
+                totals.netProfit
+              )
+            )}
+          </strong>
+
+          <small>
+            Gross profit − expenses
+          </small>
+        </div>
+      </section>
+
+      <div className="reports-main-grid">
+        <section className="report-chart-card premium-card">
+          <div className="panel-heading">
+            <div>
+              <div className="mini-label">
+                SALES TREND
+              </div>
+
+              <h2>
+                Revenue performance
+              </h2>
+            </div>
+
+            <span className="report-range-label">
+              {startDate} → {endDate}
+            </span>
+          </div>
+
+          <div className="report-bars">
+            {dailyPerformance.length ===
+            0 ? (
+              <div className="report-no-data">
+                No sales data for this period.
+              </div>
+            ) : (
+              dailyPerformance.map(
+                (day) => {
+                  const height =
+                    Math.max(
+                      (day.value /
+                        maxDailySales) *
+                        100,
+                      day.value
+                        ? 4
+                        : 1
+                    );
+
+                  return (
+                    <div
+                      className="report-bar-column"
+                      key={day.date}
+                    >
+                      <div className="report-bar-value">
+                        {day.value
+                          ? formatMoney(
+                              day.value
+                            )
+                          : ""}
+                      </div>
+
+                      <div className="report-bar-track">
+                        <div
+                          className="report-bar"
+                          style={{
+                            height: `${height}%`,
+                          }}
+                        />
+                      </div>
+
+                      <span>
+                        {day.date.slice(
+                          5
+                        )}
+                      </span>
+                    </div>
+                  );
+                }
+              )
+            )}
+          </div>
+        </section>
+
+        <section className="report-summary-card premium-card">
+          <div className="panel-heading">
+            <div>
+              <div className="mini-label">
+                PROFITABILITY
+              </div>
+
+              <h2>
+                Financial summary
+              </h2>
+            </div>
+          </div>
+
+          <div className="report-summary-lines">
+            <div>
+              <span>Revenue</span>
+              <strong>
+                {formatMoney(
+                  totals.revenue
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>Product cost</span>
+              <strong>
+                -{" "}
+                {formatMoney(
+                  totals.cost
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>Gross profit</span>
+              <strong className="record-profit">
+                +{" "}
+                {formatMoney(
+                  totals.grossProfit
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>Expenses</span>
+              <strong className="expense-report-value">
+                -{" "}
+                {formatMoney(
+                  totals.expenseTotal
+                )}
+              </strong>
+            </div>
+
+            <div className="report-net-line">
+              <span>Net profit</span>
+
+              <strong
+                className={
+                  totals.netProfit >=
+                  0
+                    ? "record-profit"
+                    : "record-loss"
+                }
+              >
+                {totals.netProfit >=
+                0
+                  ? "+ "
+                  : "- "}
+
+                {formatMoney(
+                  Math.abs(
+                    totals.netProfit
+                  )
+                )}
+              </strong>
+            </div>
+          </div>
+
+          <div className="report-margin">
+            <div>
+              <span>
+                Gross margin
+              </span>
+
+              <strong>
+                {totals.margin.toFixed(
+                  1
+                )}
+                %
+              </strong>
+            </div>
+
+            <div className="report-margin-track">
+              <div
+                style={{
+                  width: `${Math.min(
+                    Math.max(
+                      totals.margin,
+                      0
+                    ),
+                    100
+                  )}%`,
+                }}
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div className="reports-performance-grid">
+        <section className="report-products-card premium-card">
+          <div className="panel-heading">
+            <div>
+              <div className="mini-label">
+                PRODUCT PERFORMANCE
+              </div>
+
+              <h2>
+                Best-selling products
+              </h2>
+            </div>
+          </div>
+
+          {productPerformance.length ===
+          0 ? (
+            <div className="report-no-data">
+              No product sales in this period.
+            </div>
+          ) : (
+            <div className="report-product-list">
+              {productPerformance
+                .slice(0, 5)
+                .map(
+                  (product, index) => (
+                    <div
+                      className="report-product-row"
+                      key={
+                        product.name
+                      }
+                    >
+                      <div className="report-rank">
+                        {index + 1}
+                      </div>
+
+                      <div className="report-product-name">
+                        <strong>
+                          {
+                            product.name
+                          }
+                        </strong>
+
+                        <span>
+                          {
+                            product.units
+                          }{" "}
+                          units sold
+                        </span>
+                      </div>
+
+                      <div className="report-product-money">
+                        <strong>
+                          {formatMoney(
+                            product.revenue
+                          )}
+                        </strong>
+
+                        <span>
+                          +
+                          {formatMoney(
+                            product.profit
+                          )}{" "}
+                          profit
+                        </span>
+                      </div>
+                    </div>
+                  )
+                )}
+            </div>
+          )}
+        </section>
+
+        <section className="report-insights-card premium-card">
+          <div className="panel-heading">
+            <div>
+              <div className="mini-label">
+                BUSINESS INSIGHTS
+              </div>
+
+              <h2>
+                What to watch
+              </h2>
+            </div>
+          </div>
+
+          <div className="report-insight-list">
+            <div className="report-insight">
+              <div className="report-insight-icon">
+                ↑
+              </div>
+
+              <div>
+                <strong>
+                  Top performer
+                </strong>
+
+                <p>
+                  {bestSeller
+                    ? `${bestSeller.name} is your best-selling product with ${bestSeller.units} units sold.`
+                    : "Record sales to identify your best-performing product."}
+                </p>
+              </div>
+            </div>
+
+            <div className="report-insight">
+              <div className="report-insight-icon">
+                ₦
+              </div>
+
+              <div>
+                <strong>
+                  Profit margin
+                </strong>
+
+                <p>
+                  Your current gross margin is{" "}
+                  {totals.margin.toFixed(
+                    1
+                  )}
+                  % for this period.
+                </p>
+              </div>
+            </div>
+
+            <div className="report-insight">
+              <div className="report-insight-icon warning">
+                !
+              </div>
+
+              <div>
+                <strong>
+                  Slow-moving stock
+                </strong>
+
+                <p>
+                  {slowProducts.length
+                    ? slowProducts
+                        .map(
+                          (product) =>
+                            product.name
+                        )
+                        .join(", ")
+                    : "No slow-moving products identified."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section className="report-period-footer premium-card">
+        <span>REPORT PERIOD</span>
+
+        <strong>
+          {startDate} → {endDate}
+        </strong>
+
+        <small>
+          {filteredSales.length} sales •{" "}
+          {filteredExpenses.length} expenses •{" "}
+          {totals.unitsSold} units sold
+        </small>
+      </section>
+    </div>
+  );
+}
+
+export default Reports;
+============================================================
+END FILE: src/components/Reports.jsx
+============================================================
+
+============================================================
+FILE: src/components/Sales.jsx
+============================================================
+import { useMemo, useState } from "react";
+
+import {
+  getSales,
+  saveSales,
+  getProducts,
+  saveProducts,
+} from "../utils/uptrendStore";
+
+function Sales({ onEditSale }) {
+  const [sales, setSales] = useState(getSales);
+
+  const [search, setSearch] = useState("");
+  const [dateFilter, setDateFilter] =
+    useState("all");
+
+  const [customStart, setCustomStart] =
+    useState("");
+
+  const [customEnd, setCustomEnd] =
+    useState("");
+
+  const formatMoney = (value) =>
+    `₦${Number(value || 0).toLocaleString()}`;
+
+  const filteredSales = useMemo(() => {
+    return sales.filter((sale) => {
+      const searchText =
+        search.trim().toLowerCase();
+
+      const matchesSearch =
+        !searchText ||
+        sale.product
+          ?.toLowerCase()
+          .includes(searchText);
+
+      if (!matchesSearch) {
+        return false;
+      }
+
+      if (dateFilter === "all") {
+        return true;
+      }
+
+      if (dateFilter === "custom") {
+        if (
+          customStart &&
+          sale.date < customStart
+        ) {
+          return false;
+        }
+
+        if (
+          customEnd &&
+          sale.date > customEnd
+        ) {
+          return false;
+        }
+
+        return true;
+      }
+
+      const today = new Date();
+
+      const saleDate = new Date(
+        `${sale.date}T00:00:00`
+      );
+
+      if (dateFilter === "today") {
+        return (
+          sale.date ===
+          today
+            .toISOString()
+            .split("T")[0]
+        );
+      }
+
+      const daysAgo =
+        dateFilter === "7days"
+          ? 7
+          : dateFilter === "30days"
+          ? 30
+          : 0;
+
+      if (daysAgo) {
+        const start = new Date(today);
+
+        start.setHours(0, 0, 0, 0);
+
+        start.setDate(
+          start.getDate() - daysAgo + 1
+        );
+
+        return saleDate >= start;
+      }
+
+      return true;
+    });
+  }, [
+    sales,
+    search,
+    dateFilter,
+    customStart,
+    customEnd,
+  ]);
+
+  const totals = useMemo(() => {
+    const totalSales =
+      filteredSales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(
+            sale.totalSelling || 0
+          ),
+        0
+      );
+
+    const grossProfit =
+      filteredSales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(
+            sale.grossProfit || 0
+          ),
+        0
+      );
+
+    const quantity =
+      filteredSales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(sale.quantity || 0),
+        0
+      );
+
+    return {
+      totalSales,
+      grossProfit,
+      quantity,
+      transactions:
+        filteredSales.length,
+    };
+  }, [filteredSales]);
+
+  const handleDelete = (sale) => {
+    const confirmed =
+      window.confirm(
+        `Delete the ${sale.product} sale?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const products = getProducts();
+
+    const updatedProducts =
+      products.map((product) =>
+        product.id === sale.productId
+          ? {
+              ...product,
+              stock:
+                Number(product.stock) +
+                Number(sale.quantity),
+            }
+          : product
+      );
+
+    const updatedSales =
+      sales.filter(
+        (item) => item.id !== sale.id
+      );
+
+    saveProducts(updatedProducts);
+    saveSales(updatedSales);
+
+    setSales(updatedSales);
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setDateFilter("all");
+    setCustomStart("");
+    setCustomEnd("");
+  };
+
+  return (
+    <div className="sales-page">
+      <div className="sales-page-top">
+        <div>
+          <div className="mini-label">
+            TRANSACTION CENTER
+          </div>
+
+          <h2>Sales</h2>
+
+          <p>
+            Search, review and manage every
+            recorded sale.
+          </p>
+        </div>
+      </div>
+
+      <section className="sales-overview">
+        <div className="sales-overview-card premium-card">
+          <span>FILTERED SALES</span>
+
+          <strong>
+            {formatMoney(
+              totals.totalSales
+            )}
+          </strong>
+
+          <small>
+            Total sales value
+          </small>
+        </div>
+
+        <div className="sales-overview-card premium-card">
+          <span>GROSS PROFIT</span>
+
+          <strong className="record-profit">
+            +
+            {formatMoney(
+              totals.grossProfit
+            )}
+          </strong>
+
+          <small>
+            Before expenses
+          </small>
+        </div>
+
+        <div className="sales-overview-card premium-card">
+          <span>UNITS SOLD</span>
+
+          <strong>
+            {totals.quantity}
+          </strong>
+
+          <small>
+            Total quantity
+          </small>
+        </div>
+
+        <div className="sales-overview-card premium-card">
+          <span>TRANSACTIONS</span>
+
+          <strong>
+            {totals.transactions}
+          </strong>
+
+          <small>
+            Matching records
+          </small>
+        </div>
+      </section>
+
+      <section className="sales-filter-card premium-card">
+        <div className="sales-search">
+          <span>⌕</span>
+
+          <input
+            type="search"
+            placeholder="Search product..."
+            value={search}
+            onChange={(event) =>
+              setSearch(
+                event.target.value
+              )
+            }
+          />
+        </div>
+
+        <div className="sales-filter-buttons">
+          {[
+            ["all", "All"],
+            ["today", "Today"],
+            ["7days", "7 Days"],
+            ["30days", "30 Days"],
+            ["custom", "Custom"],
+          ].map(([value, label]) => (
+            <button
+              key={value}
+              className={
+                dateFilter === value
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setDateFilter(value)
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {dateFilter === "custom" && (
+          <div className="custom-date-filter">
+            <label>
+              <span>From</span>
+
+              <input
+                type="date"
+                value={customStart}
+                onChange={(event) =>
+                  setCustomStart(
+                    event.target.value
+                  )
+                }
+              />
+            </label>
+
+            <label>
+              <span>To</span>
+
+              <input
+                type="date"
+                value={customEnd}
+                onChange={(event) =>
+                  setCustomEnd(
+                    event.target.value
+                  )
+                }
+              />
+            </label>
+          </div>
+        )}
+
+        {(search ||
+          dateFilter !== "all" ||
+          customStart ||
+          customEnd) && (
+          <button
+            className="clear-sales-filter"
+            onClick={clearFilters}
+          >
+            Clear filters
+          </button>
+        )}
+      </section>
+
+      <section className="sales-center-card premium-card">
+        <div className="panel-heading">
+          <div>
+            <div className="mini-label">
+              SALES LEDGER
+            </div>
+
+            <h2>Transactions</h2>
+          </div>
+
+          <span className="sales-count">
+            {filteredSales.length} result
+            {filteredSales.length === 1
+              ? ""
+              : "s"}
+          </span>
+        </div>
+
+        {filteredSales.length === 0 ? (
+          <div className="sales-center-empty">
+            <div>↗</div>
+
+            <strong>
+              No matching sales
+            </strong>
+
+            <span>
+              Try changing your search or
+              date filters.
+            </span>
+          </div>
+        ) : (
+          <>
+            <div className="sales-table-wrap">
+              <table className="sales-center-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Cost</th>
+                    <th>Sales</th>
+                    <th>Gross Profit</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredSales.map(
+                    (sale) => (
+                      <tr key={sale.id}>
+                        <td>{sale.date}</td>
+
+                        <td>
+                          <div className="sales-product-cell">
+                            <div className="sales-product-letter">
+                              {sale.product
+                                ?.charAt(0)
+                                .toUpperCase()}
+                            </div>
+
+                            <strong>
+                              {sale.product}
+                            </strong>
+                          </div>
+                        </td>
+
+                        <td>
+                          {sale.quantity}
+                        </td>
+
+                        <td>
+                          {formatMoney(
+                            sale.totalCost
+                          )}
+                        </td>
+
+                        <td>
+                          {formatMoney(
+                            sale.totalSelling
+                          )}
+                        </td>
+
+                        <td>
+                          <strong
+                            className={
+                              Number(
+                                sale.grossProfit
+                              ) < 0
+                                ? "record-loss"
+                                : "record-profit"
+                            }
+                          >
+                            {Number(
+                              sale.grossProfit
+                            ) < 0
+                              ? "-"
+                              : "+"}
+
+                            {formatMoney(
+                              Math.abs(
+                                Number(
+                                  sale.grossProfit
+                                )
+                              )
+                            )}
+                          </strong>
+                        </td>
+
+                        <td>
+                          <div className="sales-center-actions">
+                            <button
+                              className="sales-edit-button"
+                              onClick={() =>
+                                onEditSale(
+                                  sale
+                                )
+                              }
+                            >
+                              Edit
+                            </button>
+
+                            <button
+                              className="sales-delete-button"
+                              onClick={() =>
+                                handleDelete(
+                                  sale
+                                )
+                              }
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="sales-mobile-list">
+              {filteredSales.map(
+                (sale) => (
+                  <article
+                    className="sales-mobile-card"
+                    key={sale.id}
+                  >
+                    <div className="sales-mobile-top">
+                      <div className="sales-product-cell">
+                        <div className="sales-product-letter">
+                          {sale.product
+                            ?.charAt(0)
+                            .toUpperCase()}
+                        </div>
+
+                        <div>
+                          <strong>
+                            {sale.product}
+                          </strong>
+
+                          <span>
+                            {sale.date}
+                          </span>
+                        </div>
+                      </div>
+
+                      <strong className="record-profit">
+                        +
+                        {formatMoney(
+                          sale.grossProfit
+                        )}
+                      </strong>
+                    </div>
+
+                    <div className="sales-mobile-details">
+                      <div>
+                        <span>Quantity</span>
+
+                        <strong>
+                          {sale.quantity}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>Sales</span>
+
+                        <strong>
+                          {formatMoney(
+                            sale.totalSelling
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>Cost</span>
+
+                        <strong>
+                          {formatMoney(
+                            sale.totalCost
+                          )}
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="sales-mobile-actions">
+                      <button
+                        onClick={() =>
+                          onEditSale(
+                            sale
+                          )
+                        }
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        className="sales-delete-button"
+                        onClick={() =>
+                          handleDelete(
+                            sale
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </article>
+                )
+              )}
+            </div>
+          </>
+        )}
+      </section>
+    </div>
+  );
+}
+
+export default Sales;
+============================================================
+END FILE: src/components/Sales.jsx
+============================================================
+
+============================================================
+FILE: src/components/Sidebar.jsx
+============================================================
+import { useEffect, useState } from "react";
+
+function Sidebar({
+  activePage,
+  setActivePage,
+  isOpen,
+  setIsOpen,
+}) {
+  const [visible, setVisible] = useState(false);
+
+  const navigation = [
+    {
+      id: "dashboard",
+      icon: "⌂",
+      label: "Dashboard",
+    },
+    {
+      id: "sales",
+      icon: "↗",
+      label: "Sales",
+      badge: "NEW",
+    },
+    {
+      id: "record",
+      icon: "＋",
+      label: "Record Sale",
+    },
+    {
+  id: "expenses",
+  icon: "↓",
+  label: "Expenses",
+},
+    {
+      id: "products",
+      icon: "▣",
+      label: "Products",
+    },
+    {
+      id: "reports",
+      icon: "▤",
+      label: "Reports",
+    },
+    {
+  id: "finance",
+  icon: "₦",
+  label: "Finance",
+},
+  ];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(true);
+    }, 80);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleNavigation = (page) => {
+    setActivePage(page);
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      {isOpen && (
+        <div
+          className="mobile-backdrop"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`command-sidebar ${
+          isOpen ? "open" : ""
+        } ${visible ? "sidebar-visible" : ""}`}
+      >
+        {/* ================================
+            BRAND
+        ================================= */}
+
+        <div className="sidebar-brand">
+          <div className="brand-symbol">
+            <span>U</span>
+            <i />
+          </div>
+
+          <div className="brand-copy">
+            <strong>UpTrend</strong>
+            <span>Business Manager</span>
+          </div>
+
+          <button
+            className="close-sidebar"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close menu"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* ================================
+            BUSINESS ACCOUNT
+        ================================= */}
+
+        <div className="business-card">
+          <div className="business-logo">
+            U
+          </div>
+
+          <div>
+            <strong>My Business</strong>
+            <span>Business account</span>
+          </div>
+
+          <div className="online-dot" />
+        </div>
+
+        {/* ================================
+            MAIN NAVIGATION
+        ================================= */}
+
+        <div className="side-label">
+          MAIN MENU
+        </div>
+
+        <nav className="command-nav">
+          {navigation.map((item, index) => (
+            <button
+              key={item.id}
+              className={
+                activePage === item.id
+                  ? "selected"
+                  : ""
+              }
+              onClick={() =>
+                handleNavigation(item.id)
+              }
+              style={{
+                animationDelay: `${
+                  0.12 + index * 0.07
+                }s`,
+              }}
+            >
+              <span className="nav-symbol">
+                {item.icon}
+              </span>
+
+              <span className="nav-label">
+                {item.label}
+              </span>
+
+              {item.badge && (
+                <span className="nav-alert">
+                  {item.badge}
+                </span>
+              )}
+
+              <span className="nav-active-glow" />
+            </button>
+          ))}
+        </nav>
+
+        {/* ================================
+            SIDEBAR FOOTER
+        ================================= */}
+
+        <div className="sidebar-footer">
+          <button className="settings-link">
+            <span className="nav-symbol">
+              ⚙
+            </span>
+
+            <span>Settings</span>
+          </button>
+
+          <div className="profile">
+            <div className="profile-avatar">
+              ME
+            </div>
+
+            <div>
+              <strong>My Account</strong>
+              <span>Administrator</span>
+            </div>
+
+            <span className="profile-arrow">
+              →
+            </span>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+export default Sidebar;
+============================================================
+END FILE: src/components/Sidebar.jsx
+============================================================
+
+============================================================
+FILE: src/main.jsx
+============================================================
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);
+
+============================================================
+END FILE: src/main.jsx
+============================================================
+
+============================================================
+FILE: src/utils/financeStore.js
+============================================================
+const FINANCE_KEY = "uptrend_finance";
+
+const DEFAULT_FINANCE = {
+  openingBalance: 0,
+};
+
+export function getFinance() {
+  try {
+    const saved = localStorage.getItem(FINANCE_KEY);
+
+    if (saved) {
+      return JSON.parse(saved);
+    }
+
+    localStorage.setItem(
+      FINANCE_KEY,
+      JSON.stringify(DEFAULT_FINANCE)
+    );
+
+    return DEFAULT_FINANCE;
+  } catch {
+    return DEFAULT_FINANCE;
+  }
+}
+
+export function saveFinance(finance) {
+  localStorage.setItem(
+    FINANCE_KEY,
+    JSON.stringify(finance)
+  );
+}
+
+export function calculateCashFlow(
+  sales = [],
+  expenses = [],
+  finance = DEFAULT_FINANCE
+) {
+  const cashIn = sales.reduce(
+    (total, sale) =>
+      total + Number(
+        sale.totalSelling ??
+        sale.totalSales ??
+        0
+      ),
+    0
+  );
+
+  const cashOut = expenses.reduce(
+    (total, expense) =>
+      total + Number(expense.amount || 0),
+    0
+  );
+
+  const openingBalance = Number(
+    finance.openingBalance || 0
+  );
+
+  const balance =
+    openingBalance +
+    cashIn -
+    cashOut;
+
+  return {
+    openingBalance,
+    cashIn,
+    cashOut,
+    balance,
+  };
+}
+============================================================
+END FILE: src/utils/financeStore.js
+============================================================
+
+============================================================
+FILE: src/utils/uptrendStore.js
+============================================================
+const PRODUCTS_KEY = "uptrend_products";
+const SALES_KEY = "uptrend_sales";
+
+const DEFAULT_PRODUCTS = [
+  {
+    id: "product-1",
+    name: "Face Cap",
+    costPrice: 1000,
+    sellingPrice: 2000,
+    stock: 24,
+    lowStockAt: 5,
+  },
+  {
+    id: "product-2",
+    name: "Head Warmer",
+    costPrice: 1500,
+    sellingPrice: 3000,
+    stock: 18,
+    lowStockAt: 5,
+  },
+  {
+    id: "product-3",
+    name: "Bucket Hat",
+    costPrice: 2500,
+    sellingPrice: 5000,
+    stock: 12,
+    lowStockAt: 5,
+  },
+  {
+    id: "product-4",
+    name: "Socks",
+    costPrice: 1200,
+    sellingPrice: 2500,
+    stock: 30,
+    lowStockAt: 8,
+  },
+  {
+    id: "product-5",
+    name: "Clothes",
+    costPrice: 5000,
+    sellingPrice: 8500,
+    stock: 8,
+    lowStockAt: 5,
+  },
+];
+
+export function getProducts() {
+  try {
+    const saved = localStorage.getItem(PRODUCTS_KEY);
+
+    if (saved) {
+      return JSON.parse(saved);
+    }
+
+    localStorage.setItem(
+      PRODUCTS_KEY,
+      JSON.stringify(DEFAULT_PRODUCTS)
+    );
+
+    return DEFAULT_PRODUCTS;
+  } catch {
+    return DEFAULT_PRODUCTS;
+  }
+}
+
+export function saveProducts(products) {
+  localStorage.setItem(
+    PRODUCTS_KEY,
+    JSON.stringify(products)
+  );
+}
+
+export function getSales() {
+  try {
+    const saved = localStorage.getItem(SALES_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveSales(sales) {
+  localStorage.setItem(
+    SALES_KEY,
+    JSON.stringify(sales)
+  );
+}
+
+export function generateId(prefix = "item") {
+  return `${prefix}-${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2, 8)}`;
+}
+============================================================
+END FILE: src/utils/uptrendStore.js
+============================================================

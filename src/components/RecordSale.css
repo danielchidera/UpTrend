@@ -1,0 +1,893 @@
+/* =========================================================
+   RECORD SALE — PREMIUM STYLING
+========================================================= */
+
+.record-page {
+  animation: premiumReveal 0.65s ease both;
+}
+
+.record-page-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.record-page-top h2 {
+  margin: 7px 0;
+  font-size: 28px;
+  letter-spacing: -1px;
+}
+
+.record-page-top p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.record-back-button {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.record-back-button:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+  transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   RECORD LAYOUT
+========================================================= */
+
+.record-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.65fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.record-form-card,
+.sale-summary {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.025),
+      rgba(255, 255, 255, 0.008)
+    ),
+    var(--panel);
+  box-shadow:
+    0 18px 55px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.record-form-card {
+  padding: 25px;
+}
+
+.record-form-card::before,
+.sale-summary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(74, 222, 128, 0.3),
+      transparent
+    );
+}
+
+
+/* =========================================================
+   FORM HEADER
+========================================================= */
+
+.record-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.record-heading-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.record-card-heading div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.record-card-heading strong {
+  font-size: 13px;
+}
+
+.record-card-heading span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   FORM FIELDS
+========================================================= */
+
+.record-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.record-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.record-field > span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.record-field > span small {
+  color: var(--muted-2);
+  font-size: 8px;
+  font-weight: 500;
+}
+
+.record-field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.record-field input,
+.record-field select {
+  width: 100%;
+  height: 45px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  padding: 0 13px;
+  font-size: 10px;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.record-field input::placeholder {
+  color: var(--muted-2);
+}
+
+.record-field input:hover,
+.record-field select:hover {
+  border-color: var(--line-strong);
+}
+
+.record-field input:focus,
+.record-field select:focus {
+  border-color: rgba(74, 222, 128, 0.45);
+  background: rgba(74, 222, 128, 0.025);
+  box-shadow:
+    0 0 0 3px rgba(74, 222, 128, 0.055);
+}
+
+.record-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 50%,
+      var(--muted) 50%
+    ),
+    linear-gradient(
+      135deg,
+      var(--muted) 50%,
+      transparent 50%
+    );
+  background-position:
+    calc(100% - 17px) 19px,
+    calc(100% - 12px) 19px;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 35px;
+}
+
+.record-field select option {
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+
+/* =========================================================
+   MONEY INPUT
+========================================================= */
+
+.money-input {
+  position: relative;
+}
+
+.money-input b {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--green);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.money-input input {
+  padding-left: 29px;
+}
+
+
+/* =========================================================
+   FORM BUTTONS
+========================================================= */
+
+.record-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.record-cancel {
+  height: 40px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.record-cancel:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+
+.record-submit {
+  min-width: 125px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--green);
+  color: #061009;
+  font-size: 9px;
+  font-weight: 800;
+  box-shadow:
+    0 10px 25px rgba(74, 222, 128, 0.1);
+  transition: 0.25s ease;
+}
+
+.record-submit:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 35px rgba(74, 222, 128, 0.2);
+}
+
+.record-submit b {
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   SUCCESS MESSAGE
+========================================================= */
+
+.record-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 11px 13px;
+  border: 1px solid rgba(74, 222, 128, 0.12);
+  border-radius: 10px;
+  background: rgba(74, 222, 128, 0.055);
+  color: var(--green);
+  font-size: 9px;
+  animation: premiumReveal 0.45s ease both;
+}
+
+.record-success span {
+  width: 19px;
+  height: 19px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(74, 222, 128, 0.12);
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   SALE SUMMARY
+========================================================= */
+
+.sale-summary {
+  padding: 23px;
+  position: sticky;
+  top: 18px;
+}
+
+.sale-summary h3 {
+  margin: 6px 0 20px;
+  font-size: 17px;
+  letter-spacing: -0.4px;
+}
+
+.summary-product {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.summary-product-icon {
+  width: 37px;
+  height: 37px;
+  flex: 0 0 37px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.summary-product > div:last-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summary-product strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+}
+
+.summary-product span {
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   SUMMARY DETAILS
+========================================================= */
+
+.summary-lines {
+  margin-top: 18px;
+}
+
+.summary-lines > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.summary-lines span {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.summary-lines strong {
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+}
+
+.summary-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 17px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.summary-total span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.summary-total strong {
+  font-size: 19px;
+  letter-spacing: -0.5px;
+}
+
+
+/* =========================================================
+   PROFIT
+========================================================= */
+
+.summary-profit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 12px 13px;
+  border: 1px solid rgba(74, 222, 128, 0.1);
+  border-radius: 11px;
+  background: rgba(74, 222, 128, 0.045);
+}
+
+.summary-profit span {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.summary-profit strong {
+  color: var(--green);
+  font-size: 12px;
+}
+
+.summary-profit.negative {
+  border-color: rgba(251, 113, 133, 0.12);
+  background: rgba(251, 113, 133, 0.045);
+}
+
+.summary-profit.negative strong {
+  color: var(--red);
+}
+
+
+/* =========================================================
+   SUMMARY NOTE
+========================================================= */
+
+.summary-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.summary-note span {
+  color: var(--gold);
+  font-size: 11px;
+}
+
+.summary-note p {
+  margin: 0;
+  color: var(--muted-2);
+  font-size: 8px;
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   RECORD SALE RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+  .record-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sale-summary {
+    position: relative;
+    top: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .record-page-top {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  .record-page-top h2 {
+    font-size: 23px;
+  }
+
+  .record-back-button {
+    width: 100%;
+  }
+
+  .record-form-card {
+    padding: 18px;
+    border-radius: 19px;
+  }
+
+  .record-field-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .record-fields {
+    gap: 15px;
+  }
+
+  .record-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .record-cancel,
+  .record-submit {
+    width: 100%;
+  }
+
+  .sale-summary {
+    padding: 19px;
+    border-radius: 19px;
+  }
+}
+
+
+
+/* =========================================
+   RECORD SALE — STOCK CONNECTION
+========================================= */
+
+.record-stock-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding: 11px 13px;
+  border: 1px solid rgba(74, 222, 128, 0.12);
+  border-radius: 11px;
+  background: rgba(74, 222, 128, 0.045);
+}
+
+.record-stock-info span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.record-stock-info strong {
+  color: #86efac;
+  font-size: 13px;
+}
+
+.record-error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 11px 13px;
+  border: 1px solid rgba(251, 113, 133, 0.18);
+  border-radius: 11px;
+  color: #fda4af;
+  background: rgba(251, 113, 133, 0.055);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.record-error span {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(251, 113, 133, 0.7);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+@media (max-width: 620px) {
+  .record-stock-info {
+    padding: 10px 11px;
+  }
+
+  .record-error {
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   UPTREND — BATCH SALES RECORDING
+========================================================= */
+
+.batch-sales-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.batch-sale-row {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.batch-sale-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 17px;
+}
+
+.batch-sale-header strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 15px;
+}
+
+.batch-remove-button {
+  border: 1px solid rgba(251, 113, 133, 0.2);
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: rgba(251, 113, 133, 0.05);
+  color: var(--red);
+  font-size: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.batch-remove-button:hover {
+  border-color: rgba(251, 113, 133, 0.35);
+  background: rgba(251, 113, 133, 0.09);
+}
+
+.batch-row-profit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(74, 222, 128, 0.08);
+  border-radius: 11px;
+  background: rgba(74, 222, 128, 0.035);
+}
+
+.batch-row-profit span {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.batch-row-profit strong {
+  font-size: 10px;
+}
+
+.batch-add-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+  padding: 14px;
+  border: 1px dashed rgba(74, 222, 128, 0.28);
+  border-radius: 12px;
+  background: rgba(74, 222, 128, 0.035);
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.batch-add-button span {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.batch-add-button:hover {
+  border-color: rgba(74, 222, 128, 0.45);
+  background: rgba(74, 222, 128, 0.07);
+  transform: translateY(-1px);
+}
+
+.batch-summary {
+  margin-top: 17px;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.batch-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.batch-summary-grid > div {
+  min-width: 0;
+}
+
+.batch-summary-grid span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.batch-summary-grid strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   BATCH SALES — MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+  .batch-sale-row {
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .batch-sale-header {
+    margin-bottom: 14px;
+  }
+
+  .batch-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .batch-summary-grid strong {
+    font-size: 13px;
+  }
+
+  .batch-add-button {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 420px) {
+  .batch-summary {
+    padding: 14px;
+  }
+
+  .batch-summary-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .batch-summary-grid strong {
+    font-size: 12px;
+  }
+
+  .batch-sale-header strong {
+    font-size: 14px;
+  }
+}
+/* =========================================================
+   DAILY FINANCIAL SUMMARY
+   ========================================================= */
+
+.record-daily-financial-summary {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid rgba(124, 92, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(124, 92, 255, 0.035);
+}
+
+.record-daily-date {
+  margin-top: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.58;
+}
+
+.record-daily-financial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.record-daily-financial-grid > div {
+  padding: 15px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.record-daily-financial-grid span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+}
+
+.record-daily-financial-grid strong {
+  display: block;
+  font-size: 18px;
+}
+
+.record-daily-financial-grid .record-loss {
+  color: var(--red);
+}
+
+.record-daily-financial-grid .record-profit {
+  color: var(--green);
+}
+
+@media (max-width: 800px) {
+  .record-daily-financial-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .record-daily-financial-summary {
+    padding: 16px;
+  }
+
+  .record-daily-financial-grid {
+    grid-template-columns: 1fr;
+  }
+}

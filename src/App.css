@@ -1,0 +1,1309 @@
+/* =========================================================
+   UPTREND — PREMIUM MOTION DESIGN SYSTEM
+========================================================= */
+
+:root {
+  --bg: #070a09;
+  --bg-soft: #0b100e;
+  --panel: #101613;
+  --panel-2: #141b17;
+  --panel-3: #19221d;
+
+  --line: rgba(255, 255, 255, 0.075);
+  --line-strong: rgba(255, 255, 255, 0.13);
+
+  --text: #f4f8f5;
+  --muted: #8d9b93;
+  --muted-2: #65736b;
+
+  --green: #4ade80;
+  --green-bright: #74f7a0;
+  --green-dark: #1f9d55;
+  --green-soft: rgba(74, 222, 128, 0.1);
+
+  --gold: #d9b86c;
+  --orange: #f59e0b;
+  --red: #fb7185;
+
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  --radius: 24px;
+
+  --nav-background: rgba(16, 22, 19, 0.94);
+}
+
+/* =========================================================
+   LIGHT THEME
+========================================================= */
+
+html[data-theme="light"] {
+  --bg: #f5f7f6;
+  --bg-soft: #eef2ef;
+  --panel: #ffffff;
+  --panel-2: #f1f4f2;
+  --panel-3: #e7ece9;
+
+  --line: rgba(15, 35, 25, 0.09);
+  --line-strong: rgba(15, 35, 25, 0.15);
+
+  --text: #17221c;
+  --muted: #68766e;
+  --muted-2: #89958e;
+
+  --green: #20a957;
+  --green-bright: #168b45;
+  --green-dark: #14783d;
+  --green-soft: rgba(32, 169, 87, 0.09);
+
+  --gold: #a77f29;
+  --orange: #d98500;
+  --red: #dc5368;
+
+  --shadow: 0 24px 70px rgba(24, 45, 34, 0.1);
+
+  --nav-background: rgba(255, 255, 255, 0.94);
+}
+
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   MAIN APP
+========================================================= */
+
+.command-app {
+  min-height: 100vh;
+
+  display: flex;
+
+  background:
+    radial-gradient(
+      circle at 75% -10%,
+      rgba(74, 222, 128, 0.075),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(74, 222, 128, 0.025),
+      transparent 28%
+    ),
+    var(--bg);
+
+  color: var(--text);
+}
+
+.command-main {
+  min-width: 0;
+  flex: 1;
+  margin-left: 270px;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.command-content {
+  max-width: 1500px;
+  margin: 0 auto;
+
+  padding: 34px 38px 50px;
+}
+
+
+/* =========================================================
+   INNER PAGES
+========================================================= */
+
+.inner-page {
+  min-height: 400px;
+
+  display: flex;
+  align-items: flex-start;
+
+  padding: 35px;
+
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+
+  background: var(--panel);
+
+  animation:
+    premiumReveal 0.6s ease both;
+}
+
+.page-intro h2 {
+  margin: 6px 0 8px;
+
+  font-size: 25px;
+}
+
+.page-intro p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   MOBILE NAV
+========================================================= */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+
+/* =========================================================
+   KEYFRAMES
+========================================================= */
+
+@keyframes premiumReveal {
+  from {
+    opacity: 0;
+    transform:
+      translateY(18px)
+      scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+@keyframes headerReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes balanceReveal {
+  from {
+    opacity: 0;
+    transform:
+      translateY(18px)
+      scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+@keyframes statReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes walletAppear {
+  from {
+    opacity: 0;
+    transform:
+      scale(0.6)
+      rotate(-15deg);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      scale(1)
+      rotate(0);
+  }
+}
+
+@keyframes walletFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes heroGlow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes orbFloat {
+  0%,
+  100% {
+    transform:
+      translate(0, 0)
+      rotate(0deg);
+  }
+
+  50% {
+    transform:
+      translate(-8px, 8px)
+      rotate(8deg);
+  }
+}
+
+@keyframes logoFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes logoPulse {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes onlinePulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.35);
+    opacity: 0.65;
+  }
+}
+
+@keyframes moneyPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes trendPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 rgba(74, 222, 128, 0);
+  }
+
+  50% {
+    box-shadow:
+      0 0 18px rgba(74, 222, 128, 0.15);
+  }
+}
+
+@keyframes chartDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes areaReveal {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes chartTraveler {
+  0% {
+    offset-distance: 0%;
+  }
+
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes travelerPulse {
+  0%,
+  100% {
+    r: 4;
+    opacity: 0.85;
+  }
+
+  50% {
+    r: 6;
+    opacity: 1;
+  }
+}
+
+@keyframes haloPulse {
+  0%,
+  100% {
+    r: 9;
+    opacity: 0.12;
+  }
+
+  50% {
+    r: 15;
+    opacity: 0.04;
+  }
+}
+
+@keyframes iconBounce {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.14) rotate(-4deg);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes activityReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ringReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.75) rotate(-45deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes insightFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes insightSweep {
+  0% {
+    left: -100px;
+  }
+
+  35%,
+  100% {
+    left: 120%;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+  .command-sidebar {
+    width: 235px;
+  }
+
+  .command-main {
+    margin-left: 235px;
+  }
+
+  .command-header {
+    padding: 0 25px;
+  }
+
+  .command-content {
+    padding: 28px 25px 45px;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+  .command-app {
+    display: block;
+
+    padding-bottom: 70px;
+  }
+
+  .command-main {
+    margin-left: 0;
+  }
+
+  .command-sidebar {
+    width: 280px;
+
+    transform: translateX(-100%);
+
+    transition:
+      transform 0.28s
+      cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .command-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .close-sidebar {
+    display: grid;
+    place-items: center;
+
+    margin-left: auto;
+
+    width: 30px;
+    height: 30px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: var(--panel-2);
+    color: var(--muted);
+
+    font-size: 18px;
+  }
+
+  .mobile-backdrop {
+    position: fixed;
+    z-index: 40;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+
+    animation:
+      backdropReveal 0.25s ease both;
+  }
+
+  .command-header {
+    height: 76px;
+
+    padding: 0 16px;
+  }
+
+  .mobile-menu {
+    width: 36px;
+    height: 36px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--line);
+    border-radius: 10px;
+
+    background: var(--panel);
+    color: var(--muted);
+
+    font-size: 17px;
+  }
+
+  .command-header h1 {
+    font-size: 17px;
+  }
+
+  .header-overline {
+    font-size: 7px;
+  }
+
+  .header-icon {
+    display: none;
+  }
+
+  .primary-action {
+    padding: 9px 11px;
+
+    font-size: 9px;
+  }
+
+  .command-content {
+    padding: 18px 14px 30px;
+  }
+
+  .hero-grid {
+    gap: 12px;
+  }
+
+  .money-hero,
+  .performance-panel {
+    min-height: auto;
+
+    border-radius: 19px;
+  }
+
+  .money-hero {
+    padding: 21px;
+  }
+
+  .hero-balance {
+    margin-top: 21px;
+
+    font-size: 32px;
+  }
+
+  .hero-bottom {
+    margin-top: 22px;
+  }
+
+  .performance-panel {
+    padding: 21px;
+  }
+
+  .line-chart {
+    height: 155px;
+  }
+
+  .line-chart svg {
+    height: 125px;
+  }
+
+  .quick-section {
+    margin-top: 25px;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr;
+
+    gap: 9px;
+  }
+
+  .quick-actions button {
+    padding: 13px;
+  }
+
+  .metrics-row {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 9px;
+  }
+
+  .metric-card {
+    padding: 13px;
+  }
+
+  .metric-icon {
+    width: 32px;
+    height: 32px;
+
+    flex-basis: 32px;
+  }
+
+  .bottom-grid {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+  .activity-panel,
+  .health-panel {
+    padding: 18px;
+  }
+
+  .insight-strip {
+    align-items: flex-start;
+
+    padding: 15px;
+  }
+
+  .insight-strip button {
+    display: none;
+  }
+
+  .inner-page {
+    min-height: 350px;
+
+    padding: 24px;
+
+    border-radius: 19px;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    z-index: 60;
+
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+
+    height: 58px;
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+
+    border: 1px solid var(--line-strong);
+    border-radius: 18px;
+
+    background:
+      var(--nav-background);
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    box-shadow: var(--shadow);
+
+    animation:
+      bottomNavReveal 0.7s ease 0.4s both;
+  }
+
+  .mobile-bottom-nav button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    border: 0;
+
+    background: transparent;
+    color: var(--muted-2);
+
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .mobile-bottom-nav button:active {
+    transform: translateY(-2px);
+  }
+
+  .mobile-bottom-nav span {
+    font-size: 15px;
+  }
+
+  .mobile-bottom-nav small {
+    font-size: 7px;
+  }
+
+  .mobile-bottom-nav button.active {
+    color: var(--green);
+  }
+
+  .mobile-bottom-nav button.active span {
+    animation:
+      navIconPop 0.35s ease;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 390px) {
+  .header-actions .primary-action {
+    font-size: 8px;
+    padding: 8px 9px;
+  }
+
+  .command-header h1 {
+    font-size: 15px;
+  }
+
+  .hero-balance {
+    font-size: 28px;
+  }
+
+  .metrics-row {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-amount strong {
+    font-size: 9px;
+  }
+}
+
+
+/* =========================================================
+   MOTION ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* =========================================================
+   EXTRA MOBILE KEYFRAMES
+========================================================= */
+
+@keyframes backdropReveal {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bottomNavReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes navIconPop {
+  0% {
+    transform: scale(0.8);
+  }
+
+  70% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+  .mobile-nav {
+    left: 7px !important;
+    right: 7px !important;
+    bottom: 7px !important;
+    height: 60px;
+    border-radius: 17px;
+  }
+
+  .mobile-nav button {
+    height: 48px;
+  }
+
+}
+
+
+
+/* =========================================================
+   UPTREND — SHARP VISUAL SYSTEM
+   BLACK / WHITE / GREEN / GOLD
+========================================================= */
+
+:root {
+  --bg: #030504;
+  --bg-soft: #070a08;
+  --panel: #0b100d;
+  --panel-2: #101712;
+  --panel-3: #151d18;
+
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.22);
+
+  --text: #ffffff;
+  --muted: #b7c2bb;
+  --muted-2: #89958d;
+
+  --green: #45e886;
+  --green-bright: #79f7a7;
+  --green-dark: #169a4e;
+  --green-soft: rgba(69, 232, 134, 0.12);
+
+  --gold: #e7c56b;
+  --orange: #f3a51a;
+  --red: #ff7187;
+
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+}
+
+html[data-theme="light"] {
+  --bg: #f4f7f5;
+  --bg-soft: #edf2ef;
+  --panel: #ffffff;
+  --panel-2: #f5f8f6;
+  --panel-3: #e9efeb;
+
+  --line: rgba(16, 31, 23, 0.11);
+  --line-strong: rgba(16, 31, 23, 0.20);
+
+  --text: #101914;
+  --muted: #5d6c63;
+  --muted-2: #7e8b84;
+
+  --green: #159a50;
+  --green-bright: #25bd68;
+  --green-dark: #08783b;
+  --green-soft: rgba(21, 154, 80, 0.10);
+
+  --gold: #a8750e;
+  --orange: #c77b00;
+  --red: #d94e67;
+
+  --shadow: 0 22px 65px rgba(16, 31, 23, 0.10);
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+.dashboard-page {
+  color: var(--text);
+}
+
+.dashboard-page h1,
+.dashboard-page h2,
+.dashboard-page h3,
+.dashboard-page strong {
+  color: var(--text);
+}
+
+.dashboard-page p,
+.dashboard-page small {
+  color: var(--muted);
+}
+
+.dashboard-page .eyebrow {
+  color: var(--green);
+}
+
+/* =========================================================
+   CASH AT HAND
+========================================================= */
+
+.hero-balance-card {
+  border-color: rgba(69, 232, 134, 0.34);
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(69, 232, 134, 0.18),
+      transparent 52%
+    ),
+    linear-gradient(
+      145deg,
+      #12251a 0%,
+      #050805 100%
+    );
+
+  box-shadow:
+    0 24px 55px rgba(0, 0, 0, 0.38),
+    inset 0 1px rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="light"] .hero-balance-card {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21, 154, 80, 0.14),
+      transparent 55%
+    ),
+    #ffffff;
+
+  border-color: rgba(21, 154, 80, 0.25);
+
+  box-shadow:
+    0 18px 45px rgba(16, 31, 23, 0.10);
+}
+
+.hero-balance-top > span {
+  color: var(--gold);
+}
+
+.hero-balance-edit {
+  border-color: var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+.hero-balance-flow {
+  border-top-color: var(--line);
+}
+
+.hero-balance-flow span {
+  color: var(--green);
+}
+
+/* =========================================================
+   KPI CARDS
+========================================================= */
+
+.dashboard-kpi-card {
+  border-color: var(--line);
+  background: var(--panel);
+
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.18);
+}
+
+html[data-theme="light"] .dashboard-kpi-card {
+  box-shadow:
+    0 12px 30px rgba(16, 31, 23, 0.07);
+}
+
+.dashboard-kpi-card:hover {
+  border-color: rgba(69, 232, 134, 0.42);
+}
+
+.dashboard-kpi-card > span {
+  color: var(--gold);
+}
+
+.dashboard-kpi-card > strong {
+  color: var(--text);
+}
+
+.dashboard-kpi-card > small {
+  color: var(--muted);
+}
+
+/* =========================================================
+   MONEY FLOW
+========================================================= */
+
+.dashboard-money-flow {
+  border-color: var(--line);
+  background: var(--panel);
+
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.16);
+}
+
+html[data-theme="light"] .dashboard-money-flow {
+  box-shadow:
+    0 12px 30px rgba(16, 31, 23, 0.07);
+}
+
+.money-flow-item {
+  border-color: var(--line);
+  background: var(--panel-2);
+}
+
+.money-flow-icon {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.money-flow-out .money-flow-icon {
+  background: rgba(231, 197, 107, 0.14);
+  color: var(--gold);
+}
+
+.money-flow-balance .money-flow-icon {
+  background: rgba(69, 232, 134, 0.12);
+  color: var(--green);
+}
+
+.money-flow-item span {
+  color: var(--muted);
+}
+
+.money-flow-item strong {
+  color: var(--text);
+}
+
+.money-flow-item small {
+  color: var(--muted);
+}
+
+.money-flow-arrow {
+  color: var(--gold);
+}
+
+/* =========================================================
+   ALL MAIN PANELS
+========================================================= */
+
+.dashboard-panel {
+  border-color: var(--line);
+  background: var(--panel);
+
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.16);
+}
+
+html[data-theme="light"] .dashboard-panel {
+  box-shadow:
+    0 12px 30px rgba(16, 31, 23, 0.07);
+}
+
+.performance-panel,
+.quick-panel,
+.recent-sales-panel,
+.health-panel {
+  color: var(--text);
+}
+
+/* =========================================================
+   CHART
+========================================================= */
+
+.real-sales-chart,
+.dashboard-chart {
+  border: 1px solid var(--line);
+  background-color: var(--panel-2);
+}
+
+.real-chart-grid span,
+.chart-grid-lines span {
+  border-color: var(--line) !important;
+}
+
+/* =========================================================
+   GOLD SECONDARY LABELS
+========================================================= */
+
+.panel-period,
+.live-pill {
+  border: 1px solid rgba(231, 197, 107, 0.28);
+
+  background:
+    rgba(231, 197, 107, 0.10);
+
+  color: var(--gold);
+}
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.quick-action {
+  border-color: var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+.quick-action:hover {
+  border-color: rgba(69, 232, 134, 0.42);
+  background: var(--green-soft);
+}
+
+.quick-action > span {
+  background: var(--panel-3);
+  color: var(--gold);
+}
+
+.quick-action.primary {
+  border-color: rgba(69, 232, 134, 0.35);
+  background: var(--green-soft);
+}
+
+.quick-action.primary > span {
+  background: rgba(69, 232, 134, 0.18);
+  color: var(--green);
+}
+
+.quick-action strong {
+  color: var(--text);
+}
+
+.quick-action small {
+  color: var(--muted);
+}
+
+.quick-action b {
+  color: var(--gold);
+}
+
+/* =========================================================
+   RECENT SALES
+========================================================= */
+
+.recent-sale-row {
+  border-top-color: var(--line);
+}
+
+.recent-sale-avatar {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.recent-sale-product strong,
+.recent-sale-value strong {
+  color: var(--text);
+}
+
+.recent-sale-product span {
+  color: var(--muted);
+}
+
+.recent-sale-value span {
+  color: var(--green);
+}
+
+/* =========================================================
+   HEADINGS
+========================================================= */
+
+.section-heading h2,
+.panel-heading h2 {
+  color: var(--text);
+}
+
+.section-heading .eyebrow,
+.panel-heading .eyebrow {
+  color: var(--green);
+}
+
+/* =========================================================
+   THEME DROPDOWN — ALWAYS IN FRONT
+========================================================= */
+
+.command-main {
+  position: relative;
+  z-index: 1;
+}
+
+.command-header {
+  position: relative;
+  z-index: 1000;
+
+  background: var(--bg);
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.header-actions,
+.theme-control {
+  position: relative;
+  z-index: 1001;
+}
+
+.theme-menu {
+  z-index: 99999 !important;
+
+  background: var(--panel) !important;
+  border-color: var(--line-strong) !important;
+
+  opacity: 1 !important;
+
+  box-shadow:
+    0 24px 65px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-theme="light"] .theme-menu {
+  box-shadow:
+    0 24px 65px rgba(16, 31, 23, 0.18) !important;
+}
+
+.theme-menu button {
+  color: var(--text);
+}
+
+.theme-menu button:hover,
+.theme-menu button.active {
+  background: var(--green-soft);
+}
+
+.theme-menu button > span {
+  background: var(--panel-2);
+  color: var(--green);
+}
+
+.theme-menu small {
+  color: var(--muted);
+}
+
+.theme-menu b {
+  color: var(--gold);
+}
+

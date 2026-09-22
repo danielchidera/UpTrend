@@ -1,0 +1,88 @@
+.uptrend-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: auto;
+  height: 48px;
+
+  flex-shrink: 0;
+}
+
+.uptrend-logo-image {
+  display: block;
+
+  width: auto;
+  height: 48px;
+
+  max-width: 220px;
+
+  object-fit: contain;
+
+  /*
+    Your supplied artwork has a black background.
+    This makes the black portion blend into
+    the dark UpTrend interface.
+  */
+  mix-blend-mode: screen;
+}
+
+.uptrend-logo.compact {
+  height: 40px;
+}
+
+.uptrend-logo.compact .uptrend-logo-image {
+  height: 40px;
+  max-width: 190px;
+}
+
+@media (max-width: 760px) {
+  .uptrend-logo {
+    height: 38px;
+  }
+
+  .uptrend-logo-image {
+    height: 38px;
+    max-width: 175px;
+  }
+
+  .uptrend-logo.compact {
+    height: 34px;
+  }
+
+  .uptrend-logo.compact .uptrend-logo-image {
+    height: 34px;
+  }
+}
+
+.uptrend-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.uptrend-logo-image {
+  display: block;
+  width: auto;
+  height: 48px;
+  max-width: 220px;
+  object-fit: contain;
+}
+
+.uptrend-logo.compact .uptrend-logo-image {
+  height: 38px;
+  max-width: 180px;
+}
+
+@media (max-width: 760px) {
+  .uptrend-logo-image {
+    height: 38px;
+    max-width: 175px;
+  }
+
+  .uptrend-logo.compact .uptrend-logo-image {
+    height: 32px;
+    max-width: 150px;
+  }
+}

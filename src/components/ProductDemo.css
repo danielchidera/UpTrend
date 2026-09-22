@@ -1,0 +1,1005 @@
+.product-demo {
+  position: relative;
+  width: 100%;
+}
+
+.product-demo-fullscreen {
+  width: min(1280px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  margin: auto;
+}
+
+.pd-demo-device {
+  position: relative;
+  overflow: hidden;
+  border: 7px solid #171d19;
+  border-radius: 18px;
+  background: #07100b;
+  box-shadow:
+    0 35px 100px rgba(0, 0, 0, 0.7),
+    0 0 70px rgba(69, 232, 134, 0.08);
+}
+
+.pd-browser {
+  height: 31px;
+  padding: 0 11px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #101612;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #7e8a82;
+  font-size: 8px;
+}
+
+.pd-browser-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.pd-browser-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #59635d;
+}
+
+.pd-browser-address {
+  flex: 1;
+  padding: 5px 9px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.pd-screen-wrap {
+  aspect-ratio: 16 / 9.5;
+  overflow: hidden;
+}
+
+.pd-shell {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  color: #eef5f0;
+  background: #09110d;
+}
+
+.pd-sidebar {
+  padding: 18px 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  background: #070d09;
+}
+
+.pd-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 7px 18px;
+  font-size: 12px;
+}
+
+.pd-brand span {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: #031108;
+  background: #45e886;
+  font-weight: 900;
+}
+
+.pd-nav {
+  height: 31px;
+  margin-bottom: 4px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  color: #738078;
+  font-size: 8px;
+}
+
+.pd-nav span {
+  width: 16px;
+  text-align: center;
+}
+
+.pd-nav.active {
+  color: #45e886;
+  background: rgba(69, 232, 134, 0.1);
+}
+
+.pd-main {
+  min-width: 0;
+  padding: 19px;
+  background:
+    radial-gradient(circle at 80% 5%, rgba(69, 232, 134, 0.06), transparent 28%),
+    #0b130e;
+}
+
+.pd-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.pd-topbar > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pd-topbar span {
+  color: #68756d;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.pd-topbar strong {
+  font-size: 13px;
+}
+
+.pd-topbar button,
+.pd-report-banner button {
+  border: 0;
+  border-radius: 5px;
+  padding: 8px 10px;
+  color: #031108;
+  background: #45e886;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.pd-kpis,
+.pd-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  margin-top: 15px;
+}
+
+.pd-kpis > div,
+.pd-stat {
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.pd-kpis span,
+.pd-kpis small,
+.pd-stat span,
+.pd-stat small {
+  display: block;
+  color: #75827a;
+  font-size: 6px;
+}
+
+.pd-kpis strong,
+.pd-stat strong {
+  display: block;
+  margin: 6px 0 3px;
+  font-size: 11px;
+}
+
+.positive {
+  color: #45e886 !important;
+}
+
+.warning-text {
+  color: #e7c56b !important;
+}
+
+.negative-text {
+  color: #ff7187 !important;
+}
+
+.pd-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 0.85fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pd-card {
+  padding: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.pd-chart-card {
+  min-height: 230px;
+}
+
+.pd-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pd-card-head strong {
+  font-size: 8px;
+}
+
+.pd-card-head span {
+  color: #68746d;
+  font-size: 6px;
+}
+
+.pd-chart {
+  position: relative;
+  height: 175px;
+  margin-top: 9px;
+  overflow: hidden;
+}
+
+.pd-chart > i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pd-chart > i:nth-child(1) {
+  top: 20%;
+}
+
+.pd-chart > i:nth-child(2) {
+  top: 50%;
+}
+
+.pd-chart > i:nth-child(3) {
+  top: 80%;
+}
+
+.pd-chart svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pd-activity {
+  min-height: 230px;
+}
+
+.pd-activity-row {
+  margin-top: 14px;
+  padding-bottom: 10px;
+  display: grid;
+  grid-template-columns: 25px 1fr auto;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pd-activity-icon {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: #45e886;
+  background: rgba(69, 232, 134, 0.1);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.pd-activity-icon.negative {
+  color: #ff7187;
+  background: rgba(255, 113, 135, 0.1);
+}
+
+.pd-activity-row strong,
+.pd-activity-row small {
+  display: block;
+}
+
+.pd-activity-row strong {
+  font-size: 7px;
+}
+
+.pd-activity-row small {
+  margin-top: 2px;
+  color: #68746d;
+  font-size: 5px;
+}
+
+.pd-activity-row > b {
+  color: #45e886;
+  font-size: 7px;
+}
+
+.pd-page-content {
+  min-width: 0;
+}
+
+.pd-stat-row {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.pd-stat {
+  min-height: 66px;
+}
+
+.pd-table-card {
+  margin-top: 9px;
+}
+
+.pd-table-row {
+  min-height: 47px;
+  padding: 8px 0;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 15px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pd-table-row:last-child {
+  border-bottom: 0;
+}
+
+.pd-table-row strong,
+.pd-table-row small {
+  display: block;
+}
+
+.pd-table-row strong {
+  font-size: 8px;
+}
+
+.pd-table-row small {
+  margin-top: 3px;
+  color: #68746d;
+  font-size: 5px;
+}
+
+.pd-table-row > span {
+  color: #e9f0eb;
+  font-size: 7px;
+}
+
+.pd-table-row em {
+  padding: 4px 6px;
+  border-radius: 4px;
+  color: #45e886;
+  background: rgba(69, 232, 134, 0.08);
+  font-size: 5px;
+  font-style: normal;
+}
+
+.pd-report-banner {
+  margin-top: 15px;
+  padding: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(69, 232, 134, 0.15);
+  border-radius: 7px;
+  background: rgba(69, 232, 134, 0.055);
+}
+
+.pd-report-banner span,
+.pd-report-banner strong {
+  display: block;
+}
+
+.pd-report-banner span {
+  color: #75827a;
+  font-size: 5px;
+  letter-spacing: 0.1em;
+}
+
+.pd-report-banner strong {
+  margin-top: 4px;
+  font-size: 10px;
+}
+
+.pd-report-bars {
+  height: 125px;
+  margin-top: 9px;
+  padding: 10px 15px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.pd-report-bars span {
+  width: 100%;
+  max-width: 45px;
+  border-radius: 5px 5px 2px 2px;
+  background: linear-gradient(#45e886, #128d49);
+  box-shadow: 0 0 15px rgba(69, 232, 134, 0.08);
+}
+
+.pd-settings-grid {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pd-setting-card {
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.pd-setting-card > span {
+  color: #45e886;
+  font-size: 5px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.pd-setting-card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 9px;
+}
+
+.pd-setting-card p {
+  margin: 5px 0 10px;
+  color: #75827a;
+  font-size: 6px;
+  line-height: 1.5;
+}
+
+.pd-setting-card button {
+  padding: 5px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 4px;
+  color: #dbe5df;
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 5px;
+}
+
+.pd-demo-controls {
+  margin-top: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.pd-demo-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.pd-demo-sections button {
+  padding: 6px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #8d9991;
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+  font-size: 7px;
+}
+
+.pd-demo-sections button.active {
+  color: #06130a;
+  border-color: #45e886;
+  background: #45e886;
+  font-weight: 800;
+}
+
+.pd-demo-buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pd-demo-buttons button {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: white;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+}
+
+.pd-demo-buttons .pd-play {
+  color: #06130a;
+  background: #45e886;
+  border-color: #45e886;
+}
+
+.pd-demo-header {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pd-demo-header span,
+.pd-demo-header strong {
+  display: block;
+}
+
+.pd-demo-header span {
+  color: #45e886;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.pd-demo-header strong {
+  margin-top: 5px;
+  font-size: 22px;
+}
+
+.pd-close {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  font-size: 22px;
+}
+
+/* Smooth screen transition */
+.pd-screen-wrap {
+  animation: pdScreenFade 0.45s ease;
+}
+
+@keyframes pdScreenFade {
+  from {
+    opacity: 0.35;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .pd-demo-device {
+    border-width: 4px;
+    border-radius: 11px;
+  }
+
+  .pd-browser {
+    height: 18px;
+    padding: 0 6px;
+    gap: 6px;
+    font-size: 4px;
+  }
+
+  .pd-browser-dots {
+    gap: 2px;
+  }
+
+  .pd-browser-dots i {
+    width: 3px;
+    height: 3px;
+  }
+
+  .pd-shell {
+    grid-template-columns: 48px 1fr;
+  }
+
+  .pd-sidebar {
+    padding: 8px 4px;
+  }
+
+  .pd-brand {
+    padding: 0 2px 9px;
+    gap: 3px;
+    font-size: 4px;
+  }
+
+  .pd-brand span {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    font-size: 5px;
+  }
+
+  .pd-nav {
+    height: 18px;
+    padding: 0 3px;
+    margin-bottom: 2px;
+    gap: 3px;
+    font-size: 3px;
+  }
+
+  .pd-nav span {
+    width: 8px;
+  }
+
+  .pd-main {
+    padding: 7px;
+  }
+
+  .pd-topbar {
+    gap: 5px;
+  }
+
+  .pd-topbar > div {
+    gap: 2px;
+  }
+
+  .pd-topbar span {
+    font-size: 3px;
+  }
+
+  .pd-topbar strong {
+    font-size: 6px;
+  }
+
+  .pd-topbar button,
+  .pd-report-banner button {
+    padding: 4px 5px;
+    font-size: 3px;
+  }
+
+  .pd-kpis,
+  .pd-stat-row {
+    gap: 3px;
+    margin-top: 6px;
+  }
+
+  .pd-kpis > div,
+  .pd-stat {
+    padding: 5px;
+  }
+
+  .pd-kpis span,
+  .pd-kpis small,
+  .pd-stat span,
+  .pd-stat small {
+    font-size: 3px;
+  }
+
+  .pd-kpis strong,
+  .pd-stat strong {
+    margin: 3px 0 2px;
+    font-size: 5px;
+  }
+
+  .pd-dashboard-grid {
+    gap: 3px;
+    margin-top: 4px;
+  }
+
+  .pd-card {
+    padding: 5px;
+  }
+
+  .pd-chart-card,
+  .pd-activity {
+    min-height: 92px;
+  }
+
+  .pd-card-head strong {
+    font-size: 4px;
+  }
+
+  .pd-card-head span {
+    font-size: 3px;
+  }
+
+  .pd-chart {
+    height: 65px;
+    margin-top: 4px;
+  }
+
+  .pd-activity-row {
+    margin-top: 4px;
+    padding-bottom: 3px;
+    grid-template-columns: 9px 1fr auto;
+    gap: 3px;
+  }
+
+  .pd-activity-icon {
+    width: 9px;
+    height: 9px;
+    font-size: 3px;
+  }
+
+  .pd-activity-row strong {
+    font-size: 3px;
+  }
+
+  .pd-activity-row small {
+    font-size: 2px;
+  }
+
+  .pd-activity-row > b {
+    font-size: 3px;
+  }
+
+  .pd-table-row {
+    min-height: 28px;
+    padding: 4px 0;
+    gap: 5px;
+  }
+
+  .pd-table-row strong {
+    font-size: 4px;
+  }
+
+  .pd-table-row small {
+    margin-top: 1px;
+    font-size: 2.5px;
+  }
+
+  .pd-table-row > span {
+    font-size: 3.5px;
+  }
+
+  .pd-table-row em {
+    padding: 2px 3px;
+    font-size: 2.5px;
+  }
+
+  .pd-report-banner {
+    margin-top: 6px;
+    padding: 5px;
+  }
+
+  .pd-report-banner span {
+    font-size: 2.5px;
+  }
+
+  .pd-report-banner strong {
+    margin-top: 2px;
+    font-size: 5px;
+  }
+
+  .pd-report-bars {
+    height: 55px;
+    margin-top: 4px;
+    padding: 5px 7px;
+    gap: 5px;
+  }
+
+  .pd-settings-grid {
+    margin-top: 6px;
+    gap: 3px;
+  }
+
+  .pd-setting-card {
+    padding: 6px;
+  }
+
+  .pd-setting-card > span {
+    font-size: 2.5px;
+  }
+
+  .pd-setting-card strong {
+    margin-top: 3px;
+    font-size: 4px;
+  }
+
+  .pd-setting-card p {
+    margin: 3px 0 5px;
+    font-size: 2.5px;
+  }
+
+  .pd-setting-card button {
+    padding: 3px 4px;
+    font-size: 2.5px;
+  }
+
+  .pd-demo-controls {
+    margin-top: 8px;
+    align-items: flex-end;
+  }
+
+  .pd-demo-sections {
+    gap: 3px;
+  }
+
+  .pd-demo-sections button {
+    padding: 4px 5px;
+    font-size: 4px;
+  }
+
+  .pd-demo-buttons {
+    gap: 3px;
+  }
+
+  .pd-demo-buttons button {
+    width: 22px;
+    height: 22px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 420px) {
+  .pd-demo-sections button {
+    padding: 3px 4px;
+    font-size: 3px;
+  }
+
+  .pd-demo-buttons button {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* =========================================================
+   UPTREND HERO TABLET
+========================================================= */
+
+.product-demo-tablet {
+  width: min(760px, 100%);
+  position: relative;
+  transform:
+    perspective(1400px)
+    rotateY(-7deg)
+    rotateX(2deg);
+  transform-origin: center center;
+  z-index: 3;
+}
+
+.product-demo-tablet .pd-demo-device {
+  position: relative;
+  padding: 10px;
+  border: 8px solid #171c19;
+  border-radius: 28px;
+  background:
+    linear-gradient(
+      145deg,
+      #303631 0%,
+      #111612 55%,
+      #080c09 100%
+    );
+
+  box-shadow:
+    0 50px 100px rgba(0, 0, 0, 0.72),
+    0 20px 45px rgba(0, 0, 0, 0.4),
+    0 0 70px rgba(69, 232, 134, 0.10),
+    inset 0 1px 1px rgba(255, 255, 255, 0.12);
+}
+
+/* Remove browser bar from the tablet version */
+.product-demo-tablet .pd-browser {
+  display: none;
+}
+
+.product-demo-tablet .pd-screen-wrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border-radius: 17px;
+  background: #09110d;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 0 35px rgba(0, 0, 0, 0.4);
+}
+
+/* Camera */
+.product-demo-tablet .pd-demo-device::before {
+  content: "";
+  position: absolute;
+  z-index: 20;
+
+  top: 4px;
+  left: 50%;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #050806;
+  border: 1px solid #303732;
+
+  transform: translateX(-50%);
+}
+
+/* Outer glass edge */
+.product-demo-tablet .pd-demo-device::after {
+  content: "";
+
+  position: absolute;
+  inset: 3px;
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 23px;
+
+  pointer-events: none;
+}
+
+.product-demo-tablet .pd-shell {
+  min-height: 100%;
+}
+
+.product-demo-tablet .pd-sidebar {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(69, 232, 134, 0.025),
+      transparent 35%
+    ),
+    #070d09;
+}
+
+.product-demo-tablet .pd-main {
+  background:
+    radial-gradient(
+      circle at 80% 5%,
+      rgba(69, 232, 134, 0.08),
+      transparent 28%
+    ),
+    #0b130e;
+}
+
+/* Tablet controls */
+.product-demo-tablet .pd-demo-controls {
+  margin-top: 15px;
+  padding: 0 4px;
+}
+
+.product-demo-tablet .pd-demo-sections button {
+  backdrop-filter: blur(8px);
+}
+
+.product-demo-tablet .pd-demo-buttons button {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .product-demo-tablet {
+    width: 100%;
+    transform:
+      perspective(900px)
+      rotateY(-2deg);
+  }
+
+  .product-demo-tablet .pd-demo-device {
+    padding: 5px;
+    border-width: 4px;
+    border-radius: 17px;
+  }
+
+  .product-demo-tablet .pd-screen-wrap {
+    border-radius: 10px;
+  }
+
+  .product-demo-tablet .pd-demo-device::before {
+    width: 4px;
+    height: 4px;
+    top: 2px;
+  }
+
+  .product-demo-tablet .pd-demo-device::after {
+    inset: 2px;
+    border-radius: 14px;
+  }
+}
