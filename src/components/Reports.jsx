@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { supabase } from "../lib/supabase";
+import ReportExportTools from "../Business/ReportExportTools";
 
 import {
   calculateFinancialSummary,
@@ -43,7 +44,15 @@ function getDateDaysAgo(days) {
   return getLocalDateKey(date);
 }
 
-function Reports() {
+function shiftDateKey(dateKey, days) {
+  const date = new Date(`${dateKey}T00:00:00`);
+  date.setDate(date.getDate() + days);
+  return getLocalDateKey(date);
+}
+
+function Reports({
+  subscription,
+}) {
   const [sales, setSales] =
     useState([]);
 
@@ -544,6 +553,409 @@ function Reports() {
       1
     );
 
+  /* =====================================================
+     ADVANCED REPORTS ANALYTICS
+  ===================================================== */
+
+  const selectedPeriodDays =
+    Math.max(
+      Math.round(
+        (
+          new Date(`${endDate}T00:00:00`) -
+          new Date(`${startDate}T00:00:00`)
+        ) / 86400000
+      ) + 1,
+      1
+    );
+
+  const previousEndDate =
+    shiftDateKey(startDate, -1);
+
+  const previousStartDate =
+    shiftDateKey(
+      startDate,
+      -selectedPeriodDays
+    );
+
+  const previousSales =
+    useMemo(
+      () =>
+        sales.filter(
+          (sale) =>
+            sale.date >= previousStartDate &&
+            sale.date <= previousEndDate
+        ),
+      [
+        sales,
+        previousStartDate,
+        previousEndDate,
+      ]
+    );
+
+  const previousExpenses =
+    useMemo(
+      () =>
+        expenses.filter(
+          (expense) =>
+            expense.date >= previousStartDate &&
+            expense.date <= previousEndDate
+        ),
+      [
+        expenses,
+        previousStartDate,
+        previousEndDate,
+      ]
+    );
+
+  const previousTotals =
+    useMemo(
+      () =>
+        calculateFinancialSummary(
+          previousSales,
+          previousExpenses,
+          {
+            openingBalance: 0,
+          }
+        ),
+      [
+        previousSales,
+        previousExpenses,
+      ]
+    );
+
+  const currentUnits =
+    filteredSales.reduce(
+      (sum, sale) =>
+        sum +
+        Number(sale.quantity || 0),
+      0
+    );
+
+  const previousUnits =
+    previousSales.reduce(
+      (sum, sale) =>
+        sum +
+        Number(sale.quantity || 0),
+      0
+    );
+
+  const getPercentageChange =
+    (current, previous) => {
+      const currentValue =
+        Number(current || 0);
+
+      const previousValue =
+        Number(previous || 0);
+
+      if (previousValue === 0) {
+        if (currentValue === 0) {
+          return 0;
+        }
+
+        return 100;
+      }
+
+      return (
+        ((currentValue - previousValue) /
+          Math.abs(previousValue)) *
+        100
+      );
+    };
+
+  const revenueChange =
+    getPercentageChange(
+      totals.revenue,
+      previousTotals.revenue
+    );
+
+  const grossProfitChange =
+    getPercentageChange(
+      totals.grossProfit,
+      previousTotals.grossProfit
+    );
+
+  const expenseChange =
+    getPercentageChange(
+      totals.expenses,
+      previousTotals.expenses
+    );
+
+  const unitsChange =
+    getPercentageChange(
+      currentUnits,
+      previousUnits
+    );
+
+  const averageTransactionValue =
+    filteredSales.length > 0
+      ? totals.revenue /
+        filteredSales.length
+      : 0;
+
+  const averageUnitsPerSale =
+    filteredSales.length > 0
+      ? currentUnits /
+        filteredSales.length
+      : 0;
+
+  const productProfitability =
+    useMemo(
+      () =>
+        [...productPerformance]
+          .map((product) => ({
+            ...product,
+            margin:
+              product.revenue > 0
+                ? (
+                    product.profit /
+                    product.revenue
+                  ) * 100
+                : 0,
+          }))
+          .sort(
+            (a, b) =>
+              b.profit - a.profit
+          ),
+      [productPerformance]
+    );
+
+  const topRevenueProduct =
+    [...productPerformance].sort(
+      (a, b) =>
+        b.revenue - a.revenue
+    )[0];
+
+  const topProfitProduct =
+    [...productPerformance].sort(
+      (a, b) =>
+        b.profit - a.profit
+    )[0];
+
+  const lowMarginProducts =
+    [...productProfitability]
+      .filter(
+        (product) =>
+          product.revenue > 0
+      )
+      .sort(
+        (a, b) =>
+          a.margin - b.margin
+      )
+      .slice(0, 5);
+
+  const expenseAnalysis =
+    useMemo(() => {
+      const categoryMap = {};
+
+      filteredExpenses.forEach(
+        (expense) => {
+          const category =
+            expense.category ||
+            "Uncategorized";
+
+          categoryMap[category] =
+            (categoryMap[category] || 0) +
+            Number(expense.amount || 0);
+        }
+      );
+
+      const categories =
+        Object.entries(
+          categoryMap
+        )
+          .map(
+            ([name, amount]) => ({
+              name,
+              amount,
+            })
+          )
+          .sort(
+            (a, b) =>
+              b.amount - a.amount
+          );
+
+      return {
+        categories,
+        largestCategory:
+          categories[0] || null,
+        expenseRatio:
+          totals.revenue > 0
+            ? (
+                totals.expenses /
+                totals.revenue
+              ) * 100
+            : 0,
+      };
+    }, [
+      filteredExpenses,
+      totals.revenue,
+      totals.expenses,
+    ]);
+
+  const inventoryAnalysis =
+    useMemo(() => {
+      const inventoryValue =
+        products.reduce(
+          (sum, product) =>
+            sum +
+            Number(product.stock || 0) *
+              Number(
+                product.costPrice || 0
+              ),
+          0
+        );
+
+      const lowStock =
+        products.filter(
+          (product) =>
+            Number(product.stock || 0) <=
+            Number(
+              product.lowStockAt || 0
+            )
+        );
+
+      const slowMoving =
+        products.filter(
+          (product) => {
+            const sold =
+              productPerformance.find(
+                (item) =>
+                  item.name ===
+                  product.name
+              );
+
+            return (
+              !sold ||
+              Number(sold.units || 0) <=
+                2
+            );
+          }
+        );
+
+      return {
+        inventoryValue,
+        totalUnits:
+          products.reduce(
+            (sum, product) =>
+              sum +
+              Number(
+                product.stock || 0
+              ),
+            0
+          ),
+        lowStock,
+        slowMoving,
+      };
+    }, [
+      products,
+      productPerformance,
+    ]);
+
+  const dailyFinancialPerformance =
+    useMemo(() => {
+      const days = [];
+
+      const start =
+        new Date(
+          `${startDate}T00:00:00`
+        );
+
+      const end =
+        new Date(
+          `${endDate}T00:00:00`
+        );
+
+      const cursor =
+        new Date(start);
+
+      while (cursor <= end) {
+        const date =
+          getLocalDateKey(cursor);
+
+        const daySales =
+          filteredSales.filter(
+            (sale) =>
+              sale.date === date
+          );
+
+        const dayExpenses =
+          filteredExpenses.filter(
+            (expense) =>
+              expense.date === date
+          );
+
+        const revenue =
+          daySales.reduce(
+            (sum, sale) =>
+              sum +
+              Number(
+                sale.totalSelling || 0
+              ),
+            0
+          );
+
+        const grossProfit =
+          daySales.reduce(
+            (sum, sale) =>
+              sum +
+              Number(
+                sale.grossProfit || 0
+              ),
+            0
+          );
+
+        const expensesValue =
+          dayExpenses.reduce(
+            (sum, expense) =>
+              sum +
+              Number(
+                expense.amount || 0
+              ),
+            0
+          );
+
+        days.push({
+          date,
+          revenue,
+          grossProfit,
+          expenses:
+            expensesValue,
+          netResult:
+            grossProfit -
+            expensesValue,
+        });
+
+        cursor.setDate(
+          cursor.getDate() + 1
+        );
+      }
+
+      return days.slice(-14);
+    }, [
+      filteredSales,
+      filteredExpenses,
+      startDate,
+      endDate,
+    ]);
+
+  const formatChange =
+    (value) => {
+      const number =
+        Number(value || 0);
+
+      if (!Number.isFinite(number)) {
+        return "0.0%";
+      }
+
+      return `${number >= 0 ? "+" : ""}${number.toFixed(1)}%`;
+    };
+
+  const changeClass =
+    (value) =>
+      Number(value || 0) >= 0
+        ? "comparison-positive"
+        : "comparison-negative";
+
   const formatMoney =
     (value) =>
       `₦${Number(
@@ -840,10 +1252,23 @@ function Reports() {
             NET PROFIT
           </span>
 
-          <strong className="record-profit">
-            +
+          <strong
+            className={
+              reportNetProfit > 0
+                ? "record-profit"
+                : reportNetProfit < 0
+                  ? "record-loss"
+                  : ""
+            }
+          >
+            {reportNetProfit > 0
+              ? "+ "
+              : reportNetProfit < 0
+                ? "- "
+                : ""}
+
             {formatMoney(
-              reportNetProfit
+              Math.abs(reportNetProfit)
             )}
           </strong>
 
@@ -1049,10 +1474,23 @@ function Reports() {
                 Net profit
               </span>
 
-              <strong className="record-profit">
-                +{" "}
+              <strong
+                className={
+                  reportNetProfit > 0
+                    ? "record-profit"
+                    : reportNetProfit < 0
+                      ? "record-loss"
+                      : ""
+                }
+              >
+                {reportNetProfit > 0
+                  ? "+ "
+                  : reportNetProfit < 0
+                    ? "- "
+                    : ""}
+
                 {formatMoney(
-                  reportNetProfit
+                  Math.abs(reportNetProfit)
                 )}
               </strong>
 
@@ -1346,6 +1784,666 @@ function Reports() {
         </section>
 
       </div>
+
+
+      {/* =================================================
+          ADVANCED REPORTS
+      ================================================= */}
+
+      <section className="advanced-report-section">
+
+        <div className="advanced-section-heading">
+          <div>
+            <div className="mini-label">
+              ADVANCED ANALYSIS
+            </div>
+
+            <h2>
+              Deeper business performance
+            </h2>
+
+            <p>
+              Compare periods, understand profitability,
+              monitor expenses and connect performance
+              with inventory.
+            </p>
+          </div>
+        </div>
+
+        <div className="advanced-report-grid">
+
+          <section className="advanced-report-card premium-card">
+
+            <div className="advanced-card-heading">
+              <div>
+                <div className="mini-label">
+                  PERIOD COMPARISON
+                </div>
+
+                <h3>
+                  Current vs previous period
+                </h3>
+              </div>
+
+              <span>
+                {previousStartDate} → {previousEndDate}
+              </span>
+            </div>
+
+            <div className="advanced-metric-grid">
+
+              <article>
+                <span>REVENUE</span>
+                <strong>
+                  {formatChange(
+                    revenueChange
+                  )}
+                </strong>
+                <small>
+                  {formatMoney(
+                    previousTotals.revenue
+                  )} previous
+                </small>
+              </article>
+
+              <article>
+                <span>GROSS PROFIT</span>
+                <strong>
+                  {formatChange(
+                    grossProfitChange
+                  )}
+                </strong>
+                <small>
+                  {formatMoney(
+                    previousTotals.grossProfit
+                  )} previous
+                </small>
+              </article>
+
+              <article>
+                <span>EXPENSES</span>
+                <strong
+                  className={
+                    changeClass(
+                      expenseChange
+                    )
+                  }
+                >
+                  {formatChange(
+                    expenseChange
+                  )}
+                </strong>
+                <small>
+                  {formatMoney(
+                    previousTotals.expenses
+                  )} previous
+                </small>
+              </article>
+
+              <article>
+                <span>UNITS SOLD</span>
+                <strong>
+                  {formatChange(
+                    unitsChange
+                  )}
+                </strong>
+                <small>
+                  {previousUnits.toLocaleString(
+                    "en-NG"
+                  )} previous
+                </small>
+              </article>
+
+            </div>
+
+          </section>
+
+          <section className="advanced-report-card premium-card">
+
+            <div className="advanced-card-heading">
+              <div>
+                <div className="mini-label">
+                  SALES ANALYSIS
+                </div>
+
+                <h3>
+                  Transaction performance
+                </h3>
+              </div>
+            </div>
+
+            <div className="advanced-stat-list">
+
+              <div>
+                <span>Transactions</span>
+                <strong>
+                  {filteredSales.length.toLocaleString(
+                    "en-NG"
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>Units sold</span>
+                <strong>
+                  {currentUnits.toLocaleString(
+                    "en-NG"
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>Average transaction</span>
+                <strong>
+                  {formatMoney(
+                    averageTransactionValue
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>Average units / sale</span>
+                <strong>
+                  {averageUnitsPerSale.toFixed(
+                    1
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>Product cost</span>
+                <strong>
+                  {formatMoney(
+                    totals.productCost
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>Gross margin</span>
+                <strong>
+                  {(
+                    totals.revenue > 0
+                      ? (
+                          totals.grossProfit /
+                          totals.revenue
+                        ) * 100
+                      : 0
+                  ).toFixed(1)}%
+                </strong>
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+        <div className="advanced-report-grid">
+
+          <section className="advanced-report-card premium-card">
+
+            <div className="advanced-card-heading">
+              <div>
+                <div className="mini-label">
+                  PRODUCT PROFITABILITY
+                </div>
+
+                <h3>
+                  Where profit comes from
+                </h3>
+              </div>
+            </div>
+
+            <div className="advanced-highlight-grid">
+
+              <article>
+                <span>TOP BY UNITS</span>
+
+                <strong>
+                  {bestSeller
+                    ? bestSeller.name
+                    : "No sales"}
+                </strong>
+
+                <small>
+                  {bestSeller
+                    ? `${bestSeller.units} units sold`
+                    : "Record sales to identify a leader."}
+                </small>
+              </article>
+
+              <article>
+                <span>TOP BY REVENUE</span>
+
+                <strong>
+                  {topRevenueProduct
+                    ? topRevenueProduct.name
+                    : "No sales"}
+                </strong>
+
+                <small>
+                  {topRevenueProduct
+                    ? formatMoney(
+                        topRevenueProduct.revenue
+                      )
+                    : "No revenue recorded."}
+                </small>
+              </article>
+
+              <article>
+                <span>TOP BY PROFIT</span>
+
+                <strong>
+                  {topProfitProduct
+                    ? topProfitProduct.name
+                    : "No sales"}
+                </strong>
+
+                <small>
+                  {topProfitProduct
+                    ? `+${formatMoney(
+                        topProfitProduct.profit
+                      )} gross profit`
+                    : "No profit recorded."}
+                </small>
+              </article>
+
+            </div>
+
+            <div className="advanced-list">
+
+              {lowMarginProducts.length === 0 ? (
+
+                <div className="advanced-empty">
+                  No product margin data for this period.
+                </div>
+
+              ) : (
+
+                lowMarginProducts.map(
+                  (product) => (
+                    <div
+                      className="advanced-list-row"
+                      key={`margin-${product.name}`}
+                    >
+                      <div>
+                        <strong>
+                          {product.name}
+                        </strong>
+
+                        <span>
+                          {formatMoney(
+                            product.revenue
+                          )} revenue
+                        </span>
+                      </div>
+
+                      <strong
+                        className={
+                          product.margin < 0
+                            ? "comparison-negative"
+                            : ""
+                        }
+                      >
+                        {product.margin.toFixed(
+                          1
+                        )}%
+                      </strong>
+                    </div>
+                  )
+                )
+
+              )}
+
+            </div>
+
+          </section>
+
+          <section className="advanced-report-card premium-card">
+
+            <div className="advanced-card-heading">
+              <div>
+                <div className="mini-label">
+                  EXPENSE ANALYSIS
+                </div>
+
+                <h3>
+                  Where money is going
+                </h3>
+              </div>
+            </div>
+
+            <div className="expense-analysis-summary">
+
+              <div>
+                <span>Total expenses</span>
+                <strong className="expense-report-value">
+                  {formatMoney(
+                    totals.expenses
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>Expense ratio</span>
+                <strong>
+                  {expenseAnalysis.expenseRatio.toFixed(
+                    1
+                  )}%
+                </strong>
+              </div>
+
+              <div>
+                <span>Largest category</span>
+                <strong>
+                  {expenseAnalysis.largestCategory
+                    ? expenseAnalysis.largestCategory.name
+                    : "None"}
+                </strong>
+              </div>
+
+            </div>
+
+            <div className="advanced-list">
+
+              {expenseAnalysis.categories.length === 0 ? (
+
+                <div className="advanced-empty">
+                  No expenses recorded for this period.
+                </div>
+
+              ) : (
+
+                expenseAnalysis.categories
+                  .slice(0, 5)
+                  .map(
+                    (category) => (
+                      <div
+                        className="advanced-list-row"
+                        key={`expense-${category.name}`}
+                      >
+                        <div>
+                          <strong>
+                            {category.name}
+                          </strong>
+
+                          <span>
+                            {totals.expenses > 0
+                              ? (
+                                  (
+                                    category.amount /
+                                    totals.expenses
+                                  ) *
+                                  100
+                                ).toFixed(1)
+                              : 0}% of expenses
+                          </span>
+                        </div>
+
+                        <strong className="expense-report-value">
+                          {formatMoney(
+                            category.amount
+                          )}
+                        </strong>
+                      </div>
+                    )
+                  )
+
+              )}
+
+            </div>
+
+          </section>
+
+        </div>
+
+        <section className="advanced-report-card premium-card">
+
+          <div className="advanced-card-heading">
+            <div>
+              <div className="mini-label">
+                DAILY FINANCIAL PERFORMANCE
+              </div>
+
+              <h3>
+                Revenue, profit and expenses by day
+              </h3>
+            </div>
+
+            <span>
+              Last 14 days in selected period
+            </span>
+          </div>
+
+          <div className="daily-financial-table">
+
+            <div className="daily-financial-header">
+              <span>Date</span>
+              <span>Revenue</span>
+              <span>Gross profit</span>
+              <span>Expenses</span>
+              <span>Net result</span>
+            </div>
+
+            {dailyFinancialPerformance.length === 0 ? (
+
+              <div className="advanced-empty">
+                No financial activity for this period.
+              </div>
+
+            ) : (
+
+              dailyFinancialPerformance.map(
+                (day) => (
+                  <div
+                    className="daily-financial-row"
+                    key={`daily-${day.date}`}
+                  >
+                    <span>
+                      {day.date}
+                    </span>
+
+                    <strong>
+                      {formatMoney(
+                        day.revenue
+                      )}
+                    </strong>
+
+                    <strong className="record-profit">
+                      {day.grossProfit >= 0
+                        ? "+"
+                        : "-"}
+                      {formatMoney(
+                        Math.abs(
+                          day.grossProfit
+                        )
+                      )}
+                    </strong>
+
+                    <strong className="expense-report-value">
+                      {formatMoney(
+                        day.expenses
+                      )}
+                    </strong>
+
+                    <strong
+                      className={
+                        day.netResult >= 0
+                          ? "comparison-positive"
+                          : "comparison-negative"
+                      }
+                    >
+                      {day.netResult >= 0
+                        ? "+"
+                        : "-"}
+                      {formatMoney(
+                        Math.abs(
+                          day.netResult
+                        )
+                      )}
+                    </strong>
+                  </div>
+                )
+              )
+
+            )}
+
+          </div>
+
+        </section>
+
+        <div className="advanced-report-grid">
+
+          <section className="advanced-report-card premium-card">
+
+            <div className="advanced-card-heading">
+              <div>
+                <div className="mini-label">
+                  INVENTORY INTELLIGENCE
+                </div>
+
+                <h3>
+                  Stock position
+                </h3>
+              </div>
+            </div>
+
+            <div className="inventory-intelligence-grid">
+
+              <article>
+                <span>STOCK UNITS</span>
+                <strong>
+                  {inventoryAnalysis.totalUnits.toLocaleString(
+                    "en-NG"
+                  )}
+                </strong>
+              </article>
+
+              <article>
+                <span>INVENTORY VALUE</span>
+                <strong>
+                  {formatMoney(
+                    inventoryAnalysis.inventoryValue
+                  )}
+                </strong>
+              </article>
+
+              <article>
+                <span>LOW STOCK</span>
+                <strong
+                  className={
+                    inventoryAnalysis.lowStock.length
+                      ? "comparison-negative"
+                      : "comparison-positive"
+                  }
+                >
+                  {inventoryAnalysis.lowStock.length}
+                </strong>
+              </article>
+
+              <article>
+                <span>SLOW MOVING</span>
+                <strong>
+                  {inventoryAnalysis.slowMoving.length}
+                </strong>
+              </article>
+
+            </div>
+
+          </section>
+
+          <section className="advanced-report-card premium-card">
+
+            <div className="advanced-card-heading">
+              <div>
+                <div className="mini-label">
+                  REPORT POSITION
+                </div>
+
+                <h3>
+                  Period result
+                </h3>
+              </div>
+            </div>
+
+            <div className="advanced-result-box">
+
+              <div>
+                <span>
+                  Net profit
+                </span>
+
+                <strong
+                  className={
+                    reportNetProfit > 0
+                      ? "comparison-positive"
+                      : "comparison-negative"
+                  }
+                >
+                  {reportNetProfit > 0
+                    ? "+"
+                    : ""}
+
+                  {formatMoney(
+                    reportNetProfit
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Remaining expenses
+                </span>
+
+                <strong
+                  className={
+                    remainingExpenses > 0
+                      ? "comparison-negative"
+                      : "comparison-positive"
+                  }
+                >
+                  {remainingExpenses > 0
+                    ? "-"
+                    : ""}
+
+                  {formatMoney(
+                    remainingExpenses
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Current cash
+                </span>
+
+                <strong>
+                  {formatMoney(
+                    overallFinancial.cashAtHand
+                  )}
+                </strong>
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </section>
+
+      <ReportExportTools
+        sales={sales}
+        expenses={expenses}
+        products={products}
+        filteredSales={filteredSales}
+        filteredExpenses={filteredExpenses}
+        totals={totals}
+        startDate={startDate}
+        endDate={endDate}
+        subscription={subscription}
+      />
 
       <section className="report-period-footer premium-card">
 

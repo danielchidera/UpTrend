@@ -1,0 +1,578 @@
+.exports-page {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 30px;
+}
+
+.exports-page .premium-card {
+  width: 100%;
+  min-width: 0;
+}
+
+.exports-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+}
+
+.exports-hero h2 {
+  margin: 5px 0 7px;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.exports-hero p {
+  margin: 0;
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.exports-hero-stat {
+  min-width: 170px;
+  padding: 18px;
+  border: 1px solid rgba(245, 200, 92, 0.28);
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(245, 200, 92, 0.10),
+      rgba(255, 255, 255, 0.025)
+    );
+  text-align: right;
+  box-shadow:
+    0 0 28px rgba(245, 200, 92, 0.08);
+}
+
+.exports-hero-stat span,
+.exports-summary span,
+.exports-section-heading > div > span,
+.exports-action-card > div > span {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.exports-hero-stat strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--gold, #f5c85c);
+  font-size: 25px;
+}
+
+.exports-hero-stat small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
+
+.exports-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.exports-section-heading h3 {
+  margin: 5px 0 0;
+  font-size: 17px;
+}
+
+.exports-section-heading > strong {
+  color: var(--gold, #f5c85c);
+  font-size: 12px;
+}
+
+/* =========================================================
+   DATE RANGE
+========================================================= */
+
+.exports-period {
+  padding: 20px;
+}
+
+.exports-period-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.exports-period-buttons button,
+.exports-selection-actions button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    0.2s ease,
+    transform 0.2s ease;
+}
+
+.exports-period-buttons button:hover,
+.exports-selection-actions button:hover {
+  color: var(--text);
+  border-color: rgba(245, 200, 92, 0.28);
+  transform: translateY(-1px);
+}
+
+.exports-period-buttons button.active {
+  color: #111;
+  border-color: var(--gold, #f5c85c);
+  background: var(--gold, #f5c85c);
+  box-shadow:
+    0 0 18px rgba(245, 200, 92, 0.18);
+}
+
+.exports-date-fields {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+  gap: 12px;
+}
+
+.exports-date-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.exports-date-fields label span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.exports-date-fields input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  outline: none;
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--text);
+  color-scheme: dark;
+  font: inherit;
+  font-size: 12px;
+}
+
+.exports-date-fields input:focus {
+  border-color: rgba(245, 200, 92, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(245, 200, 92, 0.08);
+}
+
+/* =========================================================
+   DATASETS
+========================================================= */
+
+.exports-datasets {
+  padding: 20px;
+}
+
+.exports-selection-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.exports-dataset-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.exports-dataset {
+  min-width: 0;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.exports-dataset:hover {
+  border-color: rgba(245, 200, 92, 0.25);
+  transform: translateY(-1px);
+}
+
+.exports-dataset.active {
+  border-color: rgba(245, 200, 92, 0.42);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(245, 200, 92, 0.09),
+      rgba(255, 255, 255, 0.025)
+    );
+  box-shadow:
+    0 0 20px rgba(245, 200, 92, 0.06);
+}
+
+.exports-check {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  color: #111;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.exports-dataset.active .exports-check {
+  border-color: var(--gold, #f5c85c);
+  background: var(--gold, #f5c85c);
+}
+
+.exports-dataset strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.exports-dataset small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+/* =========================================================
+   FORMAT
+========================================================= */
+
+.exports-format {
+  padding: 20px;
+}
+
+.exports-format-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.exports-format-grid button {
+  min-height: 92px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    0.2s ease;
+}
+
+.exports-format-grid button:hover {
+  border-color: rgba(245, 200, 92, 0.25);
+}
+
+.exports-format-grid button.active {
+  border-color: rgba(245, 200, 92, 0.5);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(245, 200, 92, 0.11),
+      rgba(255, 255, 255, 0.025)
+    );
+  box-shadow:
+    0 0 24px rgba(245, 200, 92, 0.07);
+}
+
+.exports-format-grid strong {
+  display: block;
+  color: var(--gold, #f5c85c);
+  font-size: 17px;
+}
+
+.exports-format-grid span {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.exports-summary {
+  display: grid;
+  grid-template-columns:
+    1.5fr
+    repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.exports-summary > div {
+  min-width: 0;
+  padding: 17px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.exports-summary strong {
+  display: block;
+  margin-top: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.exports-summary > div:first-child strong {
+  color: var(--gold, #f5c85c);
+  font-size: 12px;
+}
+
+/* =========================================================
+   EXPORT ACTION
+========================================================= */
+
+.exports-action-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 21px;
+  border-color: rgba(245, 200, 92, 0.22);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(245, 200, 92, 0.06),
+      rgba(255, 255, 255, 0.02)
+    );
+}
+
+.exports-action-card h3 {
+  margin: 5px 0 4px;
+  font-size: 17px;
+}
+
+.exports-action-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.exports-action-card > button {
+  min-width: 175px;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--gold, #f5c85c);
+  border-radius: 11px;
+  background: var(--gold, #f5c85c);
+  color: #111;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow:
+    0 0 25px rgba(245, 200, 92, 0.14);
+  transition:
+    0.2s ease;
+}
+
+.exports-action-card > button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 32px rgba(245, 200, 92, 0.22);
+}
+
+.exports-action-card > button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.exports-message {
+  padding: 14px 17px;
+  border-color: rgba(79, 233, 138, 0.25);
+  color: var(--text);
+  font-size: 11px;
+}
+
+/* =========================================================
+   LOADING / ERROR
+========================================================= */
+
+.exports-loading,
+.exports-error {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.exports-error {
+  border-color: rgba(255, 102, 126, 0.25);
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+  .exports-dataset-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .exports-summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .exports-summary > div:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .exports-page {
+    gap: 13px;
+    padding-bottom: 20px;
+  }
+
+  .exports-hero {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px;
+  }
+
+  .exports-hero h2 {
+    font-size: 23px;
+  }
+
+  .exports-hero-stat {
+    width: 100%;
+    text-align: left;
+  }
+
+  .exports-period,
+  .exports-datasets,
+  .exports-format {
+    padding: 16px;
+  }
+
+  .exports-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .exports-section-heading > strong {
+    font-size: 10px;
+  }
+
+  .exports-selection-actions {
+    width: 100%;
+  }
+
+  .exports-selection-actions button {
+    flex: 1;
+  }
+
+  .exports-date-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .exports-dataset-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .exports-format-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .exports-format-grid button {
+    min-height: 70px;
+  }
+
+  .exports-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .exports-summary > div:first-child {
+    grid-column: auto;
+  }
+
+  .exports-action-card {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 17px;
+  }
+
+  .exports-action-card > button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 420px) {
+  .exports-period-buttons {
+    display: grid;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .exports-period-buttons button {
+    width: 100%;
+  }
+
+  .exports-dataset {
+    min-height: 64px;
+  }
+}

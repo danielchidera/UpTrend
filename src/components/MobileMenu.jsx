@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./MobileMenu.css";
 
 function MobileMenu({
@@ -7,46 +7,157 @@ function MobileMenu({
   isOpen,
   setIsOpen,
 }) {
-  const navigation = [
+  const [businessOpen, setBusinessOpen] = useState(false);
+
+  const mainNavigation = [
     {
       id: "dashboard",
       label: "Dashboard",
       icon: "⌂",
+      color: "dashboard",
     },
     {
       id: "sales",
       label: "Sales",
       icon: "↗",
+      color: "sales",
     },
     {
       id: "record",
       label: "Record Sale",
       icon: "+",
+      color: "record",
     },
     {
       id: "expenses",
       label: "Expenses",
       icon: "↓",
+      color: "expenses",
     },
     {
       id: "products",
       label: "Products",
       icon: "▣",
+      color: "products",
     },
     {
       id: "reports",
       label: "Reports",
       icon: "▤",
+      color: "reports",
     },
     {
       id: "finance",
       label: "Finance",
       icon: "₦",
+      color: "finance",
     },
     {
       id: "settings",
       label: "Settings",
       icon: "⚙",
+      color: "settings",
+    },
+  ];
+
+  const businessNavigation = [
+    {
+      id: "business-insights",
+      label: "Business Insights",
+      icon: "✦",
+      color: "business-insights",
+      available: true,
+    },
+    {
+      id: "advanced-reports",
+      label: "Advanced Reports",
+      icon: "▥",
+      color: "advanced-reports",
+      available: false,
+    },
+    {
+      id: "advanced-inventory",
+      label: "Advanced Inventory",
+      icon: "◆",
+      color: "advanced-inventory",
+      available: true,
+    },
+    {
+      id: "sales-expense-trends",
+      label: "Sales & Expense Trends",
+      icon: "◈",
+      color: "sales-expense-trends",
+      available: true,
+    },
+    {
+      id: "customers",
+      label: "Customers",
+      icon: "♙",
+      color: "customers",
+      available: true,
+    },
+    {
+      id: "invoices",
+      label: "Invoices",
+      icon: "▧",
+      color: "invoices",
+      available: true,
+    },
+    {
+      id: "business-targets",
+      label: "Business Targets",
+      icon: "◎",
+      color: "business-targets",
+      available: true,
+    },
+    {
+      id: "credit-debt",
+      label: "Credit & Debt",
+      icon: "₦",
+      color: "credit-debt",
+      available: true,
+    },
+    {
+      id: "suppliers",
+      label: "Suppliers",
+      icon: "⇄",
+      color: "suppliers",
+      available: true,
+    },
+    {
+      id: "exports",
+      label: "Exports",
+      icon: "⇩",
+      color: "exports",
+      available: true,
+    },
+    {
+      id: "branches",
+      label: "Branches",
+      icon: "⌘",
+      color: "branches",
+      available: false,
+    },
+    {
+      id: "users-permissions",
+      label: "Users & Permissions",
+      icon: "♙",
+      color: "users-permissions",
+      available: false,
+    },
+    {
+      id: "audit-history",
+      label: "Audit History",
+      icon: "◷",
+      color: "audit-history",
+      available: false,
+    },
+    {
+      id: "backups",
+      label: "Automated Backups",
+      icon: "▰",
+      color: "backups",
+      available: false,
     },
   ];
 
@@ -83,9 +194,26 @@ function MobileMenu({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const isBusinessPage =
+      businessNavigation.some(
+        (item) => item.id === activePage
+      );
+
+    if (isBusinessPage) {
+      setBusinessOpen(true);
+    }
+  }, [activePage]);
+
   const handleNavigation = (page) => {
     setActivePage(page);
     setIsOpen(false);
+  };
+
+  const handleBusinessNavigation = (item) => {
+    if (!item.available) return;
+
+    handleNavigation(item.id);
   };
 
   return (
@@ -126,12 +254,16 @@ function MobileMenu({
           </button>
         </div>
 
+        <div className="mobile-menu-section-label">
+          MAIN MENU
+        </div>
+
         <div className="mobile-menu-list">
-          {navigation.map((item) => (
+          {mainNavigation.map((item) => (
             <button
               key={item.id}
               type="button"
-              className={`mobile-menu-item ${
+              className={`mobile-menu-item nav-${item.color} ${
                 activePage === item.id
                   ? "active"
                   : ""
@@ -153,6 +285,96 @@ function MobileMenu({
               </span>
             </button>
           ))}
+        </div>
+
+        <div className="mobile-business-section">
+          <button
+            type="button"
+            className={`mobile-business-toggle ${
+              businessOpen ? "open" : ""
+            } ${
+              businessNavigation.some(
+                (item) =>
+                  item.id === activePage
+              )
+                ? "has-active"
+                : ""
+            }`}
+            onClick={() =>
+              setBusinessOpen(
+                (current) => !current
+              )
+            }
+            aria-expanded={businessOpen}
+          >
+            <span className="mobile-business-icon">
+              ◆
+            </span>
+
+            <span className="mobile-business-copy">
+              <strong>
+                Business Plan
+              </strong>
+
+              <small>
+                Premium business tools
+              </small>
+            </span>
+
+            <span className="mobile-business-arrow">
+              ›
+            </span>
+          </button>
+
+          <div
+            className={`mobile-business-panel ${
+              businessOpen ? "open" : ""
+            }`}
+          >
+            <div className="mobile-business-list">
+              {businessNavigation.map(
+                (item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    disabled={!item.available}
+                    className={`mobile-business-item nav-${item.color} ${
+                      activePage === item.id
+                        ? "active"
+                        : ""
+                    } ${
+                      item.available
+                        ? "available"
+                        : "locked"
+                    }`}
+                    onClick={() =>
+                      handleBusinessNavigation(
+                        item
+                      )
+                    }
+                  >
+                    <span className="mobile-business-item-icon">
+                      {item.icon}
+                    </span>
+
+                    <span className="mobile-business-item-label">
+                      {item.label}
+                    </span>
+
+                    {item.available ? (
+                      <span className="mobile-business-item-arrow">
+                        →
+                      </span>
+                    ) : (
+                      <span className="mobile-business-item-lock">
+                        SOON
+                      </span>
+                    )}
+                  </button>
+                )
+              )}
+            </div>
+          </div>
         </div>
       </aside>
 

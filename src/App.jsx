@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "./App.css";
 
 import { supabase } from "./lib/supabase";
@@ -13,12 +17,22 @@ import Products from "./components/Products";
 import Sales from "./components/Sales";
 import Reports from "./components/Reports";
 import Finance from "./components/Finance";
+import Customers from "./Business/Customers";
+import Invoices from "./Business/Invoices";
 import PublicHome from "./components/PublicHome";
 import Settings from "./components/Settings";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import MobileMenu from "./components/MobileMenu";
 import ResponsivePreview from "./components/ResponsivePreview";
+import PublicInvoice from "./Business/PublicInvoice";
+import AdvancedInventory from "./Business/AdvancedInventory";
+import SalesExpenseTrends from "./Business/SalesExpenseTrends";
+import BusinessTargets from "./Business/BusinessTargets";
+import CreditDebt from "./Business/CreditDebt";
+import Suppliers from "./Business/Suppliers";
+import Exports from "./Business/Exports";
+import BusinessInsights from "./Business/BusinessInsights";
 
 function AppContent() {
   /* =========================================================
@@ -29,6 +43,27 @@ function AppContent() {
   const [supabaseUser, setSupabaseUser] = useState(null);
 
   /* =========================================================
+     UPTREND SUBSCRIPTION STATE
+
+     Every authenticated user has a subscription record.
+
+     Current plans:
+       - free
+       - business
+
+     Current statuses:
+       - active
+       - trialing
+       - expired
+       - cancelled
+  ========================================================= */
+
+  const [subscriptionLoading, setSubscriptionLoading] =
+    useState(false);
+
+  const [subscription, setSubscription] = useState(null);
+
+  /* =========================================================
      PUBLIC / AUTH STATE
   ========================================================= */
 
@@ -37,16 +72,205 @@ function AppContent() {
 
   /* =========================================================
      ACTIVE APP PAGE
+
+     UpTrend remembers the last authenticated page so a
+     browser refresh does NOT automatically return to
+     Dashboard.
   ========================================================= */
 
-  const [activePage, setActivePage] = useState("dashboard");
+  const getSavedActivePage = () => {
+    try {
+      return (
+        sessionStorage.getItem(
+          "uptrend_active_page"
+        ) || "dashboard"
+      );
+    } catch {
+      return "dashboard";
+    }
+  };
+
+  const [activePage, setActivePage] = useState(
+    getSavedActivePage
+  );
+
+  const activePageRef = useRef(
+    getSavedActivePage()
+  );
+
+  /* =========================================================
+     GLOBAL PAGE + SCROLL PERSISTENCE
+
+     Applies to every current and future UpTrend page.
+
+     Remembers:
+       - active page
+       - scroll position for each page
+  ========================================================= */
+
+  useEffect(() => {
+    activePageRef.current = activePage;
+
+    try {
+      sessionStorage.setItem(
+        "uptrend_active_page",
+        activePage
+      );
+    } catch {}
+  }, [activePage]);
+
+  useEffect(() => {
+    const pageKey = activePage;
+
+    const getScrollPosition = () => {
+      const commandMain =
+        document.querySelector(
+          ".command-main"
+        );
+
+      const mainScroll =
+        commandMain?.scrollTop || 0;
+
+      const windowScroll =
+        window.scrollY || 0;
+
+      return Math.max(
+        mainScroll,
+        windowScroll
+      );
+    };
+
+    const saveScrollPosition = () => {
+      try {
+        sessionStorage.setItem(
+          `uptrend_scroll_${pageKey}`,
+          String(getScrollPosition())
+        );
+      } catch {}
+    };
+
+    const restoreScrollPosition = () => {
+      let attempts = 0;
+
+      const restore = () => {
+        attempts += 1;
+
+        let savedPosition = 0;
+
+        try {
+          savedPosition = Number(
+            sessionStorage.getItem(
+              `uptrend_scroll_${pageKey}`
+            ) || 0
+          );
+        } catch {}
+
+        const commandMain =
+          document.querySelector(
+            ".command-main"
+          );
+
+        if (commandMain) {
+          commandMain.scrollTop =
+            savedPosition;
+        }
+
+        window.scrollTo(
+          0,
+          savedPosition
+        );
+
+        /*
+         * Pages such as Sales, Invoices and
+         * Suppliers can render content after
+         * the first frame. Retry several times
+         * so the saved position is restored
+         * after the page has finished rendering.
+         */
+        if (attempts < 10) {
+          requestAnimationFrame(
+            restore
+          );
+        }
+      };
+
+      requestAnimationFrame(restore);
+    };
+
+    const commandMain =
+      document.querySelector(
+        ".command-main"
+      );
+
+    window.addEventListener(
+      "scroll",
+      saveScrollPosition,
+      { passive: true }
+    );
+
+    commandMain?.addEventListener(
+      "scroll",
+      saveScrollPosition,
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "beforeunload",
+      saveScrollPosition
+    );
+
+    restoreScrollPosition();
+
+    return () => {
+      saveScrollPosition();
+
+      window.removeEventListener(
+        "scroll",
+        saveScrollPosition
+      );
+
+      commandMain?.removeEventListener(
+        "scroll",
+        saveScrollPosition
+      );
+
+      window.removeEventListener(
+        "beforeunload",
+        saveScrollPosition
+      );
+    };
+  }, [activePage]);
+
+  /* =========================================================
+     INVOICE NAVIGATION FILTER
+
+     Used when opening invoices directly from a customer.
+     Example:
+       customer + paid
+       customer + overdue
+       customer + outstanding
+  ========================================================= */
+
+  const [invoiceFilter, setInvoiceFilter] = useState({
+    customerId: null,
+    status: null,
+  });
+
+  const [newInvoiceCustomerId, setNewInvoiceCustomerId] =
+    useState(null);
+
+  const [customerToOpenId, setCustomerToOpenId] =
+    useState(null);
+
+  const [supplierToOpenId, setSupplierToOpenId] =
+    useState(null);
 
   /* =========================================================
      NAVIGATION STATES
-     
+
      IMPORTANT:
      sidebarOpen and mobileMenuOpen are SEPARATE.
-     
+
      The mobile floating menu must NEVER open the
      desktop/sidebar drawer.
   ========================================================= */
@@ -65,6 +289,80 @@ function AppContent() {
       return null;
     }
   });
+
+  /* =========================================================
+     LOAD CURRENT USER SUBSCRIPTION
+
+     This reads only the signed-in user's subscription.
+
+     RLS on uptrend_subscriptions protects the table.
+  ========================================================= */
+
+  const loadSubscription = async (user) => {
+    if (!user?.id) {
+      setSubscription(null);
+      setSubscriptionLoading(false);
+      return;
+    }
+
+    setSubscriptionLoading(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("uptrend_subscriptions")
+        .select(
+          `
+            id,
+            user_id,
+            plan,
+            status,
+            started_at,
+            trial_started_at,
+            trial_ends_at,
+            expires_at,
+            created_at,
+            updated_at
+          `
+        )
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error(
+          "Failed to load UpTrend subscription:",
+          error
+        );
+
+        /*
+         * If the subscription cannot be read, do not
+         * accidentally grant Business access.
+         */
+        setSubscription(null);
+        return;
+      }
+
+      if (!data) {
+        console.warn(
+          "No UpTrend subscription found for user:",
+          user.id
+        );
+
+        setSubscription(null);
+        return;
+      }
+
+      setSubscription(data);
+    } catch (error) {
+      console.error(
+        "Unexpected subscription loading error:",
+        error
+      );
+
+      setSubscription(null);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
 
   /* =========================================================
      LOAD REAL SUPABASE SESSION
@@ -96,8 +394,25 @@ function AppContent() {
         if (user) {
           setShowPublicHome(false);
           setPublicPage("dashboard");
-          setActivePage("dashboard");
+
+          try {
+            const savedPage =
+              sessionStorage.getItem(
+                "uptrend_active_page"
+              );
+
+            setActivePage(
+              savedPage || "dashboard"
+            );
+          } catch {
+            setActivePage("dashboard");
+          }
+
+          await loadSubscription(user);
         } else {
+          setSubscription(null);
+          setSubscriptionLoading(false);
+
           setShowPublicHome(true);
           setPublicPage("home");
         }
@@ -110,6 +425,9 @@ function AppContent() {
         if (!mounted) return;
 
         setSupabaseUser(null);
+        setSubscription(null);
+        setSubscriptionLoading(false);
+
         setShowPublicHome(true);
         setPublicPage("home");
       } finally {
@@ -122,7 +440,7 @@ function AppContent() {
     loadSession();
 
     const {
-      data: { subscription },
+      data: { subscription: authSubscription },
     } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         if (!mounted) return;
@@ -134,8 +452,33 @@ function AppContent() {
         if (user) {
           setShowPublicHome(false);
           setPublicPage("dashboard");
-          setActivePage("dashboard");
+
+          try {
+            const savedPage =
+              sessionStorage.getItem(
+                "uptrend_active_page"
+              );
+
+            setActivePage(
+              savedPage || "dashboard"
+            );
+          } catch {
+            setActivePage("dashboard");
+          }
+
+          /*
+           * Delay the subscription query slightly so that
+           * Supabase auth state processing completes first.
+           */
+          setTimeout(() => {
+            if (mounted) {
+              loadSubscription(user);
+            }
+          }, 0);
         } else {
+          setSubscription(null);
+          setSubscriptionLoading(false);
+
           /*
            * No Supabase session = public Home.
            */
@@ -152,7 +495,7 @@ function AppContent() {
 
     return () => {
       mounted = false;
-      subscription.unsubscribe();
+      authSubscription.unsubscribe();
     };
   }, []);
 
@@ -173,7 +516,7 @@ function AppContent() {
 
   /* =========================================================
      OPEN DASHBOARD
-     
+
      Only an existing Supabase session can open
      the dashboard.
   ========================================================= */
@@ -210,6 +553,8 @@ function AppContent() {
 
       setSidebarOpen(false);
       setMobileMenuOpen(false);
+
+      await loadSubscription(session.user);
     } catch (error) {
       console.error(
         "Unable to verify dashboard access:",
@@ -306,6 +651,8 @@ function AppContent() {
 
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    await loadSubscription(session.user);
   };
 
   /* =========================================================
@@ -334,6 +681,8 @@ function AppContent() {
 
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    await loadSubscription(session.user);
   };
 
   /* =========================================================
@@ -368,6 +717,8 @@ function AppContent() {
       );
 
       setSupabaseUser(null);
+      setSubscription(null);
+      setSubscriptionLoading(false);
       setShowPublicHome(true);
       setPublicPage("home");
       setActivePage("dashboard");
@@ -448,8 +799,123 @@ function AppContent() {
   };
 
   /* =========================================================
+     OPEN CUSTOMER INVOICES
+
+     Customers can open the invoice page with an optional
+     customer and status filter.
+  ========================================================= */
+
+  const openCustomerInvoices = ({
+    customerId,
+    status = null,
+  }) => {
+    setInvoiceFilter({
+      customerId: customerId || null,
+      status: status || null,
+    });
+
+    setActivePage("invoices");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const clearInvoiceFilter = () => {
+    setInvoiceFilter({
+      customerId: null,
+      status: null,
+    });
+  };
+
+  const openNewCustomerInvoice = (customerId) => {
+    if (!customerId) {
+      return;
+    }
+
+    setInvoiceFilter({
+      customerId: null,
+      status: null,
+    });
+
+    setNewInvoiceCustomerId(customerId);
+    setActivePage("invoices");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const clearNewInvoiceCustomer = () => {
+    setNewInvoiceCustomerId(null);
+  };
+
+  const openCustomerProfile = (customerId) => {
+    if (!customerId) {
+      return;
+    }
+
+    setInvoiceFilter({
+      customerId: null,
+      status: null,
+    });
+
+    setNewInvoiceCustomerId(null);
+    setCustomerToOpenId(customerId);
+    setActivePage("customers");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const clearCustomerToOpen = () => {
+    setCustomerToOpenId(null);
+  };
+
+  const openSupplierProfile = (supplierId) => {
+    if (!supplierId) {
+      return;
+    }
+
+    setSupplierToOpenId(supplierId);
+    setActivePage("suppliers");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const clearSupplierToOpen = () => {
+    setSupplierToOpenId(null);
+  };
+
+  const handleSetActivePage = (page) => {
+    /*
+     * Direct navigation to another page clears any
+     * customer invoice filter.
+     *
+     * When opening invoices through openCustomerInvoices(),
+     * the filter is already established before the page opens.
+     */
+    if (page !== "invoices") {
+      clearInvoiceFilter();
+    }
+
+    setActivePage(page);
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  /* =========================================================
+     PUBLIC INVOICE VIEWER
+
+     This route is intentionally checked before the
+     authentication gate so customers can open a shared
+     invoice without having an UpTrend account.
+  ========================================================= */
+
+  if (
+    window.location.pathname.startsWith("/invoice/")
+  ) {
+    return <PublicInvoice />;
+  }
+
+  /* =========================================================
      RESPONSIVE DEVELOPMENT PREVIEW
-     
+
      This route intentionally loads before authentication so
      the developer can inspect the real UpTrend application
      inside an exact viewport-size iframe.
@@ -459,7 +925,7 @@ function AppContent() {
     return <ResponsivePreview />;
   }
 
-/* =========================================================
+  /* =========================================================
      AUTH LOADING
   ========================================================= */
 
@@ -520,6 +986,32 @@ function AppContent() {
   }
 
   /* =========================================================
+     SUBSCRIPTION LOADING
+  ========================================================= */
+
+  if (subscriptionLoading) {
+    return (
+      <div className="command-app">
+        <main className="command-main">
+          <section className="command-content">
+            <div
+              style={{
+                minHeight: "100vh",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--muted)",
+                fontSize: "13px",
+              }}
+            >
+              Loading your UpTrend plan...
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  /* =========================================================
      RENDER AUTHENTICATED APP PAGE
   ========================================================= */
 
@@ -532,6 +1024,7 @@ function AppContent() {
             onRecordExpense={handleRecordExpense}
             onAddProduct={handleAddProduct}
             onViewReports={goToReports}
+            subscription={subscription}
           />
         );
 
@@ -547,6 +1040,7 @@ function AppContent() {
           <RecordSale
             onBack={goToDashboard}
             editingSale={editingSale}
+            subscription={subscription}
           />
         );
 
@@ -554,17 +1048,102 @@ function AppContent() {
         return <Expenses />;
 
       case "products":
-        return <Products />;
+        return (
+          <Products
+            onOpenSupplier={openSupplierProfile}
+          />
+        );
+
+      case "business-insights":
+        return (
+          <BusinessInsights
+            sales={[]}
+            products={[]}
+            expenses={[]}
+          />
+        );
+
+      case "advanced-inventory":
+        return (
+          <AdvancedInventory
+            subscription={subscription}
+          />
+        );
+
+      case "sales-expense-trends":
+        return (
+          <SalesExpenseTrends
+            subscription={subscription}
+          />
+        );
+
+      case "business-targets":
+        return (
+          <BusinessTargets
+            subscription={subscription}
+          />
+        );
+
+      case "credit-debt":
+        return (
+          <CreditDebt
+            subscription={subscription}
+          />
+        );
+
+      case "suppliers":
+        return (
+          <Suppliers
+            subscription={subscription}
+            supplierToOpenId={supplierToOpenId}
+            onSupplierOpenHandled={clearSupplierToOpen}
+          />
+        );
+
+      case "exports":
+        return (
+          <Exports
+            subscription={subscription}
+          />
+        );
 
       case "reports":
-        return <Reports />;
+        return (
+          <Reports
+            subscription={subscription}
+          />
+        );
 
       case "finance":
         return <Finance />;
 
+      case "customers":
+        return (
+          <Customers
+            subscription={subscription}
+            onOpenInvoices={openCustomerInvoices}
+            onCreateInvoice={openNewCustomerInvoice}
+            customerToOpenId={customerToOpenId}
+            onCustomerOpenHandled={clearCustomerToOpen}
+          />
+        );
+
+      case "invoices":
+        return (
+          <Invoices
+            subscription={subscription}
+            invoiceFilter={invoiceFilter}
+            onClearFilter={clearInvoiceFilter}
+            newInvoiceCustomerId={newInvoiceCustomerId}
+            onNewInvoiceHandled={clearNewInvoiceCustomer}
+            onOpenCustomer={openCustomerProfile}
+          />
+        );
+
       case "settings":
         return (
           <Settings
+            subscription={subscription}
             onLogout={handleLogout}
           />
         );
@@ -576,6 +1155,7 @@ function AppContent() {
             onRecordExpense={handleRecordExpense}
             onAddProduct={handleAddProduct}
             onViewReports={goToReports}
+            subscription={subscription}
           />
         );
     }
@@ -592,7 +1172,7 @@ function AppContent() {
           This has its OWN state. */}
       <Sidebar
         activePage={activePage}
-        setActivePage={setActivePage}
+        setActivePage={handleSetActivePage}
         isOpen={sidebarOpen}
         setIsOpen={setSidebarOpen}
         onLogout={handleLogout}
@@ -614,11 +1194,11 @@ function AppContent() {
 
       {/* MOBILE FLOATING POP-UP
           This has a completely SEPARATE state.
-          
+
           Opening this will NOT open Sidebar. */}
       <MobileMenu
         activePage={activePage}
-        setActivePage={setActivePage}
+        setActivePage={handleSetActivePage}
         isOpen={mobileMenuOpen}
         setIsOpen={setMobileMenuOpen}
       />

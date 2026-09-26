@@ -1240,9 +1240,9 @@ export default function PublicHome({
     </h2>
 
     <p>
-      Choose a plan that fits your business.
+      Start free and upgrade when you need more.
       <br />
-      No hidden fees. Upgrade whenever you need.
+      No complicated plans. No hidden fees.
     </p>
 
     <div className="pricing-toggle">
@@ -1288,7 +1288,7 @@ export default function PublicHome({
 
   <div className="pricing-grid premium-pricing-grid">
 
-    {/* STARTER */}
+    {/* FREE */}
     <article className="pricing-card premium-pricing-card">
 
       <div className="pricing-orbit pricing-orbit-one" />
@@ -1298,7 +1298,7 @@ export default function PublicHome({
           <span>↗</span>
         </div>
 
-        <span>Starter</span>
+        <span>Free</span>
 
         <p>
           Everything you need to start
@@ -1323,12 +1323,37 @@ export default function PublicHome({
       <ul>
         <li>
           <CheckIcon />
-          Up to 100 products
+          Dashboard &amp; business overview
+        </li>
+
+        <li>
+          <CheckIcon />
+          Record sales
+        </li>
+
+        <li>
+          <CheckIcon />
+          Products &amp; inventory
+        </li>
+
+        <li>
+          <CheckIcon />
+          Expense tracking
         </li>
 
         <li>
           <CheckIcon />
           Basic reports
+        </li>
+
+        <li>
+          <CheckIcon />
+          Gross-profit tracking
+        </li>
+
+        <li>
+          <CheckIcon />
+          Low-stock alerts
         </li>
 
         <li>
@@ -1356,7 +1381,7 @@ export default function PublicHome({
     <article className="pricing-card premium-pricing-card premium-business-card">
 
       <div className="premium-popular">
-        MOST POPULAR
+        BUSINESS
       </div>
 
       <div className="pricing-card-glow" />
@@ -1369,8 +1394,8 @@ export default function PublicHome({
         <span>Business</span>
 
         <p>
-          For growing businesses that
-          need more control.
+          For growing businesses that need
+          deeper control, insights and tools.
         </p>
       </div>
 
@@ -1391,7 +1416,17 @@ export default function PublicHome({
       <ul>
         <li>
           <CheckIcon />
+          Everything in Free
+        </li>
+
+        <li>
+          <CheckIcon />
           Unlimited products
+        </li>
+
+        <li>
+          <CheckIcon />
+          Business Insights
         </li>
 
         <li>
@@ -1401,7 +1436,82 @@ export default function PublicHome({
 
         <li>
           <CheckIcon />
-          Multiple users
+          CSV, Excel &amp; PDF exports
+        </li>
+
+        <li>
+          <CheckIcon />
+          Professional receipts &amp; invoices
+        </li>
+
+        <li>
+          <CheckIcon />
+          Customer management
+        </li>
+
+        <li>
+          <CheckIcon />
+          Credit &amp; debt tracking
+        </li>
+
+        <li>
+          <CheckIcon />
+          Supplier management
+        </li>
+
+        <li>
+          <CheckIcon />
+          Inventory intelligence
+        </li>
+
+        <li>
+          <CheckIcon />
+          Sales &amp; expense trends
+        </li>
+
+        <li>
+          <CheckIcon />
+          Business targets
+        </li>
+
+        <li>
+          <CheckIcon />
+          Multiple users &amp; managers
+        </li>
+
+        <li>
+          <CheckIcon />
+          Multiple branches
+        </li>
+
+        <li>
+          <CheckIcon />
+          Branch inventory &amp; performance
+        </li>
+
+        <li>
+          <CheckIcon />
+          Branch comparison
+        </li>
+
+        <li>
+          <CheckIcon />
+          Advanced permissions
+        </li>
+
+        <li>
+          <CheckIcon />
+          Consolidated reports
+        </li>
+
+        <li>
+          <CheckIcon />
+          Advanced audit history
+        </li>
+
+        <li>
+          <CheckIcon />
+          Automated backups
         </li>
 
         <li>
@@ -1419,78 +1529,16 @@ export default function PublicHome({
       </button>
     </article>
 
-
-    {/* ENTERPRISE */}
-    <article className="pricing-card premium-pricing-card">
-
-      <div className="pricing-card-top">
-        <div className="pricing-plan-icon">
-          <span>◆</span>
-        </div>
-
-        <span>Enterprise</span>
-
-        <p>
-          Powerful tools for larger
-          businesses and teams.
-        </p>
-      </div>
-
-      <div className="pricing-price">
-        <div className="price-monthly">
-          <strong>₦9,900</strong>
-          <span>/month</span>
-        </div>
-
-        <div className="price-yearly">
-          <strong>₦95,040</strong>
-          <span>/year</span>
-        </div>
-      </div>
-
-      <div className="pricing-divider" />
-
-      <ul>
-        <li>
-          <CheckIcon />
-          All Business features
-        </li>
-
-        <li>
-          <CheckIcon />
-          Custom integrations
-        </li>
-
-        <li>
-          <CheckIcon />
-          Dedicated support
-        </li>
-
-        <li>
-          <CheckIcon />
-          Advanced analytics
-        </li>
-      </ul>
-
-      <button
-        className="pricing-action"
-        onClick={onOpenSignUp}
-      >
-        Contact Sales
-        <span>→</span>
-      </button>
-    </article>
-
   </div>
 
   <div className="pricing-bottom-note">
     <span>✓</span>
-    Start free. Upgrade when your business grows.
+    Start free. Upgrade only when your business needs more.
   </div>
 </section>
 
 
-      {/* =====================================================
+{/* =====================================================
           TESTIMONIALS
       ===================================================== */}
 

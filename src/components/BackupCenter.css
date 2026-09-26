@@ -1,0 +1,507 @@
+.backup-center {
+  width: 100%;
+  min-width: 0;
+}
+
+.backup-center-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(214, 174, 67, 0.28);
+  border-radius: 20px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(214, 174, 67, 0.09),
+      rgba(7, 12, 9, 0.96)
+    );
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.22),
+    0 0 35px rgba(214, 174, 67, 0.05);
+}
+
+.backup-center-icon,
+.backup-action-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  color: #d6ae43;
+  background: rgba(214, 174, 67, 0.1);
+  border: 1px solid rgba(214, 174, 67, 0.2);
+}
+
+.backup-center-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+}
+
+.backup-center-eyebrow,
+.backup-section-heading span,
+.backup-center-status span {
+  display: block;
+  color: #d6ae43;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.backup-center-hero h3 {
+  margin: 5px 0 5px;
+  color: #fff;
+  font-size: 24px;
+}
+
+.backup-center-hero p {
+  margin: 0;
+  max-width: 650px;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.backup-center-status {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.backup-status-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #d6ae43;
+  background: rgba(214, 174, 67, 0.09);
+}
+
+.backup-center-status strong {
+  display: block;
+  margin-top: 4px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.backup-center-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.backup-action-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.backup-action-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 15px;
+  border-radius: 13px;
+}
+
+.backup-action-copy {
+  flex: 1;
+}
+
+.backup-action-copy strong {
+  display: block;
+  color: #fff;
+  font-size: 15px;
+}
+
+.backup-action-copy p {
+  margin: 7px 0 18px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.backup-primary-button,
+.backup-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 15px;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.backup-primary-button {
+  border: 0;
+  color: #171007;
+  background: linear-gradient(
+    135deg,
+    #d6ae43,
+    #f0cc67
+  );
+}
+
+.backup-secondary-button {
+  color: #d6ae43;
+  border: 1px solid rgba(214, 174, 67, 0.3);
+  background: rgba(214, 174, 67, 0.06);
+}
+
+.backup-included,
+.backup-history {
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.backup-section-heading h4 {
+  margin: 5px 0 16px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.backup-data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.backup-data-grid div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.backup-data-grid span {
+  color: #d6ae43;
+  font-weight: 900;
+}
+
+.backup-data-grid strong {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+}
+
+.backup-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(214, 174, 67, 0.18);
+  border-radius: 14px;
+  color: #d6ae43;
+  background: rgba(214, 174, 67, 0.045);
+}
+
+.backup-warning p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.backup-history-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.backup-history-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #d6ae43;
+  background: rgba(214, 174, 67, 0.08);
+}
+
+.backup-history-item strong {
+  display: block;
+  color: #fff;
+  font-size: 12px;
+}
+
+.backup-history-item span {
+  display: block;
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .backup-center-hero {
+    align-items: flex-start;
+    padding: 18px;
+  }
+
+  .backup-center-hero h3 {
+    font-size: 20px;
+  }
+
+  .backup-center-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .backup-data-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   UPTREND — BUSINESS BACKUPS
+   LIGHT MODE
+   QUIET / SECURE / SETTINGS STYLE
+   DARK MODE UNTOUCHED
+========================================================= */
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+html[data-theme="light"] .backup-center-hero {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(21, 154, 80, 0.09),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #dfeae3,
+      #d9e7df
+    );
+
+  border-color: rgba(21, 154, 80, 0.14);
+
+  box-shadow:
+    0 16px 40px rgba(16, 31, 23, 0.055);
+}
+
+html[data-theme="light"] .backup-center-icon,
+html[data-theme="light"] .backup-action-icon {
+  color: #08783b;
+
+  background: rgba(21, 154, 80, 0.075);
+  border-color: rgba(21, 154, 80, 0.13);
+}
+
+html[data-theme="light"] .backup-center-eyebrow,
+html[data-theme="light"] .backup-section-heading span,
+html[data-theme="light"] .backup-center-status span {
+  color: #08783b;
+}
+
+html[data-theme="light"] .backup-center-hero h3 {
+  color: #111814;
+}
+
+html[data-theme="light"] .backup-center-hero p {
+  color: #596960;
+}
+
+
+/* =========================================================
+   BACKUP STATUS
+========================================================= */
+
+html[data-theme="light"] .backup-center-status {
+  background:
+    linear-gradient(
+      135deg,
+      #dce9e0,
+      #d7e5dc
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+}
+
+html[data-theme="light"] .backup-status-icon {
+  color: #08783b;
+  background: rgba(21, 154, 80, 0.075);
+}
+
+html[data-theme="light"] .backup-center-status strong {
+  color: #17221c;
+}
+
+
+/* =========================================================
+   ACTION CARDS
+========================================================= */
+
+html[data-theme="light"] .backup-action-card {
+  background:
+    linear-gradient(
+      145deg,
+      #e1ebe4,
+      #dce8e0
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+
+  box-shadow:
+    0 12px 30px rgba(16, 31, 23, 0.035);
+}
+
+html[data-theme="light"] .backup-action-copy strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .backup-action-copy p {
+  color: #64736b;
+}
+
+
+/* =========================================================
+   PRIMARY BACKUP BUTTON
+========================================================= */
+
+html[data-theme="light"] .backup-primary-button {
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #159a50,
+      #08783b
+    );
+
+  box-shadow:
+    0 7px 18px rgba(21, 154, 80, 0.13);
+}
+
+
+/* =========================================================
+   SECONDARY BACKUP BUTTON
+========================================================= */
+
+html[data-theme="light"] .backup-secondary-button {
+  color: #08783b;
+
+  border-color: rgba(21, 154, 80, 0.18);
+
+  background:
+    rgba(21, 154, 80, 0.055);
+}
+
+
+/* =========================================================
+   INCLUDED DATA
+========================================================= */
+
+html[data-theme="light"] .backup-included,
+html[data-theme="light"] .backup-history {
+  background:
+    linear-gradient(
+      145deg,
+      #e1ebe4,
+      #dce8e0
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+}
+
+html[data-theme="light"] .backup-section-heading h4 {
+  color: #17221c;
+}
+
+
+/* =========================================================
+   DATA GRID
+========================================================= */
+
+html[data-theme="light"] .backup-data-grid div {
+  background:
+    #d6e5dc;
+
+  border: 1px solid rgba(16, 31, 23, 0.045);
+}
+
+html[data-theme="light"] .backup-data-grid span {
+  color: #08783b;
+}
+
+html[data-theme="light"] .backup-data-grid strong {
+  color: #34483d;
+}
+
+
+/* =========================================================
+   WARNING
+========================================================= */
+
+html[data-theme="light"] .backup-warning {
+  color: #08783b;
+
+  background:
+    rgba(21, 154, 80, 0.045);
+
+  border-color:
+    rgba(21, 154, 80, 0.13);
+}
+
+html[data-theme="light"] .backup-warning p {
+  color: #64736b;
+}
+
+
+/* =========================================================
+   BACKUP HISTORY
+========================================================= */
+
+html[data-theme="light"] .backup-history-item {
+  border-top-color: rgba(16, 31, 23, 0.065);
+}
+
+html[data-theme="light"] .backup-history-icon {
+  color: #08783b;
+
+  background:
+    rgba(21, 154, 80, 0.075);
+}
+
+html[data-theme="light"] .backup-history-item strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .backup-history-item span {
+  color: #718078;
+}
+
+
+/* =========================================================
+   SUBTLE GREEN SECURITY IDENTITY
+========================================================= */
+
+html[data-theme="light"] .backup-center-hero,
+html[data-theme="light"] .backup-center-status,
+html[data-theme="light"] .backup-action-card,
+html[data-theme="light"] .backup-included,
+html[data-theme="light"] .backup-history {
+  box-shadow:
+    0 12px 32px rgba(16, 31, 23, 0.035);
+}

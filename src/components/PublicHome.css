@@ -9667,3 +9667,164 @@
       0 0 25px rgba(69,232,134,.05) !important;
   }
 }
+/* =========================================================
+   UPTREND — FREE + BUSINESS PRICING
+   Only two plans for the current product
+========================================================= */
+
+.premium-pricing-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(900px, 100%);
+  align-items: stretch;
+}
+
+/* FREE PLAN — GREEN IDENTITY */
+
+.premium-pricing-grid > .premium-pricing-card:first-child {
+  border-color: rgba(69, 232, 134, 0.18) !important;
+}
+
+.premium-pricing-grid > .premium-pricing-card:first-child:hover {
+  border-color: rgba(69, 232, 134, 0.42) !important;
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, 0.6),
+    0 0 50px rgba(69, 232, 134, 0.08),
+    inset 0 1px rgba(255, 255, 255, 0.07) !important;
+}
+
+/* BUSINESS PLAN — GOLD + BLACK */
+
+.premium-business-card {
+  min-height: 100%;
+  border-color: rgba(214, 174, 67, 0.48) !important;
+
+  background:
+    radial-gradient(
+      circle at 85% 0%,
+      rgba(214, 174, 67, 0.08),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(18, 29, 23, 0.98),
+      rgba(5, 8, 6, 1)
+    ) !important;
+
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, 0.62),
+    0 0 55px rgba(214, 174, 67, 0.1),
+    inset 0 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+.premium-business-card:hover {
+  border-color: rgba(214, 174, 67, 0.75) !important;
+
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.68),
+    0 0 65px rgba(214, 174, 67, 0.14),
+    inset 0 1px rgba(255, 255, 255, 0.09) !important;
+}
+
+/* Business feature list can be much longer now */
+
+.premium-business-card ul {
+  gap: 13px;
+}
+
+.premium-business-card li {
+  line-height: 1.35;
+}
+
+/* Keep both cards visually balanced */
+
+.premium-pricing-grid > .premium-pricing-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.premium-pricing-grid > .premium-pricing-card > .pricing-action {
+  margin-top: auto;
+}
+
+/* Business CTA remains premium gold */
+
+.premium-business-card .gold-action {
+  background:
+    linear-gradient(
+      135deg,
+      #d6ae43,
+      #f0cc67
+    ) !important;
+
+  color: #151007 !important;
+}
+
+.premium-business-card .gold-action:hover {
+  background:
+    linear-gradient(
+      135deg,
+      #f0cc67,
+      #d6ae43
+    ) !important;
+
+  box-shadow:
+    0 18px 42px rgba(214, 174, 67, 0.28);
+}
+
+/* Business badge */
+
+.premium-business-card .premium-popular {
+  background:
+    linear-gradient(
+      135deg,
+      #d6ae43,
+      #f0ce68
+    );
+
+  color: #171007;
+}
+
+/* Two-column desktop/tablet pricing */
+
+@media (max-width: 900px) {
+  .premium-pricing-grid {
+    grid-template-columns: 1fr;
+    width: min(460px, 100%);
+  }
+
+  .premium-business-card {
+    transform: none;
+  }
+
+  .premium-business-card:hover {
+    transform: translateY(-10px);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 760px) {
+  .premium-pricing-grid {
+    width: 100%;
+  }
+
+  .premium-pricing-card {
+    min-height: auto;
+  }
+
+  .premium-business-card {
+    transform: none;
+  }
+
+  .premium-business-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .premium-business-card ul {
+    gap: 12px;
+  }
+
+  .premium-business-card li {
+    font-size: 12px;
+  }
+}

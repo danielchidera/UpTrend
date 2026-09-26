@@ -1,0 +1,682 @@
+import "./Products.css";
+
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "../lib/supabase";
+
+function Products() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [form, setForm] = useState({
+    name: "",
+    costPrice: "",
+    stock: "",
+    lowStockAt: "5",
+  });
+
+  const [editingId, setEditingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadProducts = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          if (mounted) {
+            setProducts([]);
+            setError("Please sign in to manage your products.");
+          }
+          return;
+        }
+
+        const { data, error: fetchError } = await supabase
+          .from("products")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", {
+            ascending: false,
+          });
+
+        if (fetchError) {
+          throw fetchError;
+        }
+
+        if (mounted) {
+          setProducts(
+            (data || []).map((product) => ({
+              id: product.id,
+              name: product.name,
+              costPrice: Number(product.cost_price || 0),
+              stock: Number(product.stock || 0),
+              lowStockAt: Number(product.low_stock_at ?? 5),
+            }))
+          );
+        }
+      } catch (loadError) {
+        console.error("Products load error:", loadError);
+
+        if (mounted) {
+          setError(
+            "We couldn't load your products. Please try again."
+          );
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadProducts();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const updateField = (field, value) => {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  };
+
+  const resetForm = () => {
+    setForm({
+      name: "",
+      costPrice: "",
+        stock: "",
+      lowStockAt: "5",
+    });
+
+    setEditingId(null);
+    setShowForm(false);
+  };
+
+  const formatMoney = (value) =>
+    `₦${Number(value || 0).toLocaleString()}`;
+
+  const totals = useMemo(() => {
+    const inventoryValue = products.reduce(
+      (total, product) =>
+        total +
+        Number(product.costPrice) *
+          Number(product.stock),
+      0
+    );
+
+    const stockUnits = products.reduce(
+      (total, product) =>
+        total + Number(product.stock),
+      0
+    );
+
+    const lowStock = products.filter(
+      (product) =>
+        Number(product.stock) <=
+        Number(product.lowStockAt)
+    ).length;
+
+    return {
+      inventoryValue,
+      stockUnits,
+      lowStock,
+    };
+  }, [products]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (
+      !form.name.trim() ||
+      !form.costPrice ||
+      form.stock === ""
+    ) {
+      setError("Please complete the required product fields.");
+      return;
+    }
+
+    setError("");
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setError("Your session has expired. Please sign in again.");
+        return;
+      }
+
+      const productData = {
+        name: form.name.trim(),
+        cost_price: Number(form.costPrice),
+        stock: Number(form.stock),
+        low_stock_at: Number(form.lowStockAt) || 5,
+      };
+
+      if (editingId) {
+        const { data, error: updateError } = await supabase
+          .from("products")
+          .update(productData)
+          .eq("id", editingId)
+          .eq("user_id", user.id)
+          .select()
+          .single();
+
+        if (updateError) {
+          throw updateError;
+        }
+
+        const updatedProduct = {
+          id: data.id,
+          name: data.name,
+          costPrice: Number(data.cost_price || 0),
+          stock: Number(data.stock || 0),
+          lowStockAt: Number(data.low_stock_at ?? 5),
+        };
+
+        setProducts((current) =>
+          current.map((item) =>
+            item.id === editingId
+              ? updatedProduct
+              : item
+          )
+        );
+      } else {
+        const { data, error: insertError } = await supabase
+          .from("products")
+          .insert({
+            ...productData,
+            user_id: user.id,
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          throw insertError;
+        }
+
+        const newProduct = {
+          id: data.id,
+          name: data.name,
+          costPrice: Number(data.cost_price || 0),
+          stock: Number(data.stock || 0),
+          lowStockAt: Number(data.low_stock_at ?? 5),
+        };
+
+        setProducts((current) => [
+          newProduct,
+          ...current,
+        ]);
+      }
+
+      resetForm();
+    } catch (saveError) {
+      console.error("Product save error:", saveError);
+
+      setError(
+        "We couldn't save the product. Please try again."
+      );
+    }
+  };
+
+  const handleEdit = (product) => {
+    setForm({
+      name: product.name,
+      costPrice: String(product.costPrice),
+      stock: String(product.stock),
+      lowStockAt: String(
+        product.lowStockAt
+      ),
+    });
+
+    setEditingId(product.id);
+    setShowForm(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handleDelete = async (id) => {
+    const product = products.find(
+      (item) => item.id === id
+    );
+
+    if (!product) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Delete ${product.name} from your products?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setError("");
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setError("Your session has expired. Please sign in again.");
+        return;
+      }
+
+      const { error: deleteError } = await supabase
+        .from("products")
+        .delete()
+        .eq("id", id)
+        .eq("user_id", user.id);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      setProducts((current) =>
+        current.filter((item) => item.id !== id)
+      );
+
+      if (editingId === id) {
+        resetForm();
+      }
+    } catch (deleteError) {
+      console.error("Product delete error:", deleteError);
+
+      setError(
+        "We couldn't delete the product. Please try again."
+      );
+    }
+  };
+
+  const getStockStatus = (product) => {
+    const stock = Number(product.stock);
+    const low = Number(product.lowStockAt);
+
+    if (stock <= low) {
+      return {
+        label: "Low stock",
+        className: "stock-low",
+      };
+    }
+
+    if (stock <= low * 2) {
+      return {
+        label: "Watch",
+        className: "stock-watch",
+      };
+    }
+
+    return {
+      label: "Healthy",
+      className: "stock-good",
+    };
+  };
+
+  return (
+    <div className="products-page">
+      <div className="products-page-top">
+        <div>
+          <div className="mini-label">
+            INVENTORY CONTROL
+          </div>
+
+          <h2>Products & Stock</h2>
+
+          <p>
+            Manage your products, fixed costs
+            and available stock.
+          </p>
+        </div>
+
+        <button
+          className="products-add-button"
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+        >
+          <span>+</span>
+          Add Product
+        </button>
+      </div>
+
+      <section className="inventory-overview">
+        <div className="inventory-stat premium-card">
+          <div className="inventory-stat-icon">
+            ▣
+          </div>
+
+          <div>
+            <span>Products</span>
+            <strong>{products.length}</strong>
+            <small>Active products</small>
+          </div>
+        </div>
+
+        <div className="inventory-stat premium-card">
+          <div className="inventory-stat-icon">
+            #
+          </div>
+
+          <div>
+            <span>Stock Units</span>
+            <strong>
+              {totals.stockUnits}
+            </strong>
+            <small>Total units available</small>
+          </div>
+        </div>
+
+        <div className="inventory-stat premium-card">
+          <div className="inventory-stat-icon">
+            ₦
+          </div>
+
+          <div>
+            <span>Inventory Value</span>
+            <strong>
+              {formatMoney(
+                totals.inventoryValue
+              )}
+            </strong>
+            <small>At cost price</small>
+          </div>
+        </div>
+
+        <div className="inventory-stat premium-card">
+          <div className="inventory-stat-icon warning">
+            !
+          </div>
+
+          <div>
+            <span>Low Stock</span>
+            <strong>
+              {totals.lowStock}
+            </strong>
+            <small>Needs attention</small>
+          </div>
+        </div>
+      </section>
+
+      {showForm && (
+        <section className="product-form-card premium-card">
+          <div className="product-form-heading">
+            <div>
+              <div className="mini-label">
+                {editingId
+                  ? "UPDATE PRODUCT"
+                  : "NEW PRODUCT"}
+              </div>
+
+              <h3>
+                {editingId
+                  ? "Edit product"
+                  : "Add a product"}
+              </h3>
+            </div>
+
+            <button
+              className="product-close"
+              onClick={resetForm}
+            >
+              ×
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="product-form-grid">
+              <label className="product-field">
+                <span>Product name</span>
+
+                <input
+                  type="text"
+                  placeholder="e.g. Sneakers"
+                  value={form.name}
+                  onChange={(event) =>
+                    updateField(
+                      "name",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+
+              <label className="product-field">
+                <span>Cost price per item</span>
+
+                <div className="product-money-input">
+                  <b>₦</b>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="0"
+                    value={form.costPrice}
+                    onChange={(event) =>
+                      updateField(
+                        "costPrice",
+                        event.target.value
+                      )
+                    }
+                  />
+                </div>
+              </label>
+
+
+              <label className="product-field">
+                <span>Current stock</span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="0"
+                  value={form.stock}
+                  onChange={(event) =>
+                    updateField(
+                      "stock",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+
+              <label className="product-field">
+                <span>Low-stock alert at</span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.lowStockAt}
+                  onChange={(event) =>
+                    updateField(
+                      "lowStockAt",
+                      event.target.value
+                    )
+                  }
+                />
+              </label>
+            </div>
+
+            <div className="product-form-footer">
+              <p>
+                The cost price becomes the fixed
+                cost used automatically when this
+                product is sold.
+              </p>
+
+              <div>
+                <button
+                  type="button"
+                  className="product-cancel"
+                  onClick={resetForm}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="product-save"
+                >
+                  {editingId
+                    ? "Update Product"
+                    : "Save Product"}
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
+      )}
+
+      <section className="products-list-card premium-card">
+        <div className="panel-heading">
+          <div>
+            <div className="mini-label">
+              PRODUCT CATALOG
+            </div>
+
+            <h2>Inventory</h2>
+          </div>
+
+          <span className="products-count">
+            {products.length} product
+            {products.length === 1
+              ? ""
+              : "s"}
+          </span>
+        </div>
+
+        {products.length === 0 ? (
+          <div className="products-empty">
+            <div>▣</div>
+
+            <strong>
+              No products yet
+            </strong>
+
+            <span>
+              Add your first product to start
+              managing inventory.
+            </span>
+
+            <button
+              onClick={() => {
+                resetForm();
+                setShowForm(true);
+              }}
+            >
+              + Add Product
+            </button>
+          </div>
+        ) : (
+          <div className="products-table-wrap">
+            <table className="products-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Cost</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {products.map((product) => {
+                  const status =
+                    getStockStatus(product);
+
+                  return (
+                    <tr key={product.id}>
+                      <td>
+                        <div className="product-name-cell">
+                          <div className="product-letter">
+                            {product.name
+                              .charAt(0)
+                              .toUpperCase()}
+                          </div>
+
+                          <strong>
+                            {product.name}
+                          </strong>
+                        </div>
+                      </td>
+
+                      <td>
+                        {formatMoney(
+                          product.costPrice
+                        )}
+                      </td>
+
+
+                      <td>
+                        <strong>
+                          {product.stock}
+                        </strong>
+                      </td>
+
+                      <td>
+                        <span
+                          className={`stock-badge ${status.className}`}
+                        >
+                          <i />
+                          {status.label}
+                        </span>
+                      </td>
+
+                      <td>
+                        <div className="product-actions">
+                          <button
+                            onClick={() =>
+                              handleEdit(
+                                product
+                              )
+                            }
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            className="product-delete"
+                            onClick={() =>
+                              handleDelete(
+                                product.id
+                              )
+                            }
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+export default Products;

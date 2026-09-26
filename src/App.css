@@ -32,35 +32,50 @@
 }
 
 /* =========================================================
-   LIGHT THEME
+   UPTREND — LIGHT MODE
+   SOFT GREEN APPLICATION SURFACE
+   ---------------------------------------------------------
+   Dark Mode is untouched.
 ========================================================= */
 
 html[data-theme="light"] {
-  --bg: #f5f7f6;
-  --bg-soft: #eef2ef;
-  --panel: #ffffff;
-  --panel-2: #f1f4f2;
-  --panel-3: #e7ece9;
+  /* Main application background */
+  --bg: #dcebe2;
+  --bg-soft: #d5e6dc;
 
-  --line: rgba(15, 35, 25, 0.09);
-  --line-strong: rgba(15, 35, 25, 0.15);
+  /* No pure-white application panels */
+  --panel: #e9f3ed;
+  --panel-2: #e2eee7;
+  --panel-3: #d9e9df;
 
+  /* Borders */
+  --line: rgba(22, 70, 42, 0.09);
+  --line-strong: rgba(22, 70, 42, 0.16);
+
+  /* Text */
   --text: #17221c;
   --muted: #68766e;
-  --muted-2: #89958e;
+  --muted-2: #829087;
 
-  --green: #20a957;
-  --green-bright: #168b45;
-  --green-dark: #14783d;
-  --green-soft: rgba(32, 169, 87, 0.09);
+  /* Green */
+  --green: #159a50;
+  --green-bright: #25bd68;
+  --green-dark: #08783b;
+  --green-soft: rgba(21, 154, 80, 0.09);
 
-  --gold: #a77f29;
-  --orange: #d98500;
-  --red: #dc5368;
+  /* Secondary colors */
+  --gold: #a8750e;
+  --orange: #c77b00;
+  --red: #d94e67;
 
-  --shadow: 0 24px 70px rgba(24, 45, 34, 0.1);
+  /* Shadows */
+  --shadow:
+    0 22px 65px
+    rgba(22, 70, 42, 0.10);
 
-  --nav-background: rgba(255, 255, 255, 0.94);
+  /* Navigation */
+  --nav-background:
+    rgba(220, 235, 226, 0.96);
 }
 
 
@@ -1307,3 +1322,99 @@ html[data-theme="light"] .theme-menu {
   color: var(--gold);
 }
 
+/* =========================================================
+   UPTREND — LIGHT MODE GLOBAL SURFACE
+   ---------------------------------------------------------
+   Prevent pure-white application backgrounds.
+========================================================= */
+
+html[data-theme="light"],
+html[data-theme="light"] body,
+html[data-theme="light"] #root {
+  background:
+    linear-gradient(
+      180deg,
+      #dcebe2 0%,
+      #d7e8de 48%,
+      #d3e5da 100%
+    );
+
+  color: var(--text);
+}
+
+
+/* Main application */
+html[data-theme="light"] .command-app {
+  background:
+    radial-gradient(
+      circle at 75% -10%,
+      rgba(21, 154, 80, 0.10),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(21, 154, 80, 0.045),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #dcebe2 0%,
+      #d5e6dc 100%
+    );
+}
+
+
+/* Main content area */
+html[data-theme="light"] .command-main {
+  background: transparent;
+}
+
+
+/* Content itself stays transparent so the
+   green application background remains visible */
+html[data-theme="light"] .command-content {
+  background: transparent;
+}
+
+
+/* Generic inner pages */
+html[data-theme="light"] .inner-page {
+  background: #e9f3ed;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 10px 30px
+    rgba(22, 70, 42, 0.045);
+}
+
+
+/* Header follows the same green surface */
+html[data-theme="light"] .command-header {
+  background:
+    rgba(220, 235, 226, 0.92);
+
+  border-bottom-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 8px 24px
+    rgba(22, 70, 42, 0.045);
+}
+
+
+/* Mobile bottom navigation */
+@media (max-width: 760px) {
+  html[data-theme="light"] .mobile-bottom-nav {
+    background:
+      rgba(220, 235, 226, 0.97);
+
+    border-color:
+      rgba(22, 70, 42, 0.12);
+
+    box-shadow:
+      0 12px 35px
+      rgba(22, 70, 42, 0.12);
+  }
+}

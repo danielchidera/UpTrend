@@ -425,6 +425,9 @@ function Expenses() {
       return;
     }
 
+    const savedExpenseCount =
+      expenseForms.length;
+
     try {
       const {
         data: { user },
@@ -496,6 +499,9 @@ function Expenses() {
     setExpenseForms([
       createEmptyExpense(batchDate),
     ]);
+
+    setEditingId(null);
+    setShowForm(false);
 
     setSaved(true);
 
@@ -1002,8 +1008,8 @@ function Expenses() {
                 ✓{" "}
                 {wasEditing
                   ? "Expense updated successfully."
-                  : `${expenseForms.length} expense${
-                      expenseForms.length ===
+                  : `${savedExpenseCount} expense${
+                      savedExpenseCount ===
                       1
                         ? ""
                         : "s"

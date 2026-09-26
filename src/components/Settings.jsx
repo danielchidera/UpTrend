@@ -1,12 +1,20 @@
 import "./Settings.css";
+import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import BackupCenter from "./BackupCenter";
 
-function Settings({ onLogout }) {
+function Settings({
+  subscription,
+  onLogout,
+}) {
   const {
     themeMode,
     effectiveTheme,
     setThemeMode,
   } = useTheme();
+
+  const [activeSection, setActiveSection] =
+    useState("appearance");
 
   const themes = [
     {
@@ -74,8 +82,15 @@ function Settings({ onLogout }) {
         <aside className="settings-navigation">
 
           <button
-            className="settings-nav-item active"
+            className={`settings-nav-item ${
+              activeSection === "appearance"
+                ? "active"
+                : ""
+            }`}
             type="button"
+            onClick={() =>
+              setActiveSection("appearance")
+            }
           >
             <span>◐</span>
 
@@ -148,6 +163,28 @@ function Settings({ onLogout }) {
             </div>
           </button>
 
+          <button
+            className={`settings-nav-item settings-backup-nav ${
+              activeSection === "backups"
+                ? "active"
+                : ""
+            }`}
+            type="button"
+            onClick={() =>
+              setActiveSection("backups")
+            }
+          >
+            <span>💾</span>
+
+            <div>
+              <strong>Backups</strong>
+
+              <small>
+                Business data protection
+              </small>
+            </div>
+          </button>
+
         </aside>
 
         {/* ===================================================
@@ -155,6 +192,13 @@ function Settings({ onLogout }) {
         =================================================== */}
 
         <main className="settings-content">
+
+          {activeSection === "backups" ? (
+            <BackupCenter
+              subscription={subscription}
+            />
+          ) : (
+            <>
 
           {/* =================================================
               APPEARANCE
@@ -396,6 +440,9 @@ function Settings({ onLogout }) {
             </p>
 
           </div>
+
+            </>
+          )}
 
         </main>
 

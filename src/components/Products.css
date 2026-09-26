@@ -1,148 +1,213 @@
-/* =========================================
-   PRODUCTS / STOCK MODULE
-========================================= */
+
+/* =========================================================
+   UPTREND — PRODUCTS & INVENTORY
+   Operational inventory management
+========================================================= */
 
 .products-page {
-  animation: pageEnter 0.55s ease both;
+  animation: pageEnter 0.45s ease both;
 }
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .products-page-top {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 26px;
+  margin-bottom: 24px;
 }
 
 .products-page-top h2 {
-  margin: 5px 0 7px;
-  font-size: clamp(26px, 3vw, 38px);
-  letter-spacing: -0.04em;
+  margin: 6px 0 7px;
+  color: #f5f8f6;
+  font-size: clamp(27px, 3vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
 }
 
 .products-page-top p {
   margin: 0;
+  max-width: 560px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .products-add-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 9px;
-  border: 0;
-  border-radius: 14px;
-  padding: 13px 18px;
-  color: #06100a;
+  min-height: 46px;
+  padding: 0 17px;
+  border: 1px solid rgba(198, 164, 74, 0.35);
+  border-radius: 12px;
+  color: #11130f;
   background: linear-gradient(
     135deg,
-    #9cf7b6,
-    #4ade80
+    #e7ca76,
+    #c6a44a
   );
-  font-weight: 800;
-  box-shadow: 0 12px 30px rgba(74, 222, 128, 0.18);
+  font-weight: 850;
+  box-shadow:
+    0 12px 28px rgba(198, 164, 74, 0.13);
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
 }
 
 .products-add-button:hover {
   transform: translateY(-2px);
+  filter: brightness(1.04);
   box-shadow:
-    0 16px 38px rgba(74, 222, 128, 0.28);
+    0 16px 34px rgba(198, 164, 74, 0.2);
 }
 
 .products-add-button span {
-  font-size: 20px;
+  font-size: 19px;
   line-height: 1;
 }
+
+/* =========================================================
+   INVENTORY KPI STRIP
+========================================================= */
 
 .inventory-overview {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .inventory-stat {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 19px;
+  gap: 13px;
+  min-height: 92px;
+  padding: 17px;
+  overflow: hidden;
+}
+
+.inventory-stat::after {
+  content: "";
+  position: absolute;
+  right: -35px;
+  bottom: -45px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(198, 164, 74, 0.035);
+  pointer-events: none;
 }
 
 .inventory-stat-icon {
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
   display: grid;
   place-items: center;
-  border-radius: 13px;
-  color: #86efac;
-  background: rgba(74, 222, 128, 0.09);
-  border: 1px solid rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.14);
+  border-radius: 12px;
+  color: #8ee8a8;
+  background: rgba(74, 222, 128, 0.065);
+  font-size: 17px;
   font-weight: 900;
-  font-size: 18px;
+}
+
+.inventory-stat:nth-child(3) .inventory-stat-icon {
+  color: #d8bc69;
+  background: rgba(198, 164, 74, 0.07);
+  border-color: rgba(198, 164, 74, 0.15);
 }
 
 .inventory-stat-icon.warning {
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.09);
-  border-color: rgba(251, 191, 36, 0.12);
+  color: #f2bd55;
+  background: rgba(242, 189, 85, 0.07);
+  border-color: rgba(242, 189, 85, 0.15);
 }
 
 .inventory-stat span {
   display: block;
+  margin-bottom: 4px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 750;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.1em;
 }
 
 .inventory-stat strong {
   display: block;
-  margin: 4px 0;
+  color: #f2f6f3;
   font-size: 21px;
-  letter-spacing: -0.03em;
+  font-weight: 800;
+  letter-spacing: -0.035em;
 }
 
 .inventory-stat small {
+  display: block;
+  margin-top: 3px;
   color: var(--muted-2);
-  font-size: 11px;
+  font-size: 10px;
 }
 
+/* =========================================================
+   PRODUCT FORM
+========================================================= */
+
 .product-form-card {
-  margin-bottom: 20px;
-  padding: 24px;
-  animation: premiumReveal 0.45s ease both;
+  margin-bottom: 18px;
+  padding: 23px;
+  border-color: rgba(198, 164, 74, 0.13);
+  animation: premiumReveal 0.35s ease both;
 }
 
 .product-form-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 22px;
+  gap: 20px;
+  margin-bottom: 21px;
 }
 
 .product-form-heading h3 {
   margin: 5px 0 0;
-  font-size: 21px;
+  color: #f3f7f4;
+  font-size: 20px;
+  letter-spacing: -0.025em;
 }
 
 .product-close {
-  width: 36px;
-  height: 36px;
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
   border: 1px solid var(--border);
-  border-radius: 11px;
+  border-radius: 10px;
   color: var(--muted);
-  background: rgba(255,255,255,0.025);
-  font-size: 22px;
+  background: rgba(255, 255, 255, 0.025);
+  font-size: 21px;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.product-close:hover {
+  color: #f5f7f5;
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .product-form-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
 }
 
 .product-field {
@@ -152,19 +217,21 @@
 }
 
 .product-field > span {
-  color: #dce7df;
-  font-size: 12px;
-  font-weight: 700;
+  color: #d6dfd9;
+  font-size: 11px;
+  font-weight: 750;
 }
 
 .product-field input {
   width: 100%;
-  min-height: 48px;
-  padding: 0 14px;
+  min-height: 47px;
+  box-sizing: border-box;
+  padding: 0 13px;
+  outline: none;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  color: #f5faf6;
-  background: rgba(255,255,255,0.035);
+  border-radius: 11px;
+  color: #f3f7f4;
+  background: rgba(255, 255, 255, 0.027);
   transition:
     border-color 0.2s ease,
     background 0.2s ease,
@@ -175,39 +242,53 @@
   color: var(--muted-2);
 }
 
+.product-field input:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
 .product-field input:focus {
-  border-color: rgba(74, 222, 128, 0.55);
-  background: rgba(74, 222, 128, 0.035);
+  border-color: rgba(198, 164, 74, 0.55);
+  background: rgba(198, 164, 74, 0.025);
   box-shadow:
-    0 0 0 4px rgba(74, 222, 128, 0.06);
+    0 0 0 3px rgba(198, 164, 74, 0.055);
 }
 
 .product-money-input {
   display: flex;
   align-items: center;
-  min-height: 48px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  min-height: 47px;
   overflow: hidden;
-  background: rgba(255,255,255,0.035);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.027);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .product-money-input b {
-  padding-left: 14px;
-  color: #86efac;
+  padding-left: 13px;
+  color: #d8bc69;
+  font-size: 13px;
 }
 
 .product-money-input input {
-  min-height: 46px;
+  min-height: 45px;
   border: 0;
   background: transparent;
   box-shadow: none;
 }
 
+.product-money-input input:focus {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
 .product-money-input:focus-within {
-  border-color: rgba(74, 222, 128, 0.55);
+  border-color: rgba(198, 164, 74, 0.55);
   box-shadow:
-    0 0 0 4px rgba(74, 222, 128, 0.06);
+    0 0 0 3px rgba(198, 164, 74, 0.055);
 }
 
 .product-form-footer {
@@ -215,30 +296,31 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  margin-top: 22px;
-  padding-top: 18px;
+  margin-top: 21px;
+  padding-top: 17px;
   border-top: 1px solid var(--border);
 }
 
 .product-form-footer p {
-  max-width: 480px;
+  max-width: 500px;
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 11px;
+  line-height: 1.65;
 }
 
 .product-form-footer > div {
   display: flex;
-  gap: 10px;
+  gap: 9px;
 }
 
 .product-cancel,
 .product-save {
-  min-height: 44px;
-  padding: 0 16px;
-  border-radius: 11px;
-  font-weight: 750;
+  min-height: 43px;
+  padding: 0 15px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .product-cancel {
@@ -247,36 +329,76 @@
   background: transparent;
 }
 
+.product-cancel:hover {
+  color: #f4f7f5;
+  background: rgba(255, 255, 255, 0.035);
+}
+
 .product-save {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  border: 0;
-  color: #06100a;
-  background: #4ade80;
+  gap: 9px;
+  border: 1px solid rgba(198, 164, 74, 0.4);
+  color: #12130f;
+  background: linear-gradient(
+    135deg,
+    #e5c873,
+    #c6a44a
+  );
+  box-shadow:
+    0 8px 20px rgba(198, 164, 74, 0.1);
 }
+
+.product-save:hover {
+  filter: brightness(1.04);
+}
+
+.product-save span {
+  font-size: 15px;
+}
+
+/* =========================================================
+   INVENTORY TABLE
+========================================================= */
 
 .products-list-card {
   overflow: hidden;
 }
 
 .products-list-card .panel-heading {
-  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 19px 21px;
   margin: 0;
   border-bottom: 1px solid var(--border);
 }
 
+.products-list-card .panel-heading h2 {
+  margin: 4px 0 0;
+  color: #f1f5f2;
+  font-size: 19px;
+  letter-spacing: -0.025em;
+}
+
 .products-count {
-  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 0 10px;
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--muted);
-  font-size: 11px;
+  background: rgba(255, 255, 255, 0.018);
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .products-table-wrap {
   width: 100%;
   overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .products-table {
@@ -286,28 +408,30 @@
 }
 
 .products-table th {
-  padding: 13px 18px;
+  padding: 12px 18px;
   text-align: left;
   color: var(--muted-2);
-  background: rgba(255,255,255,0.018);
-  font-size: 10px;
+  background: rgba(255, 255, 255, 0.014);
+  font-size: 9px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .products-table td {
-  padding: 15px 18px;
-  border-top: 1px solid rgba(255,255,255,0.055);
-  color: #dfe9e2;
-  font-size: 13px;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.045);
+  color: #dce5df;
+  font-size: 12px;
 }
 
 .products-table tbody tr {
-  transition: background 0.2s ease;
+  transition:
+    background 0.18s ease;
 }
 
 .products-table tbody tr:hover {
-  background: rgba(74, 222, 128, 0.025);
+  background: rgba(198, 164, 74, 0.025);
 }
 
 .product-name-cell {
@@ -317,42 +441,55 @@
 }
 
 .product-letter {
-  width: 35px;
-  height: 35px;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
   display: grid;
   place-items: center;
+  border: 1px solid rgba(74, 222, 128, 0.12);
   border-radius: 10px;
-  color: #86efac;
-  background: rgba(74, 222, 128, 0.09);
+  color: #8de5a5;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(74, 222, 128, 0.105),
+      rgba(198, 164, 74, 0.045)
+    );
+  font-size: 12px;
   font-weight: 850;
 }
 
 .product-name-cell strong {
-  color: #f2f7f3;
+  color: #edf3ef;
+  font-size: 12px;
+  font-weight: 750;
 }
 
-
+/* =========================================================
+   STOCK STATUS
+========================================================= */
 
 .stock-badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 6px 9px;
+  min-height: 25px;
+  padding: 0 9px;
   border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 9px;
+  font-weight: 850;
 }
 
 .stock-badge i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  width: 5px;
+  height: 5px;
   display: block;
+  border-radius: 50%;
 }
 
 .stock-good {
-  color: #86efac;
-  background: rgba(74, 222, 128, 0.08);
+  color: #82dfa0;
+  background: rgba(74, 222, 128, 0.07);
 }
 
 .stock-good i {
@@ -360,53 +497,74 @@
 }
 
 .stock-watch {
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.08);
+  color: #edc061;
+  background: rgba(242, 189, 85, 0.07);
 }
 
 .stock-watch i {
-  background: #fbbf24;
+  background: #f2bd55;
 }
 
 .stock-low {
-  color: #fb7185;
-  background: rgba(251, 113, 133, 0.08);
+  color: #f07c8d;
+  background: rgba(251, 113, 133, 0.065);
 }
 
 .stock-low i {
   background: #fb7185;
 }
 
+/* =========================================================
+   ACTIONS
+========================================================= */
+
 .product-actions {
   display: flex;
-  gap: 7px;
+  gap: 6px;
 }
 
 .product-actions button {
+  min-height: 30px;
+  padding: 0 9px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 7px 9px;
   color: var(--muted);
-  background: rgba(255,255,255,0.025);
-  font-size: 11px;
+  background: rgba(255, 255, 255, 0.022);
+  font-size: 10px;
+  font-weight: 700;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
 }
 
 .product-actions button:hover {
-  color: #f4f8f5;
-  border-color: rgba(255,255,255,0.18);
+  color: #f4f7f5;
+  border-color: rgba(198, 164, 74, 0.3);
+  background: rgba(198, 164, 74, 0.035);
 }
 
 .product-actions .product-delete {
-  color: #fb7185;
+  color: #ef8191;
 }
 
+.product-actions .product-delete:hover {
+  border-color: rgba(251, 113, 133, 0.25);
+  background: rgba(251, 113, 133, 0.045);
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
 .products-empty {
-  min-height: 280px;
+  min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   gap: 9px;
+  padding: 30px;
   text-align: center;
 }
 
@@ -415,41 +573,49 @@
   height: 58px;
   display: grid;
   place-items: center;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+  border: 1px solid rgba(198, 164, 74, 0.15);
   border-radius: 17px;
-  color: #86efac;
-  background: rgba(74, 222, 128, 0.08);
-  font-size: 22px;
+  color: #d8bc69;
+  background: rgba(198, 164, 74, 0.055);
+  font-size: 21px;
 }
 
 .products-empty strong {
-  font-size: 16px;
+  color: #f0f4f1;
+  font-size: 15px;
 }
 
 .products-empty span {
-  max-width: 300px;
+  max-width: 320px;
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 11px;
+  line-height: 1.6;
 }
 
 .products-empty button {
-  margin-top: 8px;
-  border: 0;
+  margin-top: 7px;
+  min-height: 39px;
+  border: 1px solid rgba(198, 164, 74, 0.35);
   border-radius: 10px;
-  padding: 10px 14px;
-  color: #06100a;
-  background: #4ade80;
-  font-weight: 800;
+  padding: 0 14px;
+  color: #12130f;
+  background: #c6a44a;
+  font-size: 11px;
+  font-weight: 850;
 }
 
-/* PRODUCT MOBILE */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .inventory-overview {
     grid-template-columns: repeat(2, 1fr);
   }
+}
 
+@media (max-width: 900px) {
   .product-form-grid {
     grid-template-columns: 1fr;
   }
@@ -470,37 +636,44 @@
 
 @media (max-width: 620px) {
   .products-page-top {
-    align-items: flex-start;
+    align-items: stretch;
     flex-direction: column;
+    gap: 15px;
   }
 
   .products-add-button {
     width: 100%;
-    justify-content: center;
   }
 
   .inventory-overview {
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 9px;
   }
 
   .inventory-stat {
-    padding: 14px;
-    gap: 10px;
+    min-height: 82px;
+    padding: 13px;
+    gap: 9px;
   }
 
   .inventory-stat-icon {
-    width: 38px;
-    height: 38px;
-    flex-basis: 38px;
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+    border-radius: 10px;
+    font-size: 14px;
   }
 
   .inventory-stat strong {
-    font-size: 17px;
+    font-size: 16px;
+  }
+
+  .inventory-stat span {
+    font-size: 8px;
   }
 
   .inventory-stat small {
-    font-size: 9px;
+    font-size: 8px;
   }
 
   .product-form-card {
@@ -508,6 +681,7 @@
   }
 
   .product-form-footer > div {
+    width: 100%;
     flex-direction: column;
   }
 
@@ -516,8 +690,607 @@
   }
 
   .products-list-card .panel-heading {
-    padding: 17px;
+    padding: 16px;
+  }
+
+  .products-table {
+    min-width: 760px;
   }
 }
 
+@media (max-width: 390px) {
+  .inventory-overview {
+    grid-template-columns: 1fr;
+  }
 
+  .inventory-stat {
+    min-height: 76px;
+  }
+}
+
+/* =========================================================
+   SUPPLIER + PURCHASE INFORMATION
+========================================================= */
+
+.product-field select {
+  width: 100%;
+  min-height: 47px;
+  box-sizing: border-box;
+  padding: 0 13px;
+  outline: none;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: #f3f7f4;
+  background: rgba(255, 255, 255, 0.027);
+  font: inherit;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.product-field select:focus {
+  border-color: rgba(198, 164, 74, 0.55);
+  background: rgba(198, 164, 74, 0.025);
+  box-shadow:
+    0 0 0 3px rgba(198, 164, 74, 0.055);
+}
+
+.product-field select option {
+  color: #111;
+  background: #fff;
+}
+
+.product-supplier-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+  border: 0;
+  color: #d8bc69;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.product-supplier-link strong {
+  color: #d8bc69;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.product-supplier-link:hover strong {
+  color: #f0d889;
+  text-decoration: underline;
+}
+
+.product-no-supplier {
+  color: var(--muted-2);
+  font-size: 11px;
+}
+
+.product-purchase-date {
+  color: #dce5df;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   UPTREND — PRODUCTS LIGHT MODE
+   COLOR ONLY — NO SIZE / LAYOUT CHANGES
+   BLUE + GOLD + GREEN
+   Dark Mode untouched
+========================================================= */
+
+html[data-theme="light"] .products-page-top h2 {
+  color: #173b2a;
+}
+
+html[data-theme="light"] .products-page-top p {
+  color: #536d60;
+}
+
+/* =========================================================
+   ADD PRODUCT — BLUE
+========================================================= */
+
+html[data-theme="light"] .products-add-button {
+  border-color: rgba(37, 99, 235, 0.30);
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+  box-shadow:
+    0 10px 26px rgba(37, 99, 235, 0.16);
+}
+
+/* =========================================================
+   INVENTORY STATS
+========================================================= */
+
+html[data-theme="light"] .inventory-stat {
+  background:
+    linear-gradient(
+      145deg,
+      #e5f0e9,
+      #dcebe2
+    );
+  border-color: rgba(16, 31, 23, 0.09);
+}
+
+html[data-theme="light"] .inventory-stat::after {
+  background: rgba(37, 99, 235, 0.045);
+}
+
+html[data-theme="light"] .inventory-stat-icon {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.09);
+  border-color: rgba(37, 99, 235, 0.18);
+}
+
+html[data-theme="light"] .inventory-stat:nth-child(3) .inventory-stat-icon {
+  color: #a8750e;
+  background: rgba(168, 117, 14, 0.10);
+  border-color: rgba(168, 117, 14, 0.20);
+}
+
+html[data-theme="light"] .inventory-stat-icon.warning {
+  color: #c77b00;
+  background: rgba(199, 123, 0, 0.09);
+  border-color: rgba(199, 123, 0, 0.18);
+}
+
+html[data-theme="light"] .inventory-stat span {
+  color: #536d60;
+}
+
+html[data-theme="light"] .inventory-stat strong {
+  color: #173b2a;
+}
+
+html[data-theme="light"] .inventory-stat small {
+  color: #708278;
+}
+
+/* =========================================================
+   PRODUCT FORM
+========================================================= */
+
+html[data-theme="light"] .product-form-card {
+  background:
+    linear-gradient(
+      145deg,
+      #e7f1eb,
+      #dfece5
+    );
+  border-color: rgba(37, 99, 235, 0.12);
+}
+
+html[data-theme="light"] .product-form-heading h3 {
+  color: #173b2a;
+}
+
+html[data-theme="light"] .product-close {
+  color: #536d60;
+  background: rgba(16, 31, 23, 0.035);
+  border-color: rgba(16, 31, 23, 0.11);
+}
+
+html[data-theme="light"] .product-close:hover {
+  color: #173b2a;
+  background: rgba(37, 99, 235, 0.06);
+  border-color: rgba(37, 99, 235, 0.18);
+}
+
+html[data-theme="light"] .product-field > span {
+  color: #29483a;
+}
+
+html[data-theme="light"] .product-field input,
+html[data-theme="light"] .product-field select {
+  color: #173b2a;
+  background: #dceae2;
+  border-color: rgba(16, 31, 23, 0.12);
+}
+
+html[data-theme="light"] .product-field input::placeholder {
+  color: #7a8b82;
+}
+
+html[data-theme="light"] .product-field input:hover,
+html[data-theme="light"] .product-field select:hover {
+  border-color: rgba(37, 99, 235, 0.20);
+}
+
+html[data-theme="light"] .product-field input:focus,
+html[data-theme="light"] .product-field select:focus {
+  border-color: rgba(37, 99, 235, 0.45);
+  background: #e5efe9;
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.055);
+}
+
+/* =========================================================
+   MONEY INPUT — GOLD
+========================================================= */
+
+html[data-theme="light"] .product-money-input {
+  background: #dceae2;
+  border-color: rgba(16, 31, 23, 0.12);
+}
+
+html[data-theme="light"] .product-money-input b {
+  color: #a8750e;
+}
+
+html[data-theme="light"] .product-money-input:focus-within {
+  border-color: rgba(168, 117, 14, 0.45);
+  box-shadow:
+    0 0 0 3px rgba(168, 117, 14, 0.055);
+}
+
+html[data-theme="light"] .product-form-footer {
+  border-top-color: rgba(16, 31, 23, 0.10);
+}
+
+html[data-theme="light"] .product-form-footer p {
+  color: #536d60;
+  font-weight: 650;
+}
+
+html[data-theme="light"] .product-cancel {
+  color: #536d60;
+  border-color: rgba(16, 31, 23, 0.12);
+  background: transparent;
+}
+
+html[data-theme="light"] .product-cancel:hover {
+  color: #173b2a;
+  background: rgba(37, 99, 235, 0.05);
+}
+
+/* SAVE — BLUE */
+
+html[data-theme="light"] .product-save {
+  border-color: rgba(37, 99, 235, 0.30);
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+  box-shadow:
+    0 8px 20px rgba(37, 99, 235, 0.14);
+}
+
+/* =========================================================
+   PRODUCT LIST
+========================================================= */
+
+html[data-theme="light"] .products-list-card {
+  background:
+    linear-gradient(
+      145deg,
+      #e6f0ea,
+      #dfece5
+    );
+  border-color: rgba(16, 31, 23, 0.09);
+}
+
+html[data-theme="light"] .products-list-card .panel-heading {
+  border-bottom-color: rgba(16, 31, 23, 0.09);
+}
+
+html[data-theme="light"] .products-list-card .panel-heading h2 {
+  color: #173b2a;
+}
+
+html[data-theme="light"] .products-count {
+  color: #536d60;
+  background: rgba(37, 99, 235, 0.045);
+  border-color: rgba(37, 99, 235, 0.13);
+}
+
+/* =========================================================
+   TABLE — KEEP ALL ORIGINAL SIZING
+========================================================= */
+
+html[data-theme="light"] .products-table th {
+  color: #60746a;
+  background: rgba(37, 99, 235, 0.035);
+}
+
+html[data-theme="light"] .products-table td {
+  color: #29483a;
+  border-top-color: rgba(16, 31, 23, 0.075);
+}
+
+html[data-theme="light"] .products-table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.035);
+}
+
+/* =========================================================
+   PRODUCT LETTER — BLUE
+========================================================= */
+
+html[data-theme="light"] .product-letter {
+  color: #2563eb;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(37, 99, 235, 0.10),
+      rgba(168, 117, 14, 0.055)
+    );
+  border-color: rgba(37, 99, 235, 0.16);
+}
+
+html[data-theme="light"] .product-name-cell strong {
+  color: #173b2a;
+}
+
+/* =========================================================
+   STOCK STATUS
+========================================================= */
+
+html[data-theme="light"] .stock-good {
+  color: #08783b;
+  background: rgba(21, 154, 80, 0.08);
+}
+
+html[data-theme="light"] .stock-good i {
+  background: #159a50;
+}
+
+html[data-theme="light"] .stock-watch {
+  color: #a8750e;
+  background: rgba(168, 117, 14, 0.09);
+}
+
+html[data-theme="light"] .stock-watch i {
+  background: #c08a16;
+}
+
+html[data-theme="light"] .stock-low {
+  color: #c93650;
+  background: rgba(217, 78, 103, 0.075);
+}
+
+html[data-theme="light"] .stock-low i {
+  background: #d94e67;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+html[data-theme="light"] .product-actions button {
+  color: #536d60;
+  background: rgba(16, 31, 23, 0.035);
+  border-color: rgba(16, 31, 23, 0.11);
+}
+
+html[data-theme="light"] .product-actions button:hover {
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.22);
+  background: rgba(37, 99, 235, 0.055);
+}
+
+html[data-theme="light"] .product-actions .product-delete {
+  color: #c93650;
+}
+
+html[data-theme="light"] .product-actions .product-delete:hover {
+  border-color: rgba(217, 78, 103, 0.22);
+  background: rgba(217, 78, 103, 0.055);
+}
+
+/* =========================================================
+   EMPTY STATE — GOLD + BLUE
+========================================================= */
+
+html[data-theme="light"] .products-empty > div {
+  color: #a8750e;
+  background: rgba(168, 117, 14, 0.08);
+  border-color: rgba(168, 117, 14, 0.16);
+}
+
+html[data-theme="light"] .products-empty strong {
+  color: #173b2a;
+}
+
+html[data-theme="light"] .products-empty span {
+  color: #536d60;
+  font-weight: 650;
+}
+
+html[data-theme="light"] .products-empty button {
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+  border-color: rgba(37, 99, 235, 0.28);
+}
+
+/* =========================================================
+   SUPPLIER + PURCHASE
+========================================================= */
+
+html[data-theme="light"] .product-field select option {
+  color: #173b2a;
+  background: #e5efe9;
+}
+
+html[data-theme="light"] .product-supplier-link,
+html[data-theme="light"] .product-supplier-link strong {
+  color: #a8750e;
+}
+
+html[data-theme="light"] .product-supplier-link:hover strong {
+  color: #2563eb;
+}
+
+html[data-theme="light"] .product-no-supplier {
+  color: #718178;
+  font-weight: 650;
+}
+
+html[data-theme="light"] .product-purchase-date {
+  color: #536d60;
+}
+
+
+/* =========================================================
+   PRODUCTS — FINAL LIGHT MODE COLOR CORRECTION
+   COLOR ONLY — NO SIZE OR LAYOUT CHANGES
+========================================================= */
+
+/* MAIN TEXT — BLACK */
+html[data-theme="light"] .products-page-top h2,
+html[data-theme="light"] .inventory-stat strong,
+html[data-theme="light"] .product-form-heading h3,
+html[data-theme="light"] .products-list-card .panel-heading h2,
+html[data-theme="light"] .product-name-cell strong,
+html[data-theme="light"] .products-empty strong {
+  color: #111814;
+}
+
+/* SECONDARY TEXT — DARK */
+html[data-theme="light"] .products-page-top p,
+html[data-theme="light"] .inventory-stat span,
+html[data-theme="light"] .inventory-stat small,
+html[data-theme="light"] .product-field > span,
+html[data-theme="light"] .product-form-footer p,
+html[data-theme="light"] .products-count,
+html[data-theme="light"] .products-table th,
+html[data-theme="light"] .products-table td,
+html[data-theme="light"] .products-empty span,
+html[data-theme="light"] .product-no-supplier,
+html[data-theme="light"] .product-purchase-date {
+  color: #24332b;
+}
+
+/* =========================================================
+   PRODUCTS — BLUE PRIMARY
+========================================================= */
+
+/* Add Product */
+html[data-theme="light"] .products-add-button {
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+  border-color: rgba(37, 99, 235, 0.35);
+}
+
+/* Main inventory icon */
+html[data-theme="light"] .inventory-stat-icon {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.10);
+  border-color: rgba(37, 99, 235, 0.20);
+}
+
+/* Product letter */
+html[data-theme="light"] .product-letter {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.18);
+}
+
+/* Save Product */
+html[data-theme="light"] .product-save {
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+  border-color: rgba(37, 99, 235, 0.35);
+}
+
+/* Empty-state action */
+html[data-theme="light"] .products-empty button {
+  color: #ffffff;
+  background: #2563eb;
+  border-color: rgba(37, 99, 235, 0.35);
+}
+
+/* Product actions */
+html[data-theme="light"] .product-actions button:hover {
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.25);
+  background: rgba(37, 99, 235, 0.06);
+}
+
+/* =========================================================
+   INPUT TEXT — BLACK
+========================================================= */
+
+html[data-theme="light"] .product-field input,
+html[data-theme="light"] .product-field select,
+html[data-theme="light"] .product-money-input input {
+  color: #111814;
+}
+
+/* =========================================================
+   GOLD — SECONDARY ONLY
+========================================================= */
+
+html[data-theme="light"] .inventory-stat:nth-child(3) .inventory-stat-icon,
+html[data-theme="light"] .product-money-input b,
+html[data-theme="light"] .product-supplier-link,
+html[data-theme="light"] .product-supplier-link strong,
+html[data-theme="light"] .products-empty > div {
+  color: #a8750e;
+}
+
+/* =========================================================
+   GREEN — LIGHT MODE SURFACES
+========================================================= */
+
+html[data-theme="light"] .inventory-stat,
+html[data-theme="light"] .product-form-card,
+html[data-theme="light"] .products-list-card {
+  background: #e1ede6;
+}
+
+/* Inputs */
+html[data-theme="light"] .product-field input,
+html[data-theme="light"] .product-field select,
+html[data-theme="light"] .product-money-input {
+  background: #d9e8df;
+}
+
+/* Table header */
+html[data-theme="light"] .products-table th {
+  background: rgba(37, 99, 235, 0.045);
+}
+
+/* =========================================================
+   REMOVE WHITE-LOOKING TEXT FROM LIGHT MODE
+========================================================= */
+
+html[data-theme="light"] .product-close {
+  color: #24332b;
+}
+
+html[data-theme="light"] .product-cancel {
+  color: #24332b;
+}
+
+html[data-theme="light"] .product-actions button {
+  color: #24332b;
+}
+
+/* Keep buttons readable */
+html[data-theme="light"] .products-add-button,
+html[data-theme="light"] .product-save,
+html[data-theme="light"] .products-empty button {
+  color: #ffffff;
+}

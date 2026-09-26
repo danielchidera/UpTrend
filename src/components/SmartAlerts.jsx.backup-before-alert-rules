@@ -1,0 +1,284 @@
+import "./SmartAlerts.css";
+
+import { useMemo } from "react";
+
+const PRODUCTS_KEY = "uptrend_products";
+const SALES_KEY = "uptrend_sales";
+const EXPENSES_KEY = "uptrend_expenses";
+
+function readArray(key) {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
+function getLocalDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function getDaysAgo(days) {
+  const date = new Date();
+
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() - days);
+
+  return getLocalDateKey(date);
+}
+
+function getSaleRevenue(sale) {
+  return Number(
+    sale.totalSelling ??
+      sale.totalSales ??
+      0
+  );
+}
+
+function getSaleCost(sale) {
+  return Number(
+    sale.totalCost ??
+      Number(sale.costPrice || 0) *
+        Number(sale.quantity || 0)
+  );
+}
+
+function getSaleProfit(sale) {
+  return Number(
+    sale.grossProfit ??
+      getSaleRevenue(sale) -
+        getSaleCost(sale)
+  );
+}
+
+function formatMoney(value) {
+  return `₦${Number(value || 0).toLocaleString(
+    "en-NG",
+    {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }
+  )}`;
+}
+
+function SmartAlerts() {
+  const alerts = useMemo(() => {
+    const products =
+      readArray(PRODUCTS_KEY);
+
+    const sales =
+      readArray(SALES_KEY);
+
+    const expenses =
+      readArray(EXPENSES_KEY);
+
+    const currentStart =
+      getDaysAgo(6);
+
+    const previousStart =
+      getDaysAgo(13);
+
+    const currentSales =
+      sales.filter(
+        (sale) =>
+          sale.date >= currentStart
+      );
+
+    const previousSales =
+      sales.filter(
+        (sale) =>
+          sale.date >= previousStart &&
+          sale.date < currentStart
+      );
+
+    const currentExpenses =
+      expenses.filter(
+        (expense) =>
+          expense.date >= currentStart
+      );
+
+    const lowStockProducts =
+      products
+        .filter(
+          (product) =>
+            Number(product.stock || 0) <=
+            Number(product.lowStockAt || 0)
+        )
+        .sort(
+          (a, b) =>
+            Number(a.stock || 0) -
+            Number(b.stock || 0)
+        );
+
+    const currentRevenue =
+      currentSales.reduce(
+        (sum, sale) =>
+          sum + getSaleRevenue(sale),
+        0
+      );
+
+    const previousRevenue =
+      previousSales.reduce(
+        (sum, sale) =>
+          sum + getSaleRevenue(sale),
+        0
+      );
+
+    const currentGrossProfit =
+      currentSales.reduce(
+        (sum, sale) =>
+          sum + getSaleProfit(sale),
+        0
+      );
+
+    const currentExpensesTotal =
+      currentExpenses.reduce(
+        (sum, expense) =>
+          sum +
+          Number(expense.amount || 0),
+        0
+      );
+
+    const result = [];
+
+    if (lowStockProducts.length > 0) {
+      result.push({
+        id: "low-stock",
+        type: "warning",
+        icon: "📦",
+        title: "Inventory needs attention",
+        message:
+          lowStockProducts.length === 1
+            ? `${lowStockProducts[0].name} is at or below its low-stock level.`
+            : `${lowStockProducts.length} products are at or below their low-stock levels.`,
+      });
+    }
+
+    if (
+      currentGrossProfit > 0 &&
+      currentExpensesTotal >
+        currentGrossProfit
+    ) {
+      result.push({
+        id: "expense-pressure",
+        type: "danger",
+        icon: "₦",
+        title: "Expense pressure",
+        message: `Expenses are ${formatMoney(
+          currentExpensesTotal -
+            currentGrossProfit
+        )} above gross profit for the last 7 days.`,
+      });
+    }
+
+    if (
+      previousRevenue > 0 &&
+      currentRevenue <
+        previousRevenue * 0.8
+    ) {
+      const decline =
+        ((previousRevenue -
+          currentRevenue) /
+          previousRevenue) *
+        100;
+
+      result.push({
+        id: "sales-decline",
+        type: "warning",
+        icon: "↘",
+        title: "Sales have slowed",
+        message: `Revenue is down ${decline.toFixed(
+          0
+        )}% compared with the previous 7-day period.`,
+      });
+    }
+
+    if (
+      currentRevenue > 0 &&
+      currentGrossProfit > 0 &&
+      currentExpensesTotal <=
+        currentGrossProfit
+    ) {
+      result.push({
+        id: "healthy-business",
+        type: "positive",
+        icon: "✓",
+        title: "Business performance looks healthy",
+        message: `Gross profit is currently covering the last 7 days of expenses.`,
+      });
+    }
+
+    return result;
+  }, []);
+
+  return (
+    <div className="smart-alerts">
+
+      <div className="smart-alerts-header">
+        <div>
+          <span>
+            SMART ALERTS
+          </span>
+
+          <h3>
+            Notifications
+          </h3>
+        </div>
+
+        <div className="smart-alerts-count">
+          {alerts.length}
+        </div>
+      </div>
+
+      {alerts.length === 0 ? (
+        <div className="smart-alerts-empty">
+          <div className="smart-alerts-empty-icon">
+            ✓
+          </div>
+
+          <strong>
+            Everything looks good
+          </strong>
+
+          <p>
+            There are no important business
+            alerts right now.
+          </p>
+        </div>
+      ) : (
+        <div className="smart-alerts-list">
+
+          {alerts.map((alert) => (
+            <article
+              className={`smart-alert smart-alert-${alert.type}`}
+              key={alert.id}
+            >
+              <div className="smart-alert-icon">
+                {alert.icon}
+              </div>
+
+              <div className="smart-alert-copy">
+                <strong>
+                  {alert.title}
+                </strong>
+
+                <p>
+                  {alert.message}
+                </p>
+              </div>
+            </article>
+          ))}
+
+        </div>
+      )}
+
+    </div>
+  );
+}
+
+export default SmartAlerts;

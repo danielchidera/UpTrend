@@ -608,3 +608,1087 @@
 
 
 
+/* =========================================================
+   UPTREND SALES — LIGHT MODE ONLY
+   ---------------------------------------------------------
+   Dark mode remains completely untouched.
+========================================================= */
+
+/* =========================================================
+   SALES PAGE BACKGROUND
+========================================================= */
+
+html[data-theme="light"] .sales-page {
+  background:
+    linear-gradient(
+      180deg,
+      #e1eee6 0%,
+      #d9e9df 100%
+    );
+
+  color: #17221c;
+}
+
+
+/* =========================================================
+   SALES PAGE INTRO
+========================================================= */
+
+html[data-theme="light"] .sales-page-top h2 {
+  color: #17221c;
+}
+
+html[data-theme="light"] .sales-page-top p {
+  color: #68766e;
+}
+
+
+/* =========================================================
+   OVERVIEW CARDS
+========================================================= */
+
+html[data-theme="light"] .sales-overview-card {
+  background:
+    #e9f3ed;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 7px 25px
+    rgba(20, 55, 35, 0.045);
+}
+
+html[data-theme="light"] .sales-overview-card span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .sales-overview-card strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .sales-overview-card small {
+  color: #7b8881;
+}
+
+
+/* =========================================================
+   FILTER / SEARCH CARD
+========================================================= */
+
+html[data-theme="light"] .sales-filter-card {
+  background:
+    #e9f3ed;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 7px 25px
+    rgba(20, 55, 35, 0.04);
+}
+
+html[data-theme="light"] .sales-search {
+  border-color:
+    rgba(22, 70, 42, 0.10);
+
+  background:
+    #e2eee7;
+}
+
+html[data-theme="light"] .sales-search span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .sales-search input {
+  color: #17221c;
+}
+
+html[data-theme="light"] .sales-search input::placeholder {
+  color: #8a958e;
+}
+
+
+/* =========================================================
+   FILTER BUTTONS
+========================================================= */
+
+html[data-theme="light"] .sales-filter-buttons button {
+  border-color:
+    rgba(22, 70, 42, 0.10);
+
+  color:
+    #68766e;
+
+  background:
+    #e2eee7;
+}
+
+html[data-theme="light"] .sales-filter-buttons button:hover,
+html[data-theme="light"] .sales-filter-buttons button.active {
+  color:
+    #14783d;
+
+  border-color:
+    rgba(21, 154, 80, 0.24);
+
+  background:
+    rgba(21, 154, 80, 0.09);
+}
+
+
+/* =========================================================
+   DATE FILTER
+========================================================= */
+
+html[data-theme="light"] .custom-date-filter label span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .custom-date-filter input {
+  border-color:
+    rgba(22, 70, 42, 0.10);
+
+  color:
+    #17221c;
+
+  background:
+    #e2eee7;
+}
+
+html[data-theme="light"] .clear-sales-filter {
+  color:
+    #c33f59;
+}
+
+
+/* =========================================================
+   SALES CENTER CARD
+========================================================= */
+
+html[data-theme="light"] .sales-center-card {
+  background:
+    #e9f3ed;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 7px 28px
+    rgba(20, 55, 35, 0.045);
+}
+
+html[data-theme="light"] .sales-center-card .panel-heading {
+  border-bottom-color:
+    rgba(22, 70, 42, 0.08);
+}
+
+
+/* =========================================================
+   SALES TABLE
+========================================================= */
+
+html[data-theme="light"] .sales-center-table th {
+  color:
+    #68766e;
+
+  background:
+    #e2eee7;
+}
+
+html[data-theme="light"] .sales-center-table td {
+  color:
+    #394a41;
+
+  border-top-color:
+    rgba(22, 70, 42, 0.065);
+}
+
+html[data-theme="light"] .sales-center-table tbody tr:hover {
+  background:
+    rgba(21, 154, 80, 0.035);
+}
+
+
+/* =========================================================
+   PRODUCT CELL
+========================================================= */
+
+html[data-theme="light"] .sales-product-letter {
+  color:
+    #159a50;
+
+  background:
+    rgba(21, 154, 80, 0.09);
+}
+
+
+/* =========================================================
+   SALES ACTION BUTTONS
+========================================================= */
+
+html[data-theme="light"] .sales-center-actions button {
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  color:
+    #68766e;
+
+  background:
+    #e2eee7;
+}
+
+html[data-theme="light"] .sales-center-actions button:hover {
+  background:
+    #dcebe2;
+}
+
+html[data-theme="light"] .sales-delete-button {
+  color:
+    #c33f59 !important;
+}
+
+html[data-theme="light"] .sales-edit-button:hover {
+  color:
+    #159a50 !important;
+}
+
+
+/* =========================================================
+   SALES EMPTY STATE
+========================================================= */
+
+html[data-theme="light"] .sales-center-empty > div {
+  color:
+    #159a50;
+
+  background:
+    rgba(21, 154, 80, 0.09);
+}
+
+html[data-theme="light"] .sales-center-empty strong {
+  color:
+    #17221c;
+}
+
+html[data-theme="light"] .sales-center-empty span {
+  color:
+    #68766e;
+}
+
+
+/* =========================================================
+   OLD / SECONDARY SALES HISTORY
+========================================================= */
+
+html[data-theme="light"] .sales-history {
+  background:
+    #e9f3ed;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 7px 28px
+    rgba(20, 55, 35, 0.045);
+}
+
+html[data-theme="light"] .sales-count {
+  background:
+    #e2eee7;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  color:
+    #68766e;
+}
+
+html[data-theme="light"] .sales-table th {
+  color:
+    #68766e;
+
+  border-bottom-color:
+    rgba(22, 70, 42, 0.08);
+}
+
+html[data-theme="light"] .sales-table td {
+  color:
+    #394a41;
+
+  border-bottom-color:
+    rgba(22, 70, 42, 0.065);
+}
+
+html[data-theme="light"] .sales-table td strong {
+  color:
+    #17221c;
+}
+
+html[data-theme="light"] .sales-table tbody tr:hover {
+  background:
+    rgba(21, 154, 80, 0.035);
+}
+
+
+/* =========================================================
+   OLD SALES ACTION BUTTONS
+========================================================= */
+
+html[data-theme="light"] .sale-actions button {
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  background:
+    #e2eee7;
+
+  color:
+    #68766e;
+}
+
+html[data-theme="light"] .sale-actions button:hover {
+  color:
+    #159a50;
+
+  border-color:
+    rgba(21, 154, 80, 0.22);
+}
+
+html[data-theme="light"] .sale-actions .delete-sale:hover {
+  color:
+    #c33f59;
+
+  border-color:
+    rgba(195, 63, 89, 0.20);
+}
+
+
+/* =========================================================
+   SALES EMPTY — SECONDARY
+========================================================= */
+
+html[data-theme="light"] .sales-empty {
+  background:
+    rgba(21, 154, 80, 0.025);
+
+  border-color:
+    rgba(22, 70, 42, 0.12);
+}
+
+html[data-theme="light"] .sales-empty > div {
+  background:
+    rgba(21, 154, 80, 0.09);
+
+  color:
+    #159a50;
+}
+
+html[data-theme="light"] .sales-empty strong {
+  color:
+    #17221c;
+}
+
+html[data-theme="light"] .sales-empty span {
+  color:
+    #68766e;
+}
+
+
+/* =========================================================
+   MOBILE SALES CARDS
+========================================================= */
+
+@media (max-width: 620px) {
+
+  html[data-theme="light"] .sales-mobile-card {
+    background:
+      #e2eee7;
+
+    border-color:
+      rgba(22, 70, 42, 0.09);
+
+    box-shadow:
+      0 5px 18px
+      rgba(20, 55, 35, 0.035);
+  }
+
+  html[data-theme="light"] .sales-mobile-top span {
+    color:
+      #68766e;
+  }
+
+  html[data-theme="light"] .sales-mobile-details {
+    border-top-color:
+      rgba(22, 70, 42, 0.08);
+  }
+
+  html[data-theme="light"] .sales-mobile-details span {
+    color:
+      #68766e;
+  }
+
+  html[data-theme="light"] .sales-mobile-details strong {
+    color:
+      #17221c;
+  }
+
+  html[data-theme="light"] .sales-mobile-actions button {
+    border-color:
+      rgba(22, 70, 42, 0.09);
+
+    color:
+      #68766e;
+
+    background:
+      #edf6f0;
+  }
+
+  html[data-theme="light"] .sales-mobile-actions .sales-delete-button {
+    color:
+      #c33f59;
+  }
+}
+
+
+/* =========================================================
+   SALES TEXT — LIGHT MODE READABILITY
+========================================================= */
+
+html[data-theme="light"] .sales-page p,
+html[data-theme="light"] .sales-page span,
+html[data-theme="light"] .sales-page small,
+html[data-theme="light"] .sales-page label,
+html[data-theme="light"] .sales-page th {
+  font-weight: 650;
+}
+
+html[data-theme="light"] .sales-page .sales-filter-buttons button,
+html[data-theme="light"] .sales-page .clear-sales-filter,
+html[data-theme="light"] .sales-page .sale-actions button,
+html[data-theme="light"] .sales-page .sales-center-actions button,
+html[data-theme="light"] .sales-page .sales-mobile-actions button {
+  font-weight: 700;
+}
+
+html[data-theme="light"] .sales-page .sales-overview-card strong,
+html[data-theme="light"] .sales-page .sales-center-table td strong,
+html[data-theme="light"] .sales-page .sales-mobile-details strong {
+  font-weight: 750;
+}
+
+
+/* =========================================================
+   UPTREND SALES — LIGHT MODE PREMIUM COLORS
+   ---------------------------------------------------------
+   Ambient color + glow + stronger text hierarchy.
+   NO NEW ANIMATIONS.
+   DARK MODE UNTOUCHED.
+========================================================= */
+
+
+/* =========================================================
+   SALES PAGE AMBIENT LIGHT
+========================================================= */
+
+html[data-theme="light"] .sales-page {
+  position: relative;
+}
+
+html[data-theme="light"] .sales-page::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+
+  top: -80px;
+  left: 18%;
+
+  width: 420px;
+  height: 300px;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(21, 154, 80, 0.12),
+      rgba(21, 154, 80, 0.045) 38%,
+      transparent 72%
+    );
+
+  filter: blur(18px);
+}
+
+
+/* =========================================================
+   PAGE HEADING
+========================================================= */
+
+html[data-theme="light"] .sales-page-top h2 {
+  color: #17221c;
+  font-weight: 800;
+}
+
+html[data-theme="light"] .sales-page-top h2::first-letter {
+  color: #159a50;
+}
+
+html[data-theme="light"] .sales-page-top p {
+  color: #68766e;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   OVERVIEW CARDS — MIXED ACCENTS
+========================================================= */
+
+html[data-theme="light"] .sales-overview-card {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      #edf7f1 0%,
+      #e5f0e9 100%
+    );
+
+  border-color:
+    rgba(21, 154, 80, 0.11);
+
+  box-shadow:
+    0 10px 30px rgba(22, 70, 42, 0.055),
+    inset 0 1px 0 rgba(255,255,255,0.65);
+}
+
+html[data-theme="light"] .sales-overview-card::before {
+  content: "";
+  position: absolute;
+
+  top: -55px;
+  right: -35px;
+
+  width: 120px;
+  height: 120px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(21,154,80,0.12),
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+
+/* Card 1 — Green */
+
+html[data-theme="light"] .sales-overview-card:nth-child(1) {
+  border-color:
+    rgba(21,154,80,0.18);
+
+  background:
+    linear-gradient(
+      145deg,
+      #e9f7ee,
+      #e2f0e7
+    );
+}
+
+html[data-theme="light"] .sales-overview-card:nth-child(1) strong {
+  color: #14783d;
+}
+
+
+/* Card 2 — Gold */
+
+html[data-theme="light"] .sales-overview-card:nth-child(2) {
+  border-color:
+    rgba(168,117,14,0.16);
+
+  background:
+    linear-gradient(
+      145deg,
+      #f4f2e8,
+      #edf0e7
+    );
+}
+
+html[data-theme="light"] .sales-overview-card:nth-child(2)::before {
+  background:
+    radial-gradient(
+      circle,
+      rgba(168,117,14,0.12),
+      transparent 70%
+    );
+}
+
+html[data-theme="light"] .sales-overview-card:nth-child(2) strong {
+  color: #9a6b08;
+}
+
+
+/* Card 3 — Blue */
+
+html[data-theme="light"] .sales-overview-card:nth-child(3) {
+  border-color:
+    rgba(72,132,218,0.14);
+
+  background:
+    linear-gradient(
+      145deg,
+      #eaf2f8,
+      #e5efea
+    );
+}
+
+html[data-theme="light"] .sales-overview-card:nth-child(3)::before {
+  background:
+    radial-gradient(
+      circle,
+      rgba(72,132,218,0.11),
+      transparent 70%
+    );
+}
+
+html[data-theme="light"] .sales-overview-card:nth-child(3) strong {
+  color: #3978c7;
+}
+
+
+/* Card 4 — Purple/green mixed */
+
+html[data-theme="light"] .sales-overview-card:nth-child(4) {
+  border-color:
+    rgba(21,154,80,0.12);
+
+  background:
+    linear-gradient(
+      145deg,
+      #e8f3ed,
+      #edf1ed
+    );
+}
+
+html[data-theme="light"] .sales-overview-card:nth-child(4) strong {
+  color: #176d45;
+}
+
+
+/* Supporting text */
+
+html[data-theme="light"] .sales-overview-card span {
+  color: #587064;
+  font-weight: 750;
+}
+
+html[data-theme="light"] .sales-overview-card small {
+  color: #7a8981;
+  font-weight: 650;
+}
+
+
+/* =========================================================
+   FILTER / SEARCH
+========================================================= */
+
+html[data-theme="light"] .sales-filter-card {
+  background:
+    linear-gradient(
+      145deg,
+      #eaf4ee,
+      #e3efe8
+    );
+
+  border-color:
+    rgba(21,154,80,0.10);
+
+  box-shadow:
+    0 10px 30px rgba(22,70,42,0.045),
+    inset 0 1px 0 rgba(255,255,255,0.55);
+}
+
+html[data-theme="light"] .sales-search {
+  background:
+    rgba(255,255,255,0.32);
+
+  border-color:
+    rgba(21,154,80,0.12);
+
+  box-shadow:
+    inset 0 1px 8px rgba(22,70,42,0.025);
+}
+
+html[data-theme="light"] .sales-search span {
+  color: #159a50;
+  font-weight: 800;
+}
+
+html[data-theme="light"] .sales-search input {
+  color: #17221c;
+  font-weight: 650;
+}
+
+html[data-theme="light"] .sales-search input::placeholder {
+  color: #819088;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   FILTER BUTTONS
+========================================================= */
+
+html[data-theme="light"] .sales-filter-buttons button {
+  color: #587064;
+
+  background:
+    rgba(255,255,255,0.28);
+
+  border-color:
+    rgba(21,154,80,0.10);
+
+  font-weight: 750;
+
+  box-shadow:
+    0 3px 12px rgba(22,70,42,0.025);
+}
+
+html[data-theme="light"] .sales-filter-buttons button:hover,
+html[data-theme="light"] .sales-filter-buttons button.active {
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #159a50,
+      #08783b
+    );
+
+  border-color:
+    #159a50;
+
+  box-shadow:
+    0 7px 20px rgba(21,154,80,0.20),
+    0 0 18px rgba(21,154,80,0.08);
+}
+
+
+/* =========================================================
+   CUSTOM DATE
+========================================================= */
+
+html[data-theme="light"] .custom-date-filter label span {
+  color: #587064;
+  font-weight: 700;
+}
+
+html[data-theme="light"] .custom-date-filter input {
+  color: #17221c;
+
+  background:
+    rgba(255,255,255,0.30);
+
+  border-color:
+    rgba(21,154,80,0.11);
+
+  font-weight: 650;
+}
+
+html[data-theme="light"] .clear-sales-filter {
+  color: #c33f59;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   SALES CENTER / TRANSACTION LEDGER
+========================================================= */
+
+html[data-theme="light"] .sales-center-card {
+  background:
+    linear-gradient(
+      145deg,
+      #e9f3ed,
+      #e4efe8
+    );
+
+  border-color:
+    rgba(21,154,80,0.10);
+
+  box-shadow:
+    0 12px 35px rgba(22,70,42,0.055),
+    inset 0 1px 0 rgba(255,255,255,0.60);
+}
+
+html[data-theme="light"] .sales-center-card .panel-heading {
+  border-bottom-color:
+    rgba(21,154,80,0.09);
+}
+
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+html[data-theme="light"] .sales-center-table th {
+  color: #4e685a;
+
+  background:
+    linear-gradient(
+      180deg,
+      #dfece5,
+      #e5f0e9
+    );
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   TABLE CONTENT
+========================================================= */
+
+html[data-theme="light"] .sales-center-table td {
+  color: #394a41;
+  font-weight: 650;
+
+  border-top-color:
+    rgba(22,70,42,0.065);
+}
+
+html[data-theme="light"] .sales-center-table tbody tr:hover {
+  background:
+    rgba(21,154,80,0.045);
+}
+
+html[data-theme="light"] .sales-center-table td strong {
+  color: #17221c;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   PRODUCT ICON / LETTER
+========================================================= */
+
+html[data-theme="light"] .sales-product-letter {
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      #25bd68,
+      #08783b
+    );
+
+  border:
+    1px solid rgba(21,154,80,0.18);
+
+  box-shadow:
+    0 6px 16px rgba(21,154,80,0.18),
+    0 0 18px rgba(21,154,80,0.06);
+
+  font-weight: 900;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+html[data-theme="light"] .sales-center-actions button {
+  color: #587064;
+
+  background:
+    rgba(255,255,255,0.28);
+
+  border-color:
+    rgba(21,154,80,0.10);
+
+  font-weight: 750;
+}
+
+html[data-theme="light"] .sales-edit-button:hover {
+  color: #ffffff !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #159a50,
+      #08783b
+    );
+
+  border-color:
+    #159a50;
+
+  box-shadow:
+    0 6px 18px rgba(21,154,80,0.18);
+}
+
+html[data-theme="light"] .sales-delete-button {
+  color: #c33f59 !important;
+}
+
+html[data-theme="light"] .sales-delete-button:hover {
+  color: #ffffff !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d94e67,
+      #bd3c55
+    );
+
+  border-color:
+    #d94e67;
+
+  box-shadow:
+    0 6px 18px rgba(217,78,103,0.16);
+}
+
+
+/* =========================================================
+   EMPTY SALES STATE
+========================================================= */
+
+html[data-theme="light"] .sales-center-empty > div {
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      #25bd68,
+      #08783b
+    );
+
+  box-shadow:
+    0 10px 25px rgba(21,154,80,0.18),
+    0 0 22px rgba(21,154,80,0.07);
+}
+
+html[data-theme="light"] .sales-center-empty strong {
+  color: #17221c;
+  font-weight: 800;
+}
+
+html[data-theme="light"] .sales-center-empty span {
+  color: #68766e;
+  font-weight: 650;
+}
+
+
+/* =========================================================
+   SALES HISTORY
+========================================================= */
+
+html[data-theme="light"] .sales-history {
+  background:
+    linear-gradient(
+      145deg,
+      #e9f3ed,
+      #e2eee7
+    );
+
+  border-color:
+    rgba(21,154,80,0.10);
+
+  box-shadow:
+    0 12px 35px rgba(22,70,42,0.05);
+}
+
+html[data-theme="light"] .sales-count {
+  color: #14783d;
+
+  background:
+    rgba(21,154,80,0.08);
+
+  border-color:
+    rgba(21,154,80,0.13);
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   MOBILE SALES CARDS
+========================================================= */
+
+@media (max-width: 620px) {
+
+  html[data-theme="light"] .sales-mobile-card {
+    background:
+      linear-gradient(
+        145deg,
+        #e9f3ed,
+        #e1ede6
+      );
+
+    border-color:
+      rgba(21,154,80,0.10);
+
+    box-shadow:
+      0 8px 24px rgba(22,70,42,0.045),
+      inset 0 1px 0 rgba(255,255,255,0.55);
+  }
+
+  html[data-theme="light"] .sales-mobile-top strong {
+    color: #17221c;
+    font-weight: 800;
+  }
+
+  html[data-theme="light"] .sales-mobile-top span {
+    color: #68766e;
+    font-weight: 650;
+  }
+
+  html[data-theme="light"] .sales-mobile-details span {
+    color: #587064;
+    font-weight: 750;
+  }
+
+  html[data-theme="light"] .sales-mobile-details strong {
+    color: #17221c;
+    font-weight: 800;
+  }
+
+  html[data-theme="light"] .sales-mobile-actions button {
+    color: #587064;
+
+    background:
+      rgba(255,255,255,0.30);
+
+    border-color:
+      rgba(21,154,80,0.10);
+
+    font-weight: 750;
+  }
+
+  html[data-theme="light"] .sales-mobile-actions button:not(.sales-delete-button):hover {
+    color: #ffffff;
+
+    background:
+      linear-gradient(
+        135deg,
+        #159a50,
+        #08783b
+      );
+
+    box-shadow:
+      0 6px 18px rgba(21,154,80,0.17);
+  }
+
+  html[data-theme="light"] .sales-mobile-actions .sales-delete-button:hover {
+    color: #ffffff;
+
+    background:
+      linear-gradient(
+        135deg,
+        #d94e67,
+        #bd3c55
+      );
+  }
+}

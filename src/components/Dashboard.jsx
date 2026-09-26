@@ -1,5 +1,4 @@
 import "./Dashboard.css";
-
 import { useEffect, useMemo, useState } from "react";
 
 import { supabase } from "../lib/supabase";
@@ -12,6 +11,7 @@ function Dashboard({
   onRecordSale,
   onRecordExpense,
   onAddProduct,
+  subscription,
 }) {
   const [sales, setSales] = useState([]);
   const [products, setProducts] = useState([]);

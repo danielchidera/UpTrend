@@ -1,338 +1,31 @@
 /* =========================================================
-   FINANCE PAGE
+   UPTrend — FINANCE CONTROL CENTER
    ========================================================= */
 
+.inner-page.finance-page {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
 .finance-page {
+  --finance-green: #5bd98f;
+  --finance-green-deep: #1f7a4d;
+  --finance-gold: #d7b45a;
+  --finance-red: #ef6b6b;
+  --finance-blue: #71a7ff;
+  --finance-panel: rgba(14, 25, 19, .92);
+  --finance-line: rgba(255,255,255,.075);
+
   width: 100%;
   max-width: 1400px;
+  min-width: 0;
   margin: 0 auto;
-  padding-bottom: 40px;
-}
-
-.finance-page .inner-page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-.finance-page .inner-page-header h1 {
-  margin: 8px 0 10px;
-  font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.05;
-}
-
-.finance-page .inner-page-header p {
-  max-width: 620px;
-  margin: 0;
-  line-height: 1.6;
-  opacity: 0.72;
-}
-
-/* CASH HERO */
-
-.finance-hero-card {
-  width: 100%;
+  padding: 4px 0 56px;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
-  gap: 32px;
-  padding: 32px;
-  margin-bottom: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 24px;
-  background: linear-gradient(
-    135deg,
-    rgba(30, 90, 57, 0.28),
-    rgba(12, 22, 18, 0.96)
-  );
-  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
-.finance-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  opacity: 0.62;
-  margin-bottom: 10px;
-}
-
-.finance-balance {
-  display: block;
-  font-size: clamp(32px, 5vw, 54px);
-  line-height: 1;
-  margin-bottom: 12px;
-}
-
-.finance-hero-card p {
-  margin: 0;
-  opacity: 0.65;
-  line-height: 1.5;
-}
-
-.finance-flow-mini {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  align-self: center;
-}
-
-.finance-flow-mini > div {
-  min-width: 0;
-  padding: 20px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.finance-flow-mini span {
-  display: block;
-  font-size: 12px;
-  opacity: 0.6;
-  margin-bottom: 8px;
-}
-
-.finance-flow-mini strong {
-  display: block;
-  font-size: 18px;
-  word-break: break-word;
-}
-
-/* GENERAL PANELS */
-
-.finance-panel {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 28px;
-  margin-bottom: 24px;
-  border-radius: 22px;
-  background: rgba(16, 27, 22, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.finance-section-heading {
-  margin-bottom: 22px;
-}
-
-.finance-section-heading h2 {
-  margin: 7px 0 0;
-  font-size: 24px;
-}
-
-/* OPENING BALANCE */
-
-.finance-opening-form {
-  display: flex;
-  align-items: flex-end;
-  gap: 16px;
-}
-
-.finance-opening-form > div {
-  flex: 1;
-  min-width: 0;
-}
-
-.finance-opening-form label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 13px;
-  opacity: 0.65;
-}
-
-.finance-opening-form input {
-  width: 100%;
-  min-height: 48px;
-  box-sizing: border-box;
-  padding: 0 15px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.25);
-  color: inherit;
-  outline: none;
-}
-
-.finance-opening-form input:focus {
-  border-color: rgba(91, 217, 143, 0.55);
-}
-
-.finance-opening-form button {
-  min-height: 48px;
-  padding: 0 22px;
-  border: 0;
-  border-radius: 12px;
-  background: #5bd98f;
-  color: #06120b;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-/* SUMMARY */
-
-.finance-summary-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.finance-summary-card {
-  min-width: 0;
-  padding: 22px;
-  border-radius: 18px;
-  background: rgba(16, 27, 22, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.finance-summary-card span {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 12px;
-  opacity: 0.6;
-}
-
-.finance-summary-card strong {
-  display: block;
-  font-size: 22px;
-  overflow-wrap: anywhere;
-}
-
-/* EXPLANATION */
-
-.finance-explanation-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.finance-explanation-grid > div {
-  min-width: 0;
-  padding: 22px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.finance-explanation-grid span {
-  display: block;
-  font-size: 12px;
-  opacity: 0.6;
-  margin-bottom: 8px;
-}
-
-.finance-explanation-grid strong {
-  display: block;
-  font-size: 23px;
-  margin-bottom: 10px;
-  overflow-wrap: anywhere;
-}
-
-.finance-explanation-grid p {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.6;
-  opacity: 0.62;
-}
-
-/* =========================================================
-   FINANCE RESPONSIVE
-   ========================================================= */
-
-@media (max-width: 900px) {
-  .finance-hero-card {
-    grid-template-columns: 1fr;
-  }
-
-  .finance-summary-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .finance-explanation-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  .finance-page {
-    padding-bottom: 24px;
-  }
-
-  .finance-page .inner-page-header {
-    margin-bottom: 18px;
-  }
-
-  .finance-page .inner-page-header h1 {
-    font-size: 30px;
-  }
-
-  .finance-hero-card {
-    padding: 22px;
-    gap: 22px;
-    border-radius: 20px;
-  }
-
-  .finance-balance {
-    font-size: 34px;
-  }
-
-  .finance-flow-mini {
-    grid-template-columns: 1fr;
-  }
-
-  .finance-panel {
-    padding: 20px;
-    border-radius: 18px;
-  }
-
-  .finance-opening-form {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .finance-opening-form button {
-    width: 100%;
-  }
-
-  .finance-summary-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .finance-summary-card {
-    padding: 18px;
-  }
-
-  .finance-explanation-grid {
-    gap: 12px;
-  }
-}
-
-
-/* =========================================================
-   FINANCE — MOBILE OVERFLOW FIX
-   ========================================================= */
-
-.finance-page {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-/* Stop the finance hero from creating horizontal overflow */
-.finance-hero-card {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-/* Every finance child must be allowed to shrink */
 .finance-page *,
 .finance-page *::before,
 .finance-page *::after {
@@ -340,267 +33,3439 @@
   min-width: 0;
 }
 
-/* TABLET / PHONE */
+.finance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 24px;
+}
 
-@media screen and (max-width: 1000px) {
+.finance-kicker,
+.finance-card-label,
+.finance-panel-heading > div > span,
+.finance-period-title > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--finance-green);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
 
-  .finance-hero-card {
-    display: block !important;
-    width: 100% !important;
-  }
+.finance-kicker > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--finance-green);
+  box-shadow: 0 0 14px rgba(91,217,143,.55);
+}
 
-  .finance-hero-card > div {
-    width: 100%;
-    max-width: 100%;
-  }
+.finance-header h1 {
+  margin: 9px 0;
+  font-size: clamp(34px, 5vw, 52px);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
 
-  .finance-flow-mini {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    width: 100%;
-    margin-top: 24px;
-  }
+.finance-header p {
+  max-width: 720px;
+  margin: 0;
+  color: rgba(255,255,255,.62);
+  line-height: 1.65;
+}
 
-  .finance-opening-form {
-    width: 100%;
-    max-width: 100%;
-  }
+.finance-header-status {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 210px;
+  padding: 13px 16px;
+  border: 1px solid var(--finance-line);
+  border-radius: 16px;
+  background: rgba(255,255,255,.025);
+}
 
-  .finance-opening-form > div {
-    width: 100%;
-  }
+.finance-header-status strong,
+.finance-header-status span {
+  display: block;
+}
 
-  .finance-summary-grid {
-    width: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
+.finance-header-status strong {
+  font-size: 13px;
+}
 
-  .finance-explanation-grid {
-    width: 100%;
-    grid-template-columns: 1fr !important;
+.finance-header-status div span {
+  margin-top: 3px;
+  color: rgba(255,255,255,.45);
+  font-size: 11px;
+}
+
+.finance-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: rgba(255,255,255,.35);
+}
+
+.finance-status-dot.positive {
+  background: var(--finance-green);
+  box-shadow: 0 0 12px rgba(91,217,143,.55);
+}
+
+.finance-status-dot.warning {
+  background: var(--finance-red);
+  box-shadow: 0 0 12px rgba(239,107,107,.45);
+}
+
+.finance-command-bar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 12px;
+  margin-bottom: 18px;
+  border: 1px solid var(--finance-line);
+  border-radius: 17px;
+  background: rgba(10,19,14,.72);
+}
+
+.finance-period-title {
+  padding: 4px 9px;
+  min-width: 112px;
+}
+
+.finance-period-title > span {
+  color: rgba(255,255,255,.38);
+  font-size: 9px;
+}
+
+.finance-period-title strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.finance-periods {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.finance-periods button {
+  border: 0;
+  border-radius: 10px;
+  padding: 9px 12px;
+  background: transparent;
+  color: rgba(255,255,255,.55);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.finance-periods button:hover {
+  background: rgba(255,255,255,.04);
+  color: #fff;
+}
+
+.finance-periods button.active {
+  background: rgba(91,217,143,.12);
+  color: var(--finance-green);
+  box-shadow: inset 0 0 0 1px rgba(91,217,143,.16);
+}
+
+.finance-custom-dates {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.finance-custom-dates input {
+  height: 36px;
+  border: 1px solid var(--finance-line);
+  border-radius: 9px;
+  background: #09130e;
+  color: #fff;
+  padding: 0 9px;
+}
+
+.finance-custom-dates span {
+  color: rgba(255,255,255,.4);
+  font-size: 11px;
+}
+
+.finance-cash-hero {
+  display: grid;
+  grid-template-columns: minmax(0,1.3fr) minmax(0,.7fr);
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid rgba(91,217,143,.18);
+  border-radius: 25px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(91,217,143,.15), transparent 34%),
+    linear-gradient(135deg, rgba(25,75,48,.42), rgba(7,16,11,.98) 66%);
+  box-shadow: 0 18px 60px rgba(0,0,0,.2);
+}
+
+.finance-cash-main {
+  padding: 34px;
+}
+
+.finance-card-label {
+  color: rgba(255,255,255,.48);
+}
+
+.finance-cash-number {
+  margin: 12px 0 8px;
+  font-size: clamp(42px,6vw,68px);
+  line-height: .98;
+  letter-spacing: -.055em;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.finance-cash-main p {
+  margin: 0;
+  max-width: 580px;
+  color: rgba(255,255,255,.55);
+  line-height: 1.55;
+}
+
+.finance-cash-meter {
+  height: 6px;
+  max-width: 520px;
+  margin-top: 25px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(255,255,255,.08);
+}
+
+.finance-cash-meter div {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--finance-green-deep),
+    var(--finance-green)
+  );
+}
+
+.finance-meter-caption {
+  display: block;
+  margin-top: 7px;
+  color: rgba(255,255,255,.35);
+  font-size: 10px;
+}
+
+.finance-flow-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 25px;
+  background: rgba(0,0,0,.17);
+  border-left: 1px solid rgba(255,255,255,.05);
+}
+
+.finance-flow-row,
+.finance-flow-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.finance-flow-row span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(255,255,255,.62);
+  font-size: 12px;
+}
+
+.finance-flow-row strong {
+  font-size: 13px;
+}
+
+.finance-flow-icon {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 8px;
+  font-style: normal;
+  background: rgba(255,255,255,.06);
+}
+
+.finance-flow-icon.in {
+  color: var(--finance-green);
+  background: rgba(91,217,143,.1);
+}
+
+.finance-flow-icon.out {
+  color: var(--finance-red);
+  background: rgba(239,107,107,.1);
+}
+
+.positive-flow strong {
+  color: var(--finance-green);
+}
+
+.negative-flow strong {
+  color: var(--finance-red);
+}
+
+.finance-flow-total {
+  border: 0;
+  padding-top: 18px;
+}
+
+.finance-flow-total span {
+  color: rgba(255,255,255,.48);
+  font-size: 11px;
+}
+
+.finance-flow-total strong {
+  color: #fff;
+  font-size: 20px;
+}
+
+.finance-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6,minmax(0,1fr));
+  gap: 11px;
+  margin-bottom: 18px;
+}
+
+.finance-kpi-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  min-height: 126px;
+  border: 1px solid var(--finance-line);
+  border-radius: 17px;
+  background: var(--finance-panel);
+}
+
+.finance-kpi-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255,255,255,.1);
+}
+
+.finance-kpi-card.revenue::before,
+.finance-kpi-card.profit::before,
+.finance-kpi-card.net::before {
+  background: var(--finance-green);
+}
+
+.finance-kpi-card.expense::before,
+.finance-kpi-card.danger::before {
+  background: var(--finance-red);
+}
+
+.finance-kpi-card.cost::before {
+  background: var(--finance-gold);
+}
+
+.finance-kpi-card.covered::before {
+  background: var(--finance-blue);
+}
+
+.finance-kpi-card > span {
+  display: block;
+  color: rgba(255,255,255,.48);
+  font-size: 11px;
+}
+
+.finance-kpi-card strong {
+  display: block;
+  margin: 10px 0 7px;
+  font-size: clamp(19px,2vw,25px);
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+}
+
+.finance-kpi-card small {
+  color: rgba(255,255,255,.36);
+  font-size: 10px;
+}
+
+.finance-kpi-card.profit strong,
+.finance-kpi-card.net strong {
+  color: var(--finance-green);
+}
+
+.finance-kpi-card.expense strong,
+.finance-kpi-card.danger strong {
+  color: var(--finance-red);
+}
+
+.finance-kpi-card.cost strong {
+  color: var(--finance-gold);
+}
+
+.finance-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1.45fr) minmax(0,.75fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.finance-main-grid.lower {
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+}
+
+.finance-panel {
+  min-width: 0;
+  padding: 25px;
+  border: 1px solid var(--finance-line);
+  border-radius: 21px;
+  background: var(--finance-panel);
+}
+
+.finance-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 21px;
+}
+
+.finance-panel-heading h2 {
+  margin: 6px 0 0;
+  font-size: 20px;
+  letter-spacing: -.02em;
+}
+
+.finance-legend {
+  display: flex;
+  gap: 12px;
+  color: rgba(255,255,255,.4);
+  font-size: 10px;
+}
+
+.finance-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.finance-legend i {
+  width: 7px;
+  height: 7px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.legend-revenue {
+  background: var(--finance-green);
+}
+
+.legend-expense {
+  background: var(--finance-red);
+}
+
+.finance-chart {
+  display: flex;
+  align-items: stretch;
+  height: 245px;
+  gap: 8px;
+  padding: 0 2px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.finance-chart-day {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.finance-bars {
+  height: 205px;
+  width: 100%;
+  max-width: 35px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  padding-top: 10px;
+}
+
+.finance-bar {
+  width: calc(50% - 2px);
+  min-height: 3px;
+  border-radius: 5px 5px 2px 2px;
+}
+
+.revenue-bar {
+  background: linear-gradient(
+    180deg,
+    var(--finance-green),
+    #22754b
+  );
+}
+
+.expense-bar {
+  background: linear-gradient(
+    180deg,
+    var(--finance-red),
+    #743737
+  );
+}
+
+.finance-chart-day > span {
+  color: rgba(255,255,255,.33);
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.finance-empty-chart,
+.finance-empty {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 150px;
+  color: rgba(255,255,255,.38);
+  font-size: 12px;
+}
+
+.finance-health-callout {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+  border: 1px solid var(--finance-line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.025);
+}
+
+.finance-health-callout.positive {
+  border-color: rgba(91,217,143,.17);
+  background: rgba(91,217,143,.045);
+}
+
+.finance-health-callout.warning {
+  border-color: rgba(239,107,107,.2);
+  background: rgba(239,107,107,.045);
+}
+
+.finance-health-symbol {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  background: rgba(255,255,255,.07);
+  font-weight: 900;
+}
+
+.finance-health-callout.positive .finance-health-symbol {
+  color: var(--finance-green);
+}
+
+.finance-health-callout.warning .finance-health-symbol {
+  color: var(--finance-red);
+}
+
+.finance-health-callout strong {
+  display: block;
+  font-size: 12px;
+}
+
+.finance-health-callout p {
+  margin: 4px 0 0;
+  color: rgba(255,255,255,.48);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.finance-health-list {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 13px;
+}
+
+.finance-health-list > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3px 12px;
+  padding: 13px;
+  background: rgba(255,255,255,.018);
+}
+
+.finance-health-list span {
+  color: rgba(255,255,255,.55);
+  font-size: 11px;
+}
+
+.finance-health-list strong {
+  font-size: 13px;
+}
+
+.finance-health-list em {
+  grid-column: 1/-1;
+  color: rgba(255,255,255,.3);
+  font-size: 9px;
+  font-style: normal;
+}
+
+.finance-panel-total {
+  color: var(--finance-gold);
+  font-size: 14px;
+}
+
+.finance-category-list {
+  display: grid;
+  gap: 16px;
+}
+
+.finance-category-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  font-size: 11px;
+}
+
+.finance-category-top span {
+  color: rgba(255,255,255,.62);
+}
+
+.finance-category-top strong {
+  font-size: 11px;
+}
+
+.finance-progress {
+  height: 5px;
+  margin: 8px 0 5px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(255,255,255,.06);
+}
+
+.finance-progress div {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--finance-gold),
+    #e9d18a
+  );
+}
+
+.finance-category-row small {
+  color: rgba(255,255,255,.3);
+  font-size: 9px;
+}
+
+.finance-activity-list {
+  display: grid;
+  gap: 2px;
+}
+
+.finance-activity-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 5px;
+  border-bottom: 1px solid rgba(255,255,255,.045);
+}
+
+.finance-activity-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-weight: 900;
+}
+
+.finance-activity-icon.sale {
+  color: var(--finance-green);
+  background: rgba(91,217,143,.1);
+}
+
+.finance-activity-icon.expense {
+  color: var(--finance-red);
+  background: rgba(239,107,107,.1);
+}
+
+.finance-activity-info {
+  overflow: hidden;
+}
+
+.finance-activity-info strong,
+.finance-activity-info span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.finance-activity-info strong {
+  font-size: 11px;
+}
+
+.finance-activity-info span {
+  margin-top: 3px;
+  color: rgba(255,255,255,.32);
+  font-size: 9px;
+}
+
+.finance-activity-row > strong {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.activity-in {
+  color: var(--finance-green);
+}
+
+.activity-out {
+  color: var(--finance-red);
+}
+
+.finance-position-panel {
+  margin-bottom: 18px;
+}
+
+.finance-position-badge {
+  padding: 6px 9px;
+  border-radius: 8px;
+  color: var(--finance-gold);
+  background: rgba(215,180,90,.08);
+  font-size: 9px;
+}
+
+.finance-position-flow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1.1fr;
+  align-items: center;
+  gap: 13px;
+}
+
+.finance-position-flow > div {
+  padding: 17px;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+  background: rgba(255,255,255,.018);
+}
+
+.finance-position-flow > div span,
+.finance-position-flow > div small {
+  display: block;
+}
+
+.finance-position-flow > div span {
+  color: rgba(255,255,255,.42);
+  font-size: 10px;
+}
+
+.finance-position-flow > div strong {
+  display: block;
+  margin: 7px 0 4px;
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.finance-position-flow > div small {
+  color: rgba(255,255,255,.28);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.finance-position-flow > b {
+  color: rgba(255,255,255,.28);
+  text-align: center;
+}
+
+.finance-position-flow .closing {
+  border-color: rgba(91,217,143,.2);
+  background: rgba(91,217,143,.04);
+}
+
+.finance-position-flow .closing strong {
+  color: var(--finance-green);
+}
+
+.finance-opening-panel {
+  display: grid;
+  grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr);
+  gap: 35px;
+  align-items: center;
+  padding: 25px;
+  border: 1px solid rgba(215,180,90,.14);
+  border-radius: 21px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(215,180,90,.055),
+      rgba(255,255,255,.018)
+    );
+}
+
+.finance-opening-panel h2 {
+  margin: 8px 0;
+  font-size: 20px;
+}
+
+.finance-opening-panel p {
+  max-width: 620px;
+  margin: 0;
+  color: rgba(255,255,255,.43);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.finance-opening-panel form label {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(255,255,255,.45);
+  font-size: 10px;
+}
+
+.finance-opening-input-row {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  background: rgba(0,0,0,.2);
+}
+
+.finance-opening-input-row > span {
+  padding-left: 13px;
+  color: var(--finance-gold);
+  font-weight: 800;
+}
+
+.finance-opening-input-row input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 10px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+}
+
+.finance-opening-input-row button {
+  height: 40px;
+  margin-right: 4px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--finance-green);
+  color: #06120b;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.finance-opening-panel form > small {
+  display: block;
+  margin-top: 7px;
+  color: rgba(255,255,255,.28);
+  font-size: 9px;
+}
+
+.finance-loading,
+.finance-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+  padding: 30px;
+  border: 1px solid var(--finance-line);
+  border-radius: 22px;
+  background: var(--finance-panel);
+  text-align: center;
+}
+
+.finance-loading > span:last-child,
+.finance-error > span {
+  margin-top: 7px;
+  color: rgba(255,255,255,.42);
+  font-size: 11px;
+}
+
+.finance-loading-dot {
+  width: 10px;
+  height: 10px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  background: var(--finance-green);
+  box-shadow: 0 0 20px rgba(91,217,143,.7);
+  animation: financePulse 1.2s infinite;
+}
+
+.finance-error button {
+  margin-top: 15px;
+  padding: 9px 15px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--finance-green);
+  color: #06120b;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@keyframes financePulse {
+  50% {
+    transform: scale(1.45);
+    opacity: .45;
   }
 }
 
-/* SMALL PHONE */
+@media (max-width:1200px) {
+  .finance-kpi-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+  }
 
-@media screen and (max-width: 600px) {
+  .finance-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-main-grid.lower {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width:900px) {
+  .finance-page {
+    padding-bottom: 35px;
+  }
+
+  .finance-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .finance-header-status {
+    width: 100%;
+  }
+
+  .finance-cash-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-flow-stack {
+    border-left: 0;
+    border-top: 1px solid rgba(255,255,255,.05);
+  }
+
+  .finance-kpi-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+
+  .finance-main-grid.lower {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-position-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-position-flow > b {
+    transform: rotate(90deg);
+  }
+
+  .finance-opening-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-custom-dates {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width:600px) {
+  .finance-page {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .finance-header h1 {
+    font-size: 34px;
+  }
+
+  .finance-header p {
+    font-size: 12px;
+  }
+
+  .finance-command-bar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .finance-period-title {
+    padding: 4px 7px;
+  }
+
+  .finance-periods {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+  }
+
+  .finance-periods button {
+    padding: 9px 5px;
+  }
+
+  .finance-custom-dates {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  .finance-custom-dates input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .finance-cash-main {
+    padding: 23px;
+  }
+
+  .finance-cash-number {
+    font-size: 39px;
+  }
+
+  .finance-flow-stack {
+    padding: 17px 23px;
+  }
+
+  .finance-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .finance-kpi-card {
+    min-height: 112px;
+    padding: 15px;
+  }
+
+  .finance-kpi-card strong {
+    font-size: 18px;
+  }
+
+  .finance-panel {
+    padding: 19px;
+    border-radius: 18px;
+  }
+
+  .finance-panel-heading {
+    margin-bottom: 17px;
+  }
+
+  .finance-panel-heading h2 {
+    font-size: 18px;
+  }
+
+  .finance-legend {
+    gap: 7px;
+    font-size: 8px;
+  }
+
+  .finance-chart {
+    height: 190px;
+    gap: 4px;
+  }
+
+  .finance-bars {
+    height: 155px;
+    max-width: 27px;
+  }
+
+  .finance-chart-day > span {
+    font-size: 7px;
+  }
+
+  .finance-activity-row {
+    grid-template-columns: 30px minmax(0,1fr) auto;
+  }
+
+  .finance-activity-icon {
+    width: 27px;
+    height: 27px;
+  }
+
+  .finance-activity-row > strong {
+    font-size: 9px;
+  }
+
+  .finance-opening-panel {
+    padding: 19px;
+  }
+
+  .finance-opening-input-row button {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width:380px) {
+  .finance-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-periods {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .finance-opening-input-row button {
+    font-size: 10px;
+  }
+}
+
+
+/* =========================================================
+   FINANCE — MOBILE STRUCTURE FIX
+   ========================================================= */
+
+@media (max-width: 760px) {
 
   .finance-page {
     width: 100%;
     max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
     overflow-x: hidden;
   }
 
-  .finance-page .inner-page-header {
+  .finance-header,
+  .finance-command-bar,
+  .finance-cash-hero,
+  .finance-kpi-grid,
+  .finance-main-grid,
+  .finance-main-grid.lower,
+  .finance-position-panel,
+  .finance-opening-panel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Header */
+  .finance-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .finance-header-status {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Period controls */
+  .finance-command-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .finance-period-title {
     width: 100%;
   }
 
-  .finance-hero-card {
-    display: block !important;
-    padding: 22px !important;
+  .finance-periods {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .finance-periods button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .finance-custom-dates {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
     margin-left: 0;
-    margin-right: 0;
-    border-radius: 20px;
   }
 
-  .finance-balance {
-    font-size: 36px !important;
-    line-height: 1.05;
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
-
-  .finance-flow-mini {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 12px;
-    margin-top: 24px;
-  }
-
-  .finance-flow-mini > div {
+  .finance-custom-dates input {
     width: 100%;
+    min-width: 0;
+  }
+
+  /* Cash hero */
+  .finance-cash-hero {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .finance-cash-main {
+    width: 100%;
+    padding: 22px;
+  }
+
+  .finance-flow-stack {
+    width: 100%;
+    border-left: 0;
+    border-top: 1px solid rgba(255,255,255,.05);
+  }
+
+  .finance-cash-number {
+    font-size: clamp(38px, 11vw, 52px);
+    word-break: break-word;
+  }
+
+  /* KPIs */
+  .finance-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 9px;
+  }
+
+  .finance-kpi-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Main sections */
+  .finance-main-grid,
+  .finance-main-grid.lower {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
 
   .finance-panel {
     width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .finance-opening-form {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 12px;
-  }
-
-  .finance-opening-form input,
-  .finance-opening-form button {
-    width: 100% !important;
+    min-width: 0;
     max-width: 100%;
   }
 
-  .finance-summary-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
+  /* Chart */
+  .finance-chart {
     width: 100%;
-  }
-
-  .finance-summary-card {
-    width: 100%;
+    min-width: 0;
     overflow: hidden;
   }
 
-  .finance-summary-card strong,
-  .finance-explanation-grid strong {
-    overflow-wrap: anywhere;
+  .finance-bars {
+    min-width: 0;
   }
 
-  .finance-explanation-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
+  /* Financial health */
+  .finance-health-callout {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .finance-health-list {
     width: 100%;
   }
 
-  .finance-explanation-grid > div {
+  /* Recent activity */
+  .finance-activity-row {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Opening → closing flow */
+  .finance-position-flow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .finance-position-flow > div {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .finance-position-flow > b {
+    transform: rotate(90deg);
+    flex: 0 0 auto;
+  }
+
+  /* Opening cash */
+  .finance-opening-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 22px;
+  }
+
+  .finance-opening-panel > div,
+  .finance-opening-panel > form {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .finance-opening-input-row {
     width: 100%;
   }
 }
 
-/* =========================================================
-   FINANCE — FINAL LAYOUT OVERRIDE
-   Fixes global .inner-page grid from squeezing sections
-   ========================================================= */
-
-.finance-page {
-  display: block !important;
-  width: 100% !important;
-  max-width: 1400px !important;
-  min-width: 0 !important;
-  margin: 0 auto !important;
-  box-sizing: border-box !important;
-  overflow-x: hidden !important;
-}
-
-/* Every major Finance section gets its own full-width row */
-
-.finance-page > .inner-page-header,
-.finance-page > .finance-hero-card,
-.finance-page > .finance-panel,
-.finance-page > .finance-summary-grid {
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  grid-column: 1 / -1 !important;
-  box-sizing: border-box !important;
-}
-
-/* Finance hero */
-
-.finance-page .finance-hero-card {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.8fr) !important;
-}
-
-/* Summary cards */
-
-.finance-page .finance-summary-grid {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-}
-
-/* Explanation */
-
-.finance-page .finance-explanation-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  width: 100% !important;
-}
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media screen and (max-width: 900px) {
+@media (max-width: 430px) {
 
   .finance-page {
-    display: block !important;
+    padding-bottom: 28px;
   }
 
-  .finance-page .finance-hero-card {
-    display: block !important;
-    width: 100% !important;
+  .finance-header h1 {
+    font-size: 32px;
   }
 
-  .finance-page .finance-flow-mini {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  .finance-header p {
+    font-size: 11px;
+    line-height: 1.55;
   }
 
-  .finance-page .finance-summary-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  .finance-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 7px;
   }
 
-  .finance-page .finance-explanation-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
+  .finance-kpi-card {
+    min-height: 105px;
+    padding: 13px;
   }
+
+  .finance-kpi-card strong {
+    font-size: 16px;
+  }
+
+  .finance-kpi-card > span {
+    font-size: 9px;
+  }
+
+  .finance-kpi-card small {
+    font-size: 8px;
+  }
+
+  .finance-panel {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .finance-panel-heading {
+    gap: 10px;
+  }
+
+  .finance-panel-heading h2 {
+    font-size: 17px;
+  }
+
+  .finance-legend {
+    flex-wrap: wrap;
+  }
+
+  .finance-chart {
+    height: 175px;
+  }
+
+  .finance-bars {
+    height: 140px;
+  }
+
+  .finance-chart-day > span {
+    font-size: 6px;
+  }
+
+  .finance-flow-stack {
+    padding: 15px 18px;
+  }
+
+  .finance-position-flow > div {
+    padding: 14px;
+  }
+
+  .finance-opening-panel {
+    padding: 17px;
+  }
+}
+
+@media (max-width: 360px) {
+
+  .finance-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-periods {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .finance-custom-dates {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-custom-dates span {
+    text-align: center;
+  }
+}
+
+
+/* =========================================================
+   UPTREND FINANCE — LIGHT MODE
+   COLOR ONLY
+   NO SIZE / LAYOUT / FITTING CHANGES
+   DARK MODE UNTOUCHED
+========================================================= */
+
+html[data-theme="light"] .finance-page {
+  --finance-green: #159a50;
+  --finance-green-deep: #08783b;
+  --finance-gold: #a8750e;
+  --finance-red: #d94e67;
+  --finance-blue: #2563eb;
+  --finance-panel: #e1ede6;
+  --finance-line: rgba(16, 31, 23, .10);
 }
 
 /* =========================================================
-   SMALL PHONE
-   ========================================================= */
+   HEADER
+========================================================= */
 
-@media screen and (max-width: 600px) {
-
-  .finance-page {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-  }
-
-  .finance-page > .inner-page-header,
-  .finance-page > .finance-hero-card,
-  .finance-page > .finance-panel,
-  .finance-page > .finance-summary-grid {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  .finance-page .finance-hero-card {
-    display: block !important;
-    padding: 22px !important;
-  }
-
-  .finance-page .finance-flow-mini {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-  }
-
-  .finance-page .finance-summary-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-  }
-
-  .finance-page .finance-explanation-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-  }
-
-  .finance-page .finance-opening-form {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-
-  .finance-page .finance-opening-form input,
-  .finance-page .finance-opening-form button {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
+html[data-theme="light"] .finance-header h1 {
+  color: #111814;
 }
 
+html[data-theme="light"] .finance-header p {
+  color: #34483d;
+}
+
+html[data-theme="light"] .finance-kicker,
+html[data-theme="light"] .finance-card-label,
+html[data-theme="light"] .finance-panel-heading > div > span,
+html[data-theme="light"] .finance-period-title > span {
+  color: #08783b;
+}
+
+html[data-theme="light"] .finance-header-status {
+  background: #dceae2;
+  border-color: rgba(16,31,23,.10);
+}
+
+html[data-theme="light"] .finance-header-status strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-header-status div span {
+  color: #53665b;
+}
+
+/* =========================================================
+   COMMAND BAR
+========================================================= */
+
+html[data-theme="light"] .finance-command-bar {
+  background: #dceae2;
+  border-color: rgba(16,31,23,.10);
+}
+
+html[data-theme="light"] .finance-period-title strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-periods button {
+  color: #34483d;
+}
+
+html[data-theme="light"] .finance-periods button:hover {
+  background: rgba(37,99,235,.06);
+  color: #2563eb;
+}
+
+html[data-theme="light"] .finance-periods button.active {
+  background: rgba(37,99,235,.08);
+  color: #2563eb;
+  box-shadow:
+    inset 0 0 0 1px rgba(37,99,235,.16);
+}
+
+html[data-theme="light"] .finance-custom-dates input {
+  background: #d3e4da;
+  color: #111814;
+  border-color: rgba(16,31,23,.12);
+}
+
+html[data-theme="light"] .finance-custom-dates span {
+  color: #53665b;
+}
+
+/* =========================================================
+   CASH HERO
+========================================================= */
+
+html[data-theme="light"] .finance-cash-hero {
+  border-color: rgba(21,154,80,.20);
+  background:
+    radial-gradient(
+      circle at 12% 0%,
+      rgba(21,154,80,.13),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #cfe3d7,
+      #dcebe2 66%
+    );
+  box-shadow:
+    0 18px 60px rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-cash-main {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-cash-number {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-cash-main p {
+  color: #34483d;
+}
+
+html[data-theme="light"] .finance-meter-caption {
+  color: #60746a;
+}
+
+html[data-theme="light"] .finance-cash-meter {
+  background: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-flow-stack {
+  background: rgba(16,31,23,.035);
+  border-left-color: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-flow-row,
+html[data-theme="light"] .finance-flow-total {
+  border-bottom-color: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-flow-row span {
+  color: #34483d;
+}
+
+html[data-theme="light"] .finance-flow-icon {
+  background: rgba(16,31,23,.055);
+}
+
+html[data-theme="light"] .finance-flow-total span {
+  color: #53665b;
+}
+
+html[data-theme="light"] .finance-flow-total strong {
+  color: #111814;
+}
+
+/* =========================================================
+   KPI CARDS
+========================================================= */
+
+html[data-theme="light"] .finance-kpi-card {
+  background: #e1ede6;
+  border-color: rgba(16,31,23,.10);
+}
+
+html[data-theme="light"] .finance-kpi-card::before {
+  background: rgba(16,31,23,.10);
+}
+
+html[data-theme="light"] .finance-kpi-card > span {
+  color: #34483d;
+}
+
+html[data-theme="light"] .finance-kpi-card strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-kpi-card small {
+  color: #60746a;
+}
+
+html[data-theme="light"] .finance-kpi-card.profit strong,
+html[data-theme="light"] .finance-kpi-card.net strong {
+  color: #08783b;
+}
+
+html[data-theme="light"] .finance-kpi-card.expense strong,
+html[data-theme="light"] .finance-kpi-card.danger strong {
+  color: #c93650;
+}
+
+html[data-theme="light"] .finance-kpi-card.cost strong {
+  color: #a8750e;
+}
+
+html[data-theme="light"] .finance-kpi-card.covered strong {
+  color: #2563eb;
+}
+
+/* =========================================================
+   MAIN PANELS
+========================================================= */
+
+html[data-theme="light"] .finance-panel {
+  background: #e1ede6;
+  border-color: rgba(16,31,23,.10);
+}
+
+html[data-theme="light"] .finance-panel-heading h2 {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-legend {
+  color: #53665b;
+}
+
+/* =========================================================
+   CHART
+========================================================= */
+
+html[data-theme="light"] .finance-chart {
+  border-bottom-color: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-chart-day > span {
+  color: #60746a;
+}
+
+html[data-theme="light"] .finance-empty-chart,
+html[data-theme="light"] .finance-empty {
+  color: #53665b;
+}
+
+html[data-theme="light"] .revenue-bar {
+  background: linear-gradient(
+    180deg,
+    #25bd68,
+    #08783b
+  );
+}
+
+html[data-theme="light"] .expense-bar {
+  background: linear-gradient(
+    180deg,
+    #d94e67,
+    #a92e47
+  );
+}
+
+/* =========================================================
+   FINANCIAL HEALTH
+========================================================= */
+
+html[data-theme="light"] .finance-health-callout {
+  background: rgba(16,31,23,.035);
+  border-color: rgba(16,31,23,.10);
+}
+
+html[data-theme="light"] .finance-health-callout.positive {
+  background: rgba(21,154,80,.055);
+  border-color: rgba(21,154,80,.17);
+}
+
+html[data-theme="light"] .finance-health-callout.warning {
+  background: rgba(217,78,103,.055);
+  border-color: rgba(217,78,103,.18);
+}
+
+html[data-theme="light"] .finance-health-symbol {
+  background: rgba(16,31,23,.06);
+}
+
+html[data-theme="light"] .finance-health-callout strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-health-callout p {
+  color: #53665b;
+}
+
+html[data-theme="light"] .finance-health-list {
+  border-color: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-health-list > div {
+  background: #d9e8df;
+}
+
+html[data-theme="light"] .finance-health-list span {
+  color: #34483d;
+}
+
+html[data-theme="light"] .finance-health-list strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-health-list em {
+  color: #60746a;
+}
+
+/* =========================================================
+   CATEGORY / PROGRESS
+========================================================= */
+
+html[data-theme="light"] .finance-category-top span {
+  color: #34483d;
+}
+
+html[data-theme="light"] .finance-category-top strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-progress {
+  background: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-category-row small {
+  color: #60746a;
+}
+
+html[data-theme="light"] .finance-panel-total {
+  color: #a8750e;
+}
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+html[data-theme="light"] .finance-activity-row {
+  border-bottom-color: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-activity-info strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-activity-info span {
+  color: #60746a;
+}
+
+html[data-theme="light"] .activity-in {
+  color: #08783b;
+}
+
+html[data-theme="light"] .activity-out {
+  color: #c93650;
+}
+
+/* =========================================================
+   POSITION FLOW
+========================================================= */
+
+html[data-theme="light"] .finance-position-badge {
+  color: #a8750e;
+  background: rgba(168,117,14,.08);
+}
+
+html[data-theme="light"] .finance-position-flow > div {
+  background: #d9e8df;
+  border-color: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-position-flow > div span {
+  color: #53665b;
+}
+
+html[data-theme="light"] .finance-position-flow > div strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-position-flow > div small {
+  color: #60746a;
+}
+
+html[data-theme="light"] .finance-position-flow > b {
+  color: #60746a;
+}
+
+html[data-theme="light"] .finance-position-flow .closing {
+  border-color: rgba(21,154,80,.20);
+  background: rgba(21,154,80,.055);
+}
+
+html[data-theme="light"] .finance-position-flow .closing strong {
+  color: #08783b;
+}
+
+/* =========================================================
+   OPENING CASH
+========================================================= */
+
+html[data-theme="light"] .finance-opening-panel {
+  border-color: rgba(168,117,14,.15);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(168,117,14,.055),
+      #e1ede6
+    );
+}
+
+html[data-theme="light"] .finance-opening-panel h2 {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-opening-panel p {
+  color: #53665b;
+}
+
+html[data-theme="light"] .finance-opening-panel form label {
+  color: #34483d;
+}
+
+html[data-theme="light"] .finance-opening-input-row {
+  background: #d3e4da;
+  border-color: rgba(16,31,23,.11);
+}
+
+html[data-theme="light"] .finance-opening-input-row input {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-opening-input-row button {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+html[data-theme="light"] .finance-opening-panel form > small {
+  color: #60746a;
+}
+
+/* =========================================================
+   LOADING / ERROR
+========================================================= */
+
+html[data-theme="light"] .finance-loading,
+html[data-theme="light"] .finance-error {
+  background: #e1ede6;
+  border-color: rgba(16,31,23,.10);
+}
+
+html[data-theme="light"] .finance-loading > span:last-child,
+html[data-theme="light"] .finance-error > span {
+  color: #53665b;
+}
+
+html[data-theme="light"] .finance-error button {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   UPTREND FINANCE LAB — LIGHT MODE VISUAL REFINEMENT
+   BACKGROUND / SURFACES / ACCENTS ONLY
+   DARK MODE UNTOUCHED
+========================================================= */
+
+/* ---------------------------------------------------------
+   1. FINANCE PAGE — CREAM / GREEN AMBIENT CANVAS
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-page {
+  background:
+    radial-gradient(
+      circle at 8% 4%,
+      rgba(168, 117, 14, 0.075),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 92% 18%,
+      rgba(21, 154, 80, 0.085),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 48% 100%,
+      rgba(37, 99, 235, 0.035),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #e9e4d6 0%,
+      #e4e9df 42%,
+      #dfeae2 100%
+    );
+
+  color: #111814;
+}
+
+/* ---------------------------------------------------------
+   2. MAIN FINANCE SURFACES
+   Replace the remaining white-looking panels.
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-panel,
+html[data-theme="light"] .finance-kpi-card,
+html[data-theme="light"] .finance-loading,
+html[data-theme="light"] .finance-error {
+  background:
+    linear-gradient(
+      145deg,
+      #e5eee7 0%,
+      #dfeae2 58%,
+      #dce8df 100%
+    );
+
+  border-color: rgba(16, 31, 23, 0.105);
+}
+
+/* subtle cream warmth on important financial cards */
+
+html[data-theme="light"] .finance-kpi-card:nth-child(2),
+html[data-theme="light"] .finance-kpi-card:nth-child(4) {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(168, 117, 14, 0.085),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      #e8eee5,
+      #dfe9e0
+    );
+}
+
+/* ---------------------------------------------------------
+   3. HEADER
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-header {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(234, 229, 215, 0.92),
+      rgba(222, 235, 226, 0.94)
+    );
+
+  border-bottom-color: rgba(16, 31, 23, 0.10);
+}
+
+/* ---------------------------------------------------------
+   4. PERIOD / COMMAND BAR
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-command-bar {
+  background:
+    radial-gradient(
+      circle at 0% 50%,
+      rgba(21, 154, 80, 0.075),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #e5e6d9,
+      #dfeae2
+    );
+
+  border-color: rgba(16, 31, 23, 0.105);
+}
+
+/* important active period gets a gold-green treatment */
+
+html[data-theme="light"] .finance-periods button.active {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(37, 99, 235, 0.10),
+      rgba(168, 117, 14, 0.075)
+    );
+
+  color: #1d4ed8;
+  border-color: rgba(168, 117, 14, 0.18);
+}
+
+/* ---------------------------------------------------------
+   5. CASH HERO — THE MAIN FINANCE VISUAL
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-cash-hero {
+  background:
+    radial-gradient(
+      circle at 8% 0%,
+      rgba(21, 154, 80, 0.15),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 94% 100%,
+      rgba(168, 117, 14, 0.095),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #d8e8dc 0%,
+      #e6eadc 48%,
+      #dceae1 100%
+    );
+
+  border-color: rgba(21, 154, 80, 0.20);
+}
+
+/* ---------------------------------------------------------
+   6. CASH FLOW INTERNAL SURFACE
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-flow-stack {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.16),
+      rgba(16, 31, 23, 0.025)
+    );
+
+  border-left-color: rgba(168, 117, 14, 0.28);
+}
+
+/* Gold separator for important totals */
+
+html[data-theme="light"] .finance-flow-total {
+  border-top-color: rgba(168, 117, 14, 0.20);
+}
+
+/* ---------------------------------------------------------
+   7. KPI CARDS — EACH CARD HAS ITS OWN FINANCIAL IDENTITY
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-kpi-card.revenue {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21, 154, 80, 0.13),
+      transparent 45%
+    ),
+    #e1ede5;
+}
+
+html[data-theme="light"] .finance-kpi-card.profit,
+html[data-theme="light"] .finance-kpi-card.net {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21, 154, 80, 0.105),
+      transparent 46%
+    ),
+    #e0ebe3;
+}
+
+html[data-theme="light"] .finance-kpi-card.expense,
+html[data-theme="light"] .finance-kpi-card.danger {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(217, 78, 103, 0.075),
+      transparent 46%
+    ),
+    #e9e6df;
+}
+
+html[data-theme="light"] .finance-kpi-card.cost {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(168, 117, 14, 0.095),
+      transparent 46%
+    ),
+    #e8e7dc;
+}
+
+/* ---------------------------------------------------------
+   8. CHART PANEL
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-chart {
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(21, 154, 80, 0.045),
+      transparent 55%
+    );
+
+  border-bottom-color: rgba(16, 31, 23, 0.09);
+}
+
+/* Gold baseline — important financial reference */
+
+html[data-theme="light"] .finance-chart::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(168, 117, 14, 0.30),
+    transparent
+  );
+}
+
+/* ---------------------------------------------------------
+   9. HEALTH CALLOUT
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-health-callout {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.12),
+      rgba(16,31,23,0.025)
+    );
+
+  border-color: rgba(16, 31, 23, 0.09);
+}
+
+html[data-theme="light"] .finance-health-callout.positive {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(21,154,80,.10),
+      transparent 48%
+    ),
+    #e0ece4;
+
+  border-color: rgba(21,154,80,.18);
+}
+
+html[data-theme="light"] .finance-health-callout.warning {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(168,117,14,.085),
+      transparent 48%
+    ),
+    #e8e7dc;
+
+  border-color: rgba(168,117,14,.18);
+}
+
+/* ---------------------------------------------------------
+   10. HEALTH LIST
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-health-list {
+  border-color: rgba(16,31,23,.075);
+}
+
+html[data-theme="light"] .finance-health-list > div {
+  background:
+    linear-gradient(
+      135deg,
+      #dce9df,
+      #d7e5dc
+    );
+
+  border-color: rgba(16,31,23,.055);
+}
+
+/* ---------------------------------------------------------
+   11. CATEGORY / EXPENSE BREAKDOWN
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-category-list {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(168,117,14,.045),
+      transparent 40%
+    );
+}
+
+html[data-theme="light"] .finance-progress {
+  background: rgba(16,31,23,.075);
+}
+
+html[data-theme="light"] .finance-category-row {
+  border-bottom-color: rgba(16,31,23,.065);
+}
+
+/* ---------------------------------------------------------
+   12. ACTIVITY
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-activity-list {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.035),
+      rgba(16,31,23,.015)
+    );
+}
+
+html[data-theme="light"] .finance-activity-row {
+  border-bottom-color: rgba(16,31,23,.075);
+}
+
+html[data-theme="light"] .finance-activity-icon {
+  background:
+    linear-gradient(
+      135deg,
+      #d9e8df,
+      #d2e3d9
+    );
+
+  border-color: rgba(16,31,23,.075);
+}
+
+/* ---------------------------------------------------------
+   13. CASH POSITION
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-position-panel {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(168,117,14,.065),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #e4ece4,
+      #dce9df
+    );
+}
+
+html[data-theme="light"] .finance-position-flow > div {
+  background:
+    linear-gradient(
+      135deg,
+      #dce9df,
+      #d7e5dc
+    );
+
+  border-color: rgba(16,31,23,.075);
+}
+
+html[data-theme="light"] .finance-position-flow .closing {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21,154,80,.09),
+      transparent 55%
+    ),
+    #dcebe1;
+
+  border-color: rgba(21,154,80,.20);
+}
+
+/* ---------------------------------------------------------
+   14. OPENING BALANCE
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-opening-panel {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(168,117,14,.095),
+      transparent 36%
+    ),
+    linear-gradient(
+      135deg,
+      #e8e6da,
+      #dfe9e1
+    );
+
+  border-color: rgba(168,117,14,.17);
+}
+
+html[data-theme="light"] .finance-opening-input-row {
+  background:
+    linear-gradient(
+      135deg,
+      #d6e5db,
+      #d2e1d8
+    );
+
+  border-color: rgba(16,31,23,.10);
+}
+
+/* ---------------------------------------------------------
+   15. GOLD DETAILS — IMPORTANT DIVIDERS / REFERENCE LINES
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-panel-heading {
+  border-bottom-color: rgba(168,117,14,.12);
+}
+
+html[data-theme="light"] .finance-panel-heading::after {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(168,117,14,.42),
+      rgba(168,117,14,.08),
+      transparent
+    );
+}
+
+html[data-theme="light"] .finance-period-title {
+  border-left-color: rgba(168,117,14,.42);
+}
+
+html[data-theme="light"] .finance-flow-total {
+  border-bottom-color: rgba(168,117,14,.18);
+}
+
+/* ---------------------------------------------------------
+   16. GLOBAL FINANCE INPUTS
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-page input,
+html[data-theme="light"] .finance-page select {
+  background: #d7e5dc;
+  color: #111814;
+  border-color: rgba(16,31,23,.105);
+}
+
+html[data-theme="light"] .finance-page input:focus,
+html[data-theme="light"] .finance-page select:focus {
+  border-color: rgba(37,99,235,.32);
+  box-shadow:
+    0 0 0 3px rgba(37,99,235,.055),
+    0 0 24px rgba(168,117,14,.045);
+}
+
+/* ---------------------------------------------------------
+   17. REMOVE THE LAST "WHITE CARD" FEEL
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-page .card,
+html[data-theme="light"] .finance-page .panel,
+html[data-theme="light"] .finance-page section {
+  background-color: transparent;
+}
+
+/* Explicitly keep our designed finance surfaces */
+
+html[data-theme="light"] .finance-page .finance-panel,
+html[data-theme="light"] .finance-page .finance-kpi-card,
+html[data-theme="light"] .finance-page .finance-cash-hero,
+html[data-theme="light"] .finance-page .finance-command-bar,
+html[data-theme="light"] .finance-page .finance-opening-panel,
+html[data-theme="light"] .finance-page .finance-position-panel {
+  background-color: initial;
+}
+
+/* ---------------------------------------------------------
+   18. PAGE EDGE AMBIENT EFFECT
+--------------------------------------------------------- */
+
+html[data-theme="light"] .finance-page::before {
+  background:
+    radial-gradient(
+      circle at 15% 8%,
+      rgba(168,117,14,.055),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 85% 35%,
+      rgba(21,154,80,.055),
+      transparent 26%
+    );
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   FINANCE LAB — REMOVE OUTER CONTAINER
+   LIGHT MODE ONLY
+   NO LAYOUT / SIZE CHANGES
+========================================================= */
+
+html[data-theme="light"] .finance-page {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Remove the outer frame if it is coming from the inner-page wrapper */
+html[data-theme="light"] .inner-page.finance-page {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Keep the actual Finance cards/panels intact */
+html[data-theme="light"] .finance-page > .finance-panel,
+html[data-theme="light"] .finance-page > .finance-kpi-grid,
+html[data-theme="light"] .finance-page > .finance-cash-hero,
+html[data-theme="light"] .finance-page > .finance-command-bar {
+  border-radius: inherit;
+}
+
+/* Remove any decorative outer frame/pseudo-element */
+html[data-theme="light"] .finance-page::before {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+/* =========================================================
+   UPTREND FINANCE LAB
+   LIGHT MODE — VISUAL REDESIGN
+   DARK MODE UNTOUCHED
+========================================================= */
+
+
+/* =========================================================
+   01 — THE CANVAS
+========================================================= */
+
+html[data-theme="light"] .inner-page.finance-page,
+html[data-theme="light"] .finance-page {
+  background:
+    radial-gradient(
+      circle at 8% 0%,
+      rgba(168, 117, 14, 0.09),
+      transparent 27%
+    ),
+    radial-gradient(
+      circle at 96% 12%,
+      rgba(21, 154, 80, 0.11),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(21, 154, 80, 0.055),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #e9e3d4 0%,
+      #e5e9df 45%,
+      #dce9e0 100%
+    );
+
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+
+  color: #111814;
+}
+
+
+/* =========================================================
+   02 — REMOVE THE OLD OUTER FRAME
+========================================================= */
+
+html[data-theme="light"] .finance-page::before {
+  display: none !important;
+}
+
+html[data-theme="light"] .finance-page::after {
+  display: none !important;
+}
+
+html[data-theme="light"] .inner-page.finance-page::before {
+  display: none !important;
+}
+
+html[data-theme="light"] .inner-page.finance-page::after {
+  display: none !important;
+}
+
+
+/* =========================================================
+   03 — HEADER
+========================================================= */
+
+html[data-theme="light"] .finance-header {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(235, 231, 216, 0.92),
+      rgba(221, 235, 226, 0.94)
+    );
+
+  border-bottom: 1px solid rgba(16, 31, 23, 0.08);
+}
+
+html[data-theme="light"] .finance-header h1 {
+  color: #101812;
+  letter-spacing: -0.035em;
+}
+
+html[data-theme="light"] .finance-header p {
+  color: #405249;
+}
+
+html[data-theme="light"] .finance-kicker {
+  color: #08783b;
+}
+
+
+/* =========================================================
+   04 — STATUS PILL
+========================================================= */
+
+html[data-theme="light"] .finance-header-status {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.22),
+      rgba(21,154,80,.055)
+    );
+
+  border: 1px solid rgba(21,154,80,.15);
+  box-shadow:
+    0 8px 24px rgba(16,31,23,.045);
+}
+
+html[data-theme="light"] .finance-status-dot {
+  box-shadow:
+    0 0 0 4px rgba(21,154,80,.08);
+}
+
+
+/* =========================================================
+   05 — COMMAND BAR
+========================================================= */
+
+html[data-theme="light"] .finance-command-bar {
+  background:
+    linear-gradient(
+      135deg,
+      #e7e5d8,
+      #dce9e0
+    );
+
+  border: 1px solid rgba(16,31,23,.09);
+  box-shadow:
+    0 14px 38px rgba(16,31,23,.055);
+}
+
+html[data-theme="light"] .finance-period-title {
+  border-left: 3px solid #a8750e;
+  padding-left: 12px;
+}
+
+html[data-theme="light"] .finance-period-title strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-period-title span {
+  color: #08783b;
+}
+
+html[data-theme="light"] .finance-periods {
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(16,31,23,.055);
+}
+
+html[data-theme="light"] .finance-periods button {
+  color: #42544a;
+}
+
+html[data-theme="light"] .finance-periods button.active {
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #1d4ed8
+    );
+
+  color: #ffffff;
+  box-shadow:
+    0 7px 18px rgba(37,99,235,.18);
+}
+
+
+/* =========================================================
+   06 — CASH POSITION HERO
+========================================================= */
+
+html[data-theme="light"] .finance-cash-hero {
+  position: relative;
+
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(21,154,80,.17),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(168,117,14,.12),
+      transparent 32%
+    ),
+    linear-gradient(
+      135deg,
+      #d3e6d9 0%,
+      #e7eadc 48%,
+      #dcebe1 100%
+    );
+
+  border: 1px solid rgba(21,154,80,.18);
+
+  box-shadow:
+    0 22px 55px rgba(16,31,23,.075),
+    inset 0 1px 0 rgba(255,255,255,.28);
+}
+
+html[data-theme="light"] .finance-cash-number {
+  color: #0b2114;
+  letter-spacing: -0.045em;
+}
+
+html[data-theme="light"] .finance-cash-main p {
+  color: #42564b;
+}
+
+html[data-theme="light"] .finance-cash-meter {
+  background: rgba(16,31,23,.085);
+}
+
+html[data-theme="light"] .finance-cash-meter > span {
+  background:
+    linear-gradient(
+      90deg,
+      #08783b,
+      #25bd68
+    );
+}
+
+
+/* =========================================================
+   07 — CASH FLOW COLUMN
+========================================================= */
+
+html[data-theme="light"] .finance-flow-stack {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.17),
+      rgba(16,31,23,.025)
+    );
+
+  border-left: 1px solid rgba(168,117,14,.25);
+}
+
+html[data-theme="light"] .finance-flow-row {
+  border-bottom-color: rgba(16,31,23,.075);
+}
+
+html[data-theme="light"] .finance-flow-row span {
+  color: #42564b;
+}
+
+html[data-theme="light"] .finance-flow-row strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-flow-total {
+  border-top: 1px solid rgba(168,117,14,.20);
+}
+
+html[data-theme="light"] .finance-flow-total strong {
+  color: #08783b;
+}
+
+
+/* =========================================================
+   08 — KPI GRID
+========================================================= */
+
+html[data-theme="light"] .finance-kpi-card {
+  background:
+    linear-gradient(
+      145deg,
+      #e5eee7,
+      #dce9df
+    );
+
+  border: 1px solid rgba(16,31,23,.085);
+
+  box-shadow:
+    0 12px 32px rgba(16,31,23,.045);
+}
+
+html[data-theme="light"] .finance-kpi-card:hover {
+  border-color: rgba(168,117,14,.18);
+}
+
+html[data-theme="light"] .finance-kpi-card > span {
+  color: #506258;
+}
+
+html[data-theme="light"] .finance-kpi-card strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-kpi-card small {
+  color: #68786f;
+}
+
+
+/* Revenue */
+
+html[data-theme="light"] .finance-kpi-card.revenue {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21,154,80,.13),
+      transparent 48%
+    ),
+    #e2eee6;
+}
+
+html[data-theme="light"] .finance-kpi-card.revenue strong {
+  color: #08783b;
+}
+
+
+/* Product cost */
+
+html[data-theme="light"] .finance-kpi-card.cost {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(168,117,14,.10),
+      transparent 48%
+    ),
+    #e8e6da;
+}
+
+html[data-theme="light"] .finance-kpi-card.cost strong {
+  color: #9b6b08;
+}
+
+
+/* Profit */
+
+html[data-theme="light"] .finance-kpi-card.profit,
+html[data-theme="light"] .finance-kpi-card.net {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21,154,80,.10),
+      transparent 48%
+    ),
+    #dfece3;
+}
+
+html[data-theme="light"] .finance-kpi-card.profit strong,
+html[data-theme="light"] .finance-kpi-card.net strong {
+  color: #08783b;
+}
+
+
+/* Expenses */
+
+html[data-theme="light"] .finance-kpi-card.expense,
+html[data-theme="light"] .finance-kpi-card.danger {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(217,78,103,.08),
+      transparent 48%
+    ),
+    #e9e5dd;
+}
+
+html[data-theme="light"] .finance-kpi-card.expense strong,
+html[data-theme="light"] .finance-kpi-card.danger strong {
+  color: #c93650;
+}
+
+
+/* =========================================================
+   09 — PANEL SYSTEM
+========================================================= */
+
+html[data-theme="light"] .finance-panel {
+  background:
+    linear-gradient(
+      145deg,
+      #e3ede6,
+      #dce9e0
+    );
+
+  border: 1px solid rgba(16,31,23,.085);
+
+  box-shadow:
+    0 15px 40px rgba(16,31,23,.045);
+}
+
+html[data-theme="light"] .finance-panel-heading {
+  border-bottom: 1px solid rgba(168,117,14,.12);
+}
+
+html[data-theme="light"] .finance-panel-heading h2 {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-panel-heading > div > span {
+  color: #08783b;
+}
+
+
+/* =========================================================
+   10 — FINANCIAL MOVEMENT / CHART
+========================================================= */
+
+html[data-theme="light"] .finance-chart {
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(21,154,80,.055),
+      transparent 60%
+    );
+
+  border-bottom-color: rgba(16,31,23,.08);
+}
+
+html[data-theme="light"] .finance-chart-day > span {
+  color: #63736a;
+}
+
+html[data-theme="light"] .finance-legend {
+  color: #53655b;
+}
+
+html[data-theme="light"] .revenue-bar {
+  background:
+    linear-gradient(
+      180deg,
+      #25bd68,
+      #08783b
+    );
+
+  box-shadow:
+    0 5px 14px rgba(21,154,80,.13);
+}
+
+html[data-theme="light"] .expense-bar {
+  background:
+    linear-gradient(
+      180deg,
+      #df6378,
+      #b8324c
+    );
+
+  box-shadow:
+    0 5px 14px rgba(217,78,103,.10);
+}
+
+
+/* =========================================================
+   11 — FINANCIAL HEALTH
+========================================================= */
+
+html[data-theme="light"] .finance-health-callout {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.16),
+      rgba(16,31,23,.025)
+    );
+
+  border-color: rgba(16,31,23,.075);
+}
+
+html[data-theme="light"] .finance-health-callout.positive {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(21,154,80,.10),
+      transparent 48%
+    ),
+    #e0ece4;
+
+  border-color: rgba(21,154,80,.16);
+}
+
+html[data-theme="light"] .finance-health-callout.warning {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(168,117,14,.09),
+      transparent 48%
+    ),
+    #e8e6da;
+
+  border-color: rgba(168,117,14,.18);
+}
+
+html[data-theme="light"] .finance-health-callout strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-health-callout p {
+  color: #53655b;
+}
+
+html[data-theme="light"] .finance-health-list {
+  border-color: rgba(16,31,23,.07);
+}
+
+html[data-theme="light"] .finance-health-list > div {
+  background:
+    linear-gradient(
+      135deg,
+      #dce9df,
+      #d6e5dc
+    );
+
+  border-color: rgba(16,31,23,.055);
+}
+
+html[data-theme="light"] .finance-health-list span {
+  color: #53655b;
+}
+
+html[data-theme="light"] .finance-health-list strong {
+  color: #111814;
+}
+
+
+/* =========================================================
+   12 — CATEGORY / BREAKDOWN
+========================================================= */
+
+html[data-theme="light"] .finance-category-top span {
+  color: #4e6157;
+}
+
+html[data-theme="light"] .finance-category-top strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-progress {
+  background: rgba(16,31,23,.075);
+}
+
+html[data-theme="light"] .finance-progress > span {
+  background:
+    linear-gradient(
+      90deg,
+      #08783b,
+      #25bd68
+    );
+}
+
+html[data-theme="light"] .finance-panel-total {
+  color: #9b6b08;
+}
+
+
+/* =========================================================
+   13 — ACTIVITY
+========================================================= */
+
+html[data-theme="light"] .finance-activity-row {
+  border-bottom-color: rgba(16,31,23,.075);
+}
+
+html[data-theme="light"] .finance-activity-icon {
+  background:
+    linear-gradient(
+      135deg,
+      #d8e7de,
+      #d2e2d9
+    );
+
+  border-color: rgba(16,31,23,.07);
+}
+
+html[data-theme="light"] .finance-activity-info strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-activity-info span {
+  color: #68786f;
+}
+
+html[data-theme="light"] .activity-in {
+  color: #08783b;
+}
+
+html[data-theme="light"] .activity-out {
+  color: #c93650;
+}
+
+
+/* =========================================================
+   14 — CASH POSITION
+========================================================= */
+
+html[data-theme="light"] .finance-position-panel {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(168,117,14,.07),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #e4ece4,
+      #dbe8df
+    );
+}
+
+html[data-theme="light"] .finance-position-badge {
+  color: #956807;
+  background: rgba(168,117,14,.09);
+  border: 1px solid rgba(168,117,14,.13);
+}
+
+html[data-theme="light"] .finance-position-flow > div {
+  background:
+    linear-gradient(
+      135deg,
+      #dce9df,
+      #d6e5dc
+    );
+
+  border-color: rgba(16,31,23,.07);
+}
+
+html[data-theme="light"] .finance-position-flow > div span {
+  color: #53655b;
+}
+
+html[data-theme="light"] .finance-position-flow > div strong {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-position-flow .closing {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21,154,80,.09),
+      transparent 55%
+    ),
+    #dcebe1;
+
+  border-color: rgba(21,154,80,.20);
+}
+
+html[data-theme="light"] .finance-position-flow .closing strong {
+  color: #08783b;
+}
+
+
+/* =========================================================
+   15 — OPENING CASH
+========================================================= */
+
+html[data-theme="light"] .finance-opening-panel {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(168,117,14,.10),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #e8e5d9,
+      #dfe9e1
+    );
+
+  border-color: rgba(168,117,14,.17);
+}
+
+html[data-theme="light"] .finance-opening-panel h2 {
+  color: #111814;
+}
+
+html[data-theme="light"] .finance-opening-panel p {
+  color: #53655b;
+}
+
+html[data-theme="light"] .finance-opening-input-row {
+  background:
+    linear-gradient(
+      135deg,
+      #d5e4db,
+      #d0e0d7
+    );
+
+  border-color: rgba(16,31,23,.09);
+}
+
+html[data-theme="light"] .finance-opening-input-row input {
+  color: #111814;
+}
+
+
+/* =========================================================
+   16 — IMPORTANT GOLD DETAILS
+========================================================= */
+
+html[data-theme="light"] .finance-flow-total strong,
+html[data-theme="light"] .finance-panel-total {
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.35);
+}
+
+html[data-theme="light"] .finance-opening-panel,
+html[data-theme="light"] .finance-position-panel {
+  box-shadow:
+    inset 3px 0 0 rgba(168,117,14,.22),
+    0 14px 38px rgba(16,31,23,.04);
+}
+
+
+/* =========================================================
+   17 — INPUTS
+========================================================= */
+
+html[data-theme="light"] .finance-page input,
+html[data-theme="light"] .finance-page select {
+  background: #d5e4da;
+  color: #111814;
+  border-color: rgba(16,31,23,.09);
+}
+
+html[data-theme="light"] .finance-page input::placeholder {
+  color: #718078;
+}
+
+html[data-theme="light"] .finance-page input:focus,
+html[data-theme="light"] .finance-page select:focus {
+  border-color: rgba(37,99,235,.30);
+
+  box-shadow:
+    0 0 0 3px rgba(37,99,235,.055),
+    0 0 22px rgba(168,117,14,.045);
+}
+
+
+/* =========================================================
+   18 — BUTTONS
+========================================================= */
+
+html[data-theme="light"] .finance-page button {
+  border-color: rgba(16,31,23,.10);
+}
+
+html[data-theme="light"] .finance-page button:hover {
+  border-color: rgba(168,117,14,.24);
+}
+
+
+/* =========================================================
+   19 — EMPTY STATE
+========================================================= */
+
+html[data-theme="light"] .finance-empty,
+html[data-theme="light"] .finance-empty-chart {
+  color: #607169;
+}
+
+
+/* =========================================================
+   20 — LOADING / ERROR
+========================================================= */
+
+html[data-theme="light"] .finance-loading,
+html[data-theme="light"] .finance-error {
+  background:
+    linear-gradient(
+      135deg,
+      #e4ede6,
+      #dce9df
+    );
+
+  border-color: rgba(16,31,23,.085);
+}
+
+html[data-theme="light"] .finance-loading > span:last-child,
+html[data-theme="light"] .finance-error > span {
+  color: #53655b;
+}
+
+
+/* =========================================================
+   21 — IMPORTANT: NO OUTER WHITE CARD
+========================================================= */
+
+html[data-theme="light"] .finance-page > div:first-child {
+  background-color: transparent;
+}
+
+
+/* =========================================================
+   END — FINANCE LAB LIGHT MODE
+========================================================= */
+
+
+/* =========================================================
+   FINANCE LAB — GREEN ONLY LIGHT MODE
+   REMOVE GOLD / KEEP GREEN BACKGROUND
+   DARK MODE UNTOUCHED
+========================================================= */
+
+html[data-theme="light"] .finance-page,
+html[data-theme="light"] .inner-page.finance-page {
+  background:
+    radial-gradient(
+      circle at 8% 0%,
+      rgba(21,154,80,.10),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 95% 18%,
+      rgba(37,189,104,.08),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(21,154,80,.06),
+      transparent 40%
+    ),
+    linear-gradient(
+      135deg,
+      #e6efe8 0%,
+      #dfebe3 48%,
+      #d8e8df 100%
+    );
+
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Remove all gold accents */
+
+html[data-theme="light"] .finance-period-title {
+  border-left-color: #159a50 !important;
+}
+
+html[data-theme="light"] .finance-panel-heading {
+  border-bottom-color: rgba(21,154,80,.12) !important;
+}
+
+html[data-theme="light"] .finance-panel-heading::after {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(21,154,80,.35),
+      rgba(21,154,80,.08),
+      transparent
+    ) !important;
+}
+
+html[data-theme="light"] .finance-flow-total,
+html[data-theme="light"] .finance-flow-total {
+  border-top-color: rgba(21,154,80,.15) !important;
+}
+
+html[data-theme="light"] .finance-opening-panel,
+html[data-theme="light"] .finance-position-panel {
+  box-shadow:
+    inset 3px 0 0 rgba(21,154,80,.18),
+    0 14px 38px rgba(16,31,23,.04) !important;
+}
+
+
+/* Green Finance surfaces */
+
+html[data-theme="light"] .finance-panel,
+html[data-theme="light"] .finance-kpi-card {
+  background:
+    linear-gradient(
+      145deg,
+      #e3eee7,
+      #dceae1
+    ) !important;
+
+  border-color: rgba(21,154,80,.10) !important;
+}
+
+
+/* Cash hero */
+
+html[data-theme="light"] .finance-cash-hero {
+  background:
+    radial-gradient(
+      circle at 5% 0%,
+      rgba(21,154,80,.15),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(37,189,104,.08),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #d2e6d9,
+      #e1ece4 52%,
+      #d9e9df
+    ) !important;
+
+  border-color: rgba(21,154,80,.18) !important;
+}
+
+
+/* Command bar */
+
+html[data-theme="light"] .finance-command-bar {
+  background:
+    linear-gradient(
+      135deg,
+      #e1ede5,
+      #d9e8df
+    ) !important;
+
+  border-color: rgba(21,154,80,.10) !important;
+}
+
+
+/* KPI cards */
+
+html[data-theme="light"] .finance-kpi-card.revenue,
+html[data-theme="light"] .finance-kpi-card.profit,
+html[data-theme="light"] .finance-kpi-card.net,
+html[data-theme="light"] .finance-kpi-card.cost,
+html[data-theme="light"] .finance-kpi-card.expense,
+html[data-theme="light"] .finance-kpi-card.danger {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21,154,80,.08),
+      transparent 48%
+    ),
+    #e1ede6 !important;
+}
+
+
+/* Cash flow */
+
+html[data-theme="light"] .finance-flow-stack {
+  border-left-color: rgba(21,154,80,.20) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.14),
+      rgba(21,154,80,.025)
+    ) !important;
+}
+
+
+/* Health */
+
+html[data-theme="light"] .finance-health-callout.positive,
+html[data-theme="light"] .finance-health-callout.warning {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(21,154,80,.09),
+      transparent 48%
+    ),
+    #e0ece4 !important;
+
+  border-color: rgba(21,154,80,.15) !important;
+}
+
+
+/* Health list */
+
+html[data-theme="light"] .finance-health-list > div {
+  background:
+    linear-gradient(
+      135deg,
+      #dceae1,
+      #d7e6dd
+    ) !important;
+}
+
+
+/* Progress */
+
+html[data-theme="light"] .finance-progress > span {
+  background:
+    linear-gradient(
+      90deg,
+      #08783b,
+      #25bd68
+    ) !important;
+}
+
+
+/* Position */
+
+html[data-theme="light"] .finance-position-panel {
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21,154,80,.08),
+      transparent 40%
+    ),
+    linear-gradient(
+      145deg,
+      #e2ede5,
+      #d9e8df
+    ) !important;
+}
+
+html[data-theme="light"] .finance-position-badge {
+  color: #08783b !important;
+  background: rgba(21,154,80,.08) !important;
+  border-color: rgba(21,154,80,.14) !important;
+}
+
+html[data-theme="light"] .finance-position-flow .closing {
+  background:
+    rgba(21,154,80,.07) !important;
+
+  border-color: rgba(21,154,80,.18) !important;
+}
+
+
+/* Opening cash */
+
+html[data-theme="light"] .finance-opening-panel {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(21,154,80,.10),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #e2ede5,
+      #d9e8df
+    ) !important;
+
+  border-color: rgba(21,154,80,.15) !important;
+}
+
+
+/* Remove remaining gold text */
+
+html[data-theme="light"] .finance-panel-total,
+html[data-theme="light"] .finance-position-badge,
+html[data-theme="light"] .finance-opening-panel strong {
+  color: #08783b !important;
+}
+
+
+/* Green focus */
+
+html[data-theme="light"] .finance-page input:focus,
+html[data-theme="light"] .finance-page select:focus {
+  border-color: rgba(21,154,80,.28) !important;
+
+  box-shadow:
+    0 0 0 3px rgba(21,154,80,.055),
+    0 0 20px rgba(21,154,80,.045) !important;
+}

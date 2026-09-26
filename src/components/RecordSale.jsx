@@ -3,6 +3,7 @@ import "./RecordSale.css";
 import { useEffect, useMemo, useState } from "react";
 
 import { supabase } from "../lib/supabase";
+import SaleReceipt from "../Business/SaleReceipt";
 
 function getToday() {
   const date = new Date();
@@ -72,6 +73,7 @@ function getSavedRecordDraft() {
 function RecordSale({
   onBack,
   editingSale,
+  subscription,
 }) {
   const [products, setProducts] = useState([]);
   const [sales, setSales] = useState([]);
@@ -118,6 +120,16 @@ function RecordSale({
   const [error, setError] =
     useState("");
 
+  const [receiptSale, setReceiptSale] =
+    useState(null);
+
+  const isBusiness =
+    subscription?.plan === "business" &&
+    (
+      subscription?.status === "active" ||
+      subscription?.status === "trialing"
+    );
+
   /*
    * The date used by the current
    * recording session.
@@ -152,24 +164,28 @@ function RecordSale({
    * This is temporary session data only.
    * It does not become an actual sale until
    * the user presses Save.
+   *
+   * Both normal recording and editing are
+   * persisted so a refresh cannot destroy
+   * unfinished work.
    */
   useEffect(() => {
-    if (isEditing) {
-      return;
-    }
-
     try {
       sessionStorage.setItem(
         "uptrend_record_sale_draft",
         JSON.stringify({
           saleForms,
           batchDate,
+          editingId: isEditing
+            ? editingId
+            : null,
         })
       );
     } catch {}
   }, [
     saleForms,
     batchDate,
+    editingId,
     isEditing,
   ]);
 
@@ -345,7 +361,49 @@ function RecordSale({
   }, [editingSale]);
 
   useEffect(() => {
+    const draft =
+      getSavedRecordDraft();
+
     if (editingSale) {
+      /*
+       * If an edit was already in progress
+       * before a refresh, restore the exact
+       * unfinished edit instead of replacing
+       * it with the original database values.
+       */
+      if (
+        draft?.editingId &&
+        draft.editingId ===
+          editingSale.id &&
+        Array.isArray(
+          draft.saleForms
+        ) &&
+        draft.saleForms.length > 0
+      ) {
+        setEditingId(
+          editingSale.id
+        );
+
+        setBatchDate(
+          draft.batchDate ||
+            editingSale.date ||
+            getToday()
+        );
+
+        setSaleForms(
+          draft.saleForms
+        );
+
+        setError("");
+        setSaved(false);
+
+        return;
+      }
+
+      /*
+       * No unfinished edit exists.
+       * Start from the actual sale.
+       */
       setEditingId(
         editingSale.id
       );
@@ -367,15 +425,13 @@ function RecordSale({
       return;
     }
 
-    const draft =
-      getSavedRecordDraft();
-
     /*
      * If this is a refresh and an
      * unfinished batch exists, keep it.
      */
     if (
       draft &&
+      !draft.editingId &&
       Array.isArray(
         draft.saleForms
       ) &&
@@ -2540,6 +2596,20 @@ function RecordSale({
                       <td>
                         <div className="sale-actions">
 
+                          {isBusiness && (
+                            <button
+                              type="button"
+                              className="receipt-sale-button"
+                              onClick={() =>
+                                setReceiptSale(
+                                  sale
+                                )
+                              }
+                            >
+                              Receipt
+                            </button>
+                          )}
+
                           <button
                             type="button"
                             onClick={() =>
@@ -2578,6 +2648,15 @@ function RecordSale({
         )}
 
       </section>
+
+      {isBusiness && receiptSale && (
+        <SaleReceipt
+          sale={receiptSale}
+          onClose={() =>
+            setReceiptSale(null)
+          }
+        />
+      )}
 
     </div>
   );

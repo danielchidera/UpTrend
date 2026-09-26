@@ -404,3 +404,294 @@ html[data-theme="light"] .theme-menu {
     0 24px 65px rgba(16, 31, 23, 0.18);
 }
 
+
+/* =========================================================
+   SMART ALERTS
+========================================================= */
+
+.notification-control {
+  position: relative;
+  z-index: 1003;
+}
+
+.notification.active {
+  border-color: rgba(214, 174, 67, 0.42);
+  color: #d6ae43;
+  background: rgba(214, 174, 67, 0.07);
+}
+
+.notification.active i {
+  background: #d6ae43;
+  animation: none;
+}
+
+@media (max-width: 500px) {
+  .notification {
+    display: grid;
+  }
+}
+
+
+/* =========================================================
+   UPTREND HEADER — LIGHT MODE ONLY
+   ---------------------------------------------------------
+   Dark mode is intentionally untouched.
+========================================================= */
+
+/* =========================================================
+   HEADER BASE
+========================================================= */
+
+html[data-theme="light"] .command-header {
+  background:
+    rgba(247, 250, 248, 0.92);
+
+  border-bottom-color:
+    rgba(22, 42, 31, 0.08);
+}
+
+html[data-theme="light"] .header-overline {
+  color:
+    #159a50;
+}
+
+html[data-theme="light"] .command-header h1 {
+  color:
+    #17221c;
+}
+
+
+/* =========================================================
+   HEADER ICON BUTTONS
+========================================================= */
+
+html[data-theme="light"] .header-icon {
+  border-color:
+    rgba(22, 42, 31, 0.09);
+
+  background:
+    #ffffff;
+
+  color:
+    #68766e;
+
+  box-shadow:
+    0 5px 18px rgba(20, 45, 31, 0.035);
+}
+
+html[data-theme="light"] .header-icon:hover {
+  border-color:
+    rgba(21, 154, 80, 0.22);
+
+  background:
+    #f5faf7;
+
+  color:
+    #159a50;
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+html[data-theme="light"] .notification i {
+  background:
+    #159a50;
+
+  box-shadow:
+    0 0 0 3px rgba(21, 154, 80, 0.08);
+}
+
+html[data-theme="light"] .notification.active {
+  border-color:
+    rgba(168, 117, 14, 0.24);
+
+  color:
+    #a8750e;
+
+  background:
+    rgba(168, 117, 14, 0.055);
+}
+
+html[data-theme="light"] .notification.active i {
+  background:
+    #a8750e;
+}
+
+
+/* =========================================================
+   THEME TOGGLE
+========================================================= */
+
+html[data-theme="light"] .theme-toggle {
+  border-color:
+    rgba(22, 42, 31, 0.09);
+
+  background:
+    #ffffff;
+
+  color:
+    #17221c;
+
+  box-shadow:
+    0 5px 18px rgba(20, 45, 31, 0.035);
+}
+
+html[data-theme="light"] .theme-toggle:hover {
+  border-color:
+    rgba(21, 154, 80, 0.22);
+
+  background:
+    #f5faf7;
+}
+
+html[data-theme="light"] .theme-toggle-icon {
+  color:
+    #159a50;
+}
+
+html[data-theme="light"] .theme-chevron {
+  color:
+    #8a958e;
+}
+
+
+/* =========================================================
+   THEME MENU
+========================================================= */
+
+html[data-theme="light"] .theme-menu {
+  border-color:
+    rgba(22, 42, 31, 0.10) !important;
+
+  background:
+    #ffffff !important;
+
+  color:
+    #17221c;
+
+  box-shadow:
+    0 24px 65px
+    rgba(16, 31, 23, 0.15);
+}
+
+html[data-theme="light"] .theme-menu button {
+  color:
+    #17221c;
+}
+
+html[data-theme="light"] .theme-menu button:hover,
+html[data-theme="light"] .theme-menu button.active {
+  background:
+    rgba(21, 154, 80, 0.07);
+}
+
+html[data-theme="light"] .theme-menu button > span {
+  background:
+    #f1f5f2;
+
+  color:
+    #159a50;
+}
+
+html[data-theme="light"] .theme-menu small {
+  color:
+    #68766e;
+}
+
+html[data-theme="light"] .theme-menu b {
+  color:
+    #159a50;
+}
+
+
+/* =========================================================
+   RECORD SALE / PRIMARY ACTION
+========================================================= */
+
+html[data-theme="light"] .primary-action {
+  background:
+    #159a50;
+
+  color:
+    #ffffff;
+
+  box-shadow:
+    0 8px 25px
+    rgba(21, 154, 80, 0.13);
+}
+
+html[data-theme="light"] .primary-action:hover {
+  background:
+    #147f42;
+
+  box-shadow:
+    0 12px 35px
+    rgba(21, 154, 80, 0.22);
+}
+
+
+/* =========================================================
+   MOBILE HEADER
+========================================================= */
+
+@media (max-width: 760px) {
+
+  html[data-theme="light"] .command-header {
+    background:
+      rgba(247, 250, 248, 0.96);
+
+    border-bottom-color:
+      rgba(22, 42, 31, 0.08);
+  }
+
+  html[data-theme="light"] .theme-toggle {
+    background:
+      #ffffff;
+  }
+
+  html[data-theme="light"] .header-icon {
+    background:
+      #ffffff;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE RECORD BUTTON
+========================================================= */
+
+@media (max-width: 500px) {
+
+  html[data-theme="light"] .header-record-button {
+    background:
+      #159a50;
+
+    color:
+      #ffffff;
+
+    box-shadow:
+      0 7px 20px
+      rgba(21, 154, 80, 0.12);
+  }
+}
+
+
+/* =========================================================
+   HEADER — LIGHT MODE BACKGROUND
+   Same surface as the Light Mode Sidebar.
+   Dark mode remains untouched.
+========================================================= */
+
+html[data-theme="light"] .command-header {
+  background:
+    linear-gradient(
+      180deg,
+      #e1eee6 0%,
+      #d9e9df 100%
+    );
+
+  border-bottom-color:
+    rgba(22, 70, 42, 0.12);
+}

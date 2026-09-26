@@ -657,3 +657,417 @@
     margin-top: 3px;
   }
 }
+/* =========================================================
+   BUSINESS BACKUPS
+   ========================================================= */
+
+.settings-backup-nav {
+  border-color: rgba(214, 174, 67, 0.18);
+  background: rgba(214, 174, 67, 0.035);
+}
+
+.settings-backup-nav > span {
+  color: #d6ae43;
+}
+
+.settings-backup-nav strong {
+  color: #d6ae43;
+}
+
+.settings-backup-nav.active {
+  border-color: rgba(214, 174, 67, 0.42);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(214, 174, 67, 0.13),
+      rgba(214, 174, 67, 0.045)
+    );
+  box-shadow:
+    0 0 24px rgba(214, 174, 67, 0.06);
+}
+
+
+/* =========================================================
+   UPTREND SETTINGS — LIGHT MODE
+   QUIET / PROFESSIONAL / CONTROL CENTER
+   DARK MODE UNTOUCHED
+========================================================= */
+
+
+/* =========================================================
+   01 — SETTINGS CANVAS
+========================================================= */
+
+html[data-theme="light"] .settings-page {
+  color: #17221c;
+
+  background:
+    radial-gradient(
+      circle at 5% 0%,
+      rgba(21, 154, 80, 0.055),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #e7eee9 0%,
+      #e3ebe5 52%,
+      #dfe9e2 100%
+    );
+}
+
+
+/* =========================================================
+   02 — INTRO
+========================================================= */
+
+html[data-theme="light"] .settings-eyebrow {
+  color: #08783b;
+}
+
+html[data-theme="light"] .settings-intro h2 {
+  color: #111814;
+}
+
+html[data-theme="light"] .settings-intro p {
+  color: #56665d;
+}
+
+
+/* =========================================================
+   03 — LEFT SETTINGS NAV
+========================================================= */
+
+html[data-theme="light"] .settings-navigation {
+  background:
+    linear-gradient(
+      145deg,
+      #dce8e0,
+      #d8e5dd
+    );
+
+  border-color: rgba(16, 31, 23, 0.09);
+
+  box-shadow:
+    0 14px 35px rgba(16, 31, 23, 0.055);
+}
+
+html[data-theme="light"] .settings-nav-item {
+  color: #526259;
+}
+
+html[data-theme="light"] .settings-nav-item:hover {
+  background: rgba(21, 154, 80, 0.055);
+  color: #17221c;
+}
+
+html[data-theme="light"] .settings-nav-item.active {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(21, 154, 80, 0.10),
+      rgba(21, 154, 80, 0.055)
+    );
+
+  color: #08783b;
+
+  box-shadow:
+    inset 3px 0 0 #159a50;
+}
+
+html[data-theme="light"] .settings-nav-item > span {
+  background: #d3e2d9;
+  color: #526259;
+}
+
+html[data-theme="light"] .settings-nav-item.active > span {
+  background: rgba(21, 154, 80, 0.10);
+  color: #08783b;
+}
+
+html[data-theme="light"] .settings-nav-item strong {
+  color: inherit;
+}
+
+html[data-theme="light"] .settings-nav-item small {
+  color: #718078;
+}
+
+
+/* =========================================================
+   04 — SETTINGS CARDS
+========================================================= */
+
+html[data-theme="light"] .settings-card {
+  background:
+    linear-gradient(
+      145deg,
+      #e4ece6,
+      #dfe9e2
+    );
+
+  border-color: rgba(16, 31, 23, 0.085);
+
+  box-shadow:
+    0 14px 38px rgba(16, 31, 23, 0.045);
+}
+
+html[data-theme="light"] .settings-card h3 {
+  color: #111814;
+}
+
+html[data-theme="light"] .settings-section-label {
+  color: #08783b;
+}
+
+html[data-theme="light"] .settings-card-header p {
+  color: #596960;
+}
+
+
+/* =========================================================
+   05 — CURRENT THEME
+========================================================= */
+
+html[data-theme="light"] .current-theme {
+  background: #d6e4db;
+  border-color: rgba(16, 31, 23, 0.08);
+}
+
+html[data-theme="light"] .current-theme span {
+  color: #08783b;
+}
+
+html[data-theme="light"] .current-theme small {
+  color: #17221c;
+}
+
+
+/* =========================================================
+   06 — THEME OPTIONS
+========================================================= */
+
+html[data-theme="light"] .theme-option {
+  background:
+    linear-gradient(
+      135deg,
+      #dce8df,
+      #d7e5dc
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+
+  color: #17221c;
+}
+
+html[data-theme="light"] .theme-option:hover {
+  border-color: rgba(21, 154, 80, 0.20);
+  background: #dceae1;
+}
+
+html[data-theme="light"] .theme-option.selected {
+  border-color: rgba(21, 154, 80, 0.24);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(21, 154, 80, 0.09),
+      rgba(21, 154, 80, 0.045)
+    );
+}
+
+html[data-theme="light"] .theme-option-icon {
+  background: #cfdfd6;
+  color: #526259;
+}
+
+html[data-theme="light"] .theme-option.selected .theme-option-icon {
+  background: rgba(21, 154, 80, 0.11);
+  color: #08783b;
+}
+
+html[data-theme="light"] .theme-option-copy strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .theme-option-copy span {
+  color: #64736b;
+}
+
+html[data-theme="light"] .theme-radio {
+  border-color: rgba(16, 31, 23, 0.18);
+  color: #08783b;
+}
+
+html[data-theme="light"] .theme-option.selected .theme-radio {
+  border-color: #159a50;
+  background: #159a50;
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   07 — SCHEDULE
+========================================================= */
+
+html[data-theme="light"] .schedule-preview {
+  background:
+    linear-gradient(
+      135deg,
+      #dce8df,
+      #d7e5dc
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+}
+
+html[data-theme="light"] .schedule-icon.light {
+  background: rgba(21, 154, 80, 0.08);
+  color: #159a50;
+}
+
+html[data-theme="light"] .schedule-icon.dark {
+  background: rgba(21, 154, 80, 0.10);
+  color: #08783b;
+}
+
+html[data-theme="light"] .schedule-item strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .schedule-item span {
+  color: #68776f;
+}
+
+html[data-theme="light"] .schedule-line {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(21, 154, 80, 0.12),
+      #159a50,
+      rgba(21, 154, 80, 0.12)
+    );
+
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   08 — INFORMATION NOTE
+========================================================= */
+
+html[data-theme="light"] .settings-note {
+  background: #dbe8df;
+  border-color: rgba(16, 31, 23, 0.075);
+}
+
+html[data-theme="light"] .settings-note > span {
+  background: rgba(21, 154, 80, 0.08);
+  color: #08783b;
+}
+
+html[data-theme="light"] .settings-note p {
+  color: #64736b;
+}
+
+
+/* =========================================================
+   09 — ACCOUNT / ACCESS
+========================================================= */
+
+html[data-theme="light"] .account-access-row {
+  background:
+    linear-gradient(
+      135deg,
+      #dce8df,
+      #d7e5dc
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+}
+
+html[data-theme="light"] .account-access-icon {
+  background: rgba(217, 78, 103, 0.065);
+  color: #c93650;
+}
+
+html[data-theme="light"] .account-access-copy strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .account-access-copy span {
+  color: #68776f;
+}
+
+
+/* =========================================================
+   10 — LOGOUT
+   Keep red functional, but subdued.
+========================================================= */
+
+html[data-theme="light"] .settings-logout-button {
+  background: rgba(217, 78, 103, 0.055);
+  border-color: rgba(217, 78, 103, 0.16);
+  color: #c93650;
+}
+
+html[data-theme="light"] .settings-logout-button:hover {
+  background: rgba(217, 78, 103, 0.09);
+  border-color: rgba(217, 78, 103, 0.24);
+}
+
+
+/* =========================================================
+   11 — BUSINESS BACKUPS
+   Remove the loud gold treatment.
+========================================================= */
+
+html[data-theme="light"] .settings-backup-nav {
+  border-color: rgba(21, 154, 80, 0.12);
+  background: rgba(21, 154, 80, 0.035);
+}
+
+html[data-theme="light"] .settings-backup-nav > span,
+html[data-theme="light"] .settings-backup-nav strong {
+  color: #08783b;
+}
+
+html[data-theme="light"] .settings-backup-nav.active {
+  border-color: rgba(21, 154, 80, 0.22);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(21, 154, 80, 0.09),
+      rgba(21, 154, 80, 0.035)
+    );
+
+  box-shadow:
+    0 0 24px rgba(21, 154, 80, 0.035);
+}
+
+
+/* =========================================================
+   12 — GLOBAL SETTINGS TEXT
+   Make the tiny UI text easier to read.
+========================================================= */
+
+html[data-theme="light"] .settings-page strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .settings-page small {
+  color: #64736b;
+}
+
+
+/* =========================================================
+   13 — NO WHITE SURFACES
+========================================================= */
+
+html[data-theme="light"] .settings-page button,
+html[data-theme="light"] .settings-page .theme-option,
+html[data-theme="light"] .settings-page .schedule-preview,
+html[data-theme="light"] .settings-page .settings-note,
+html[data-theme="light"] .settings-page .account-access-row {
+  -webkit-tap-highlight-color: transparent;
+}

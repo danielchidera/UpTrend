@@ -2682,3 +2682,1497 @@
 }
 
 
+
+
+/* =========================================================
+   UPTREND DASHBOARD — SEMANTIC COLOR SYSTEM
+   Green = Sales / Positive
+   Gold  = Profit / Important
+   Red   = Expenses / Warnings
+   Blue  = Cash / Neutral financial state
+   White = General information
+========================================================= */
+
+
+/* =========================================================
+   DASHBOARD HERO
+========================================================= */
+
+.dashboard-hero-copy .eyebrow,
+.dashboard-page .eyebrow {
+  color: #d9b86c;
+}
+
+.dashboard-hero-copy h1 span {
+  color: #d9b86c;
+}
+
+
+/* =========================================================
+   CASH / BALANCE
+   Blue = neutral financial position
+========================================================= */
+
+.hero-balance-card {
+  border-color: rgba(105, 157, 255, 0.18);
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(105, 157, 255, 0.12),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(14, 25, 38, 0.98),
+      rgba(8, 15, 23, 0.98)
+    );
+}
+
+.hero-balance-edit:hover {
+  border-color: rgba(105, 157, 255, 0.4);
+  color: #8ab2ff;
+}
+
+.hero-balance-flow span:first-child {
+  color: #61d994;
+}
+
+.hero-balance-flow span + span {
+  color: #ff6b6b;
+}
+
+
+/* =========================================================
+   OPENING BALANCE
+========================================================= */
+
+.opening-balance-row button {
+  background: #d9b86c;
+  color: #11100a;
+}
+
+.opening-balance-row button:hover {
+  background: #e7c97f;
+}
+
+
+/* =========================================================
+   KPI CARDS
+   1 = Sales      Green
+   2 = Profit     Gold
+   3 = Expenses   Red
+   4 = Inventory  Blue
+========================================================= */
+
+.dashboard-kpi-card {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sales */
+
+.dashboard-kpi-card:nth-child(1) {
+  border-color: rgba(74, 222, 128, 0.14);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(74, 222, 128, 0.055),
+      rgba(15, 26, 21, 0.76) 55%
+    );
+}
+
+.dashboard-kpi-card:nth-child(1)::before {
+  background: #4ade80;
+}
+
+.dashboard-kpi-card:nth-child(1) > strong {
+  color: #61d994;
+}
+
+
+/* Profit */
+
+.dashboard-kpi-card:nth-child(2) {
+  border-color: rgba(217, 184, 108, 0.18);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(217, 184, 108, 0.07),
+      rgba(15, 26, 21, 0.76) 55%
+    );
+}
+
+.dashboard-kpi-card:nth-child(2)::before {
+  background: #d9b86c;
+}
+
+.dashboard-kpi-card:nth-child(2) > strong {
+  color: #e2c77f;
+}
+
+
+/* Expenses */
+
+.dashboard-kpi-card:nth-child(3) {
+  border-color: rgba(255, 92, 92, 0.16);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 92, 92, 0.055),
+      rgba(15, 26, 21, 0.76) 55%
+    );
+}
+
+.dashboard-kpi-card:nth-child(3)::before {
+  background: #ff6b6b;
+}
+
+.dashboard-kpi-card:nth-child(3) > strong {
+  color: #ff7777;
+}
+
+
+/* Inventory */
+
+.dashboard-kpi-card:nth-child(4) {
+  border-color: rgba(105, 157, 255, 0.15);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(105, 157, 255, 0.05),
+      rgba(15, 26, 21, 0.76) 55%
+    );
+}
+
+.dashboard-kpi-card:nth-child(4)::before {
+  background: #8ab2ff;
+}
+
+.dashboard-kpi-card:nth-child(4) > strong {
+  color: #9abaff;
+}
+
+
+/* KPI color indicator */
+
+.dashboard-kpi-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+
+  border-radius: 3px 0 0 3px;
+}
+
+.dashboard-kpi-card:nth-child(1):hover {
+  border-color: rgba(74, 222, 128, 0.35);
+}
+
+.dashboard-kpi-card:nth-child(2):hover {
+  border-color: rgba(217, 184, 108, 0.38);
+}
+
+.dashboard-kpi-card:nth-child(3):hover {
+  border-color: rgba(255, 92, 92, 0.35);
+}
+
+.dashboard-kpi-card:nth-child(4):hover {
+  border-color: rgba(105, 157, 255, 0.35);
+}
+
+
+/* =========================================================
+   MONEY FLOW
+========================================================= */
+
+.dashboard-money-flow {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.live-pill {
+  border-color: rgba(217, 184, 108, 0.2);
+  background: rgba(217, 184, 108, 0.06);
+  color: #d9b86c;
+}
+
+
+/* CASH IN = GREEN */
+
+.money-flow-in {
+  border-color: rgba(74, 222, 128, 0.13);
+  background: rgba(74, 222, 128, 0.035);
+}
+
+.money-flow-in .money-flow-icon {
+  background: rgba(74, 222, 128, 0.11);
+  color: #61d994;
+}
+
+.money-flow-in strong {
+  color: #61d994;
+}
+
+
+/* CASH OUT = RED */
+
+.money-flow-out {
+  border-color: rgba(255, 92, 92, 0.13);
+  background: rgba(255, 92, 92, 0.035);
+}
+
+.money-flow-out .money-flow-icon {
+  background: rgba(255, 92, 92, 0.11);
+  color: #ff6b6b;
+}
+
+.money-flow-out strong {
+  color: #ff7777;
+}
+
+
+/* BALANCE = BLUE */
+
+.money-flow-balance {
+  border-color: rgba(105, 157, 255, 0.14);
+  background: rgba(105, 157, 255, 0.035);
+}
+
+.money-flow-balance .money-flow-icon {
+  background: rgba(105, 157, 255, 0.11);
+  color: #8ab2ff;
+}
+
+.money-flow-balance strong {
+  color: #9abaff;
+}
+
+
+/* FLOW ARROWS */
+
+.money-flow-arrow {
+  color: #68756f;
+}
+
+
+/* =========================================================
+   SALES PERFORMANCE
+========================================================= */
+
+.performance-panel {
+  border-color: rgba(74, 222, 128, 0.1);
+}
+
+.performance-panel:hover {
+  border-color: rgba(74, 222, 128, 0.25);
+}
+
+.performance-panel .panel-period {
+  border-color: rgba(74, 222, 128, 0.16);
+  background: rgba(74, 222, 128, 0.055);
+  color: #61d994;
+}
+
+
+/* REAL SALES CHART */
+
+.real-sales-chart {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(74, 222, 128, 0.025),
+      rgba(5, 14, 10, 0.3)
+    );
+}
+
+.real-chart-line {
+  stroke: #61d994 !important;
+  filter:
+    drop-shadow(
+      0 0 6px rgba(97, 217, 148, 0.4)
+    );
+}
+
+.real-chart-point {
+  border-color: #69dc99;
+  box-shadow:
+    0 0 0 4px rgba(105, 220, 153, 0.08),
+    0 0 13px rgba(105, 220, 153, 0.35);
+}
+
+
+/* =========================================================
+   PERFORMANCE SUMMARY
+========================================================= */
+
+.performance-summary > div:first-child {
+  border: 1px solid rgba(74, 222, 128, 0.08);
+  background: rgba(74, 222, 128, 0.035);
+}
+
+.performance-summary > div:first-child strong {
+  color: #61d994;
+}
+
+.performance-summary > div:last-child {
+  border: 1px solid rgba(217, 184, 108, 0.08);
+  background: rgba(217, 184, 108, 0.035);
+}
+
+.performance-summary > div:last-child strong {
+  color: #d9b86c;
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.quick-action {
+  position: relative;
+}
+
+
+/* Record Sale = GREEN */
+
+.quick-action:nth-child(1) {
+  border-color: rgba(74, 222, 128, 0.13);
+}
+
+.quick-action:nth-child(1) > span {
+  background: rgba(74, 222, 128, 0.11);
+  color: #61d994;
+}
+
+.quick-action:nth-child(1):hover {
+  border-color: rgba(74, 222, 128, 0.35);
+  background: rgba(74, 222, 128, 0.055);
+}
+
+.quick-action:nth-child(1) b {
+  color: #61d994;
+}
+
+
+/* Record Expense = RED */
+
+.quick-action:nth-child(2) {
+  border-color: rgba(255, 92, 92, 0.13);
+}
+
+.quick-action:nth-child(2) > span {
+  background: rgba(255, 92, 92, 0.1);
+  color: #ff6b6b;
+}
+
+.quick-action:nth-child(2):hover {
+  border-color: rgba(255, 92, 92, 0.35);
+  background: rgba(255, 92, 92, 0.05);
+}
+
+.quick-action:nth-child(2) b {
+  color: #ff7777;
+}
+
+
+/* Add Product = GOLD */
+
+.quick-action:nth-child(3) {
+  border-color: rgba(217, 184, 108, 0.14);
+}
+
+.quick-action:nth-child(3) > span {
+  background: rgba(217, 184, 108, 0.1);
+  color: #d9b86c;
+}
+
+.quick-action:nth-child(3):hover {
+  border-color: rgba(217, 184, 108, 0.36);
+  background: rgba(217, 184, 108, 0.05);
+}
+
+.quick-action:nth-child(3) b {
+  color: #d9b86c;
+}
+
+
+/* =========================================================
+   RECENT SALES
+========================================================= */
+
+.recent-sales-panel {
+  border-color: rgba(74, 222, 128, 0.08);
+}
+
+.recent-sale-avatar {
+  background: rgba(74, 222, 128, 0.09);
+  color: #61d994;
+}
+
+.recent-sale-value span {
+  color: #61d994;
+}
+
+
+/* =========================================================
+   BUSINESS HEALTH
+========================================================= */
+
+.health-panel {
+  border-color: rgba(217, 184, 108, 0.1);
+}
+
+.health-panel:hover {
+  border-color: rgba(217, 184, 108, 0.25);
+}
+
+.health-ring {
+  border-color: rgba(217, 184, 108, 0.13);
+  border-top-color: #d9b86c;
+  border-right-color: #61d994;
+}
+
+.health-ring span {
+  color: #d9b86c;
+}
+
+.health-metrics > div:nth-child(1) {
+  border: 1px solid rgba(74, 222, 128, 0.08);
+  background: rgba(74, 222, 128, 0.035);
+}
+
+.health-metrics > div:nth-child(1) strong {
+  color: #61d994;
+}
+
+.health-metrics > div:nth-child(2) {
+  border: 1px solid rgba(217, 184, 108, 0.08);
+  background: rgba(217, 184, 108, 0.035);
+}
+
+.health-metrics > div:nth-child(2) strong {
+  color: #d9b86c;
+}
+
+.health-metrics > div:nth-child(3) {
+  border: 1px solid rgba(105, 157, 255, 0.08);
+  background: rgba(105, 157, 255, 0.035);
+}
+
+.health-metrics > div:nth-child(3) strong {
+  color: #8ab2ff;
+}
+
+
+/* =========================================================
+   EMPTY STATES
+========================================================= */
+
+.empty-dashboard-state > div {
+  background: rgba(105, 157, 255, 0.08);
+  color: #8ab2ff;
+}
+
+
+/* =========================================================
+   LOW STOCK / WARNING STATES
+========================================================= */
+
+.dashboard-page .warning,
+.dashboard-page .low-stock,
+.dashboard-page .danger {
+  color: #ff6b6b;
+}
+
+.dashboard-page .warning-bg,
+.dashboard-page .low-stock-bg,
+.dashboard-page .danger-bg {
+  background: rgba(255, 92, 92, 0.08);
+  border-color: rgba(255, 92, 92, 0.18);
+}
+
+
+/* =========================================================
+   POSITIVE / SUCCESS STATES
+========================================================= */
+
+.dashboard-page .success,
+.dashboard-page .positive {
+  color: #61d994;
+}
+
+
+/* =========================================================
+   IMPORTANT / PREMIUM INFORMATION
+========================================================= */
+
+.dashboard-page .important,
+.dashboard-page .premium,
+.dashboard-page .highlight {
+  color: #d9b86c;
+}
+
+
+/* =========================================================
+   MOBILE NAVIGATION
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .mobile-nav button.active,
+  .mobile-nav button[aria-current="page"] {
+    background: rgba(217, 184, 108, 0.1);
+    color: #d9b86c;
+  }
+
+  .mobile-nav button:hover {
+    color: #d9b86c;
+  }
+}
+
+
+/* =========================================================
+   COLOR LEGEND — VISUAL LANGUAGE
+========================================================= */
+
+.dashboard-color-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dashboard-color-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 8px;
+  color: #718079;
+}
+
+.dashboard-color-legend i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dashboard-color-legend .green {
+  background: #61d994;
+}
+
+.dashboard-color-legend .gold {
+  background: #d9b86c;
+}
+
+.dashboard-color-legend .red {
+  background: #ff6b6b;
+}
+
+.dashboard-color-legend .blue {
+  background: #8ab2ff;
+}
+
+
+/* =========================================================
+   UPTREND DASHBOARD — LIGHT MODE ONLY
+   IMPORTANT:
+   Dark mode is intentionally untouched.
+   These rules activate only when:
+   html[data-theme="light"]
+========================================================= */
+
+html[data-theme="light"] .dashboard-page {
+  color: #17221c;
+}
+
+/* ---------------------------------------------------------
+   HERO
+--------------------------------------------------------- */
+
+html[data-theme="light"] .dashboard-hero-copy .eyebrow,
+html[data-theme="light"] .dashboard-page .eyebrow {
+  color: #168b45;
+}
+
+html[data-theme="light"] .dashboard-hero-copy h1 {
+  color: #17221c;
+}
+
+html[data-theme="light"] .dashboard-hero-copy h1 span {
+  color: #168b45;
+}
+
+html[data-theme="light"] .dashboard-hero-copy p {
+  color: #68766e;
+}
+
+/* ---------------------------------------------------------
+   BALANCE CARD
+--------------------------------------------------------- */
+
+html[data-theme="light"] .hero-balance-card {
+  border-color: rgba(21, 154, 80, 0.14);
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(21, 154, 80, 0.10),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      #f2f8f4,
+      #ffffff
+    );
+
+  box-shadow:
+    0 10px 32px rgba(20, 45, 31, 0.07);
+}
+
+html[data-theme="light"] .hero-balance-top > span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .hero-balance-edit {
+  border-color: rgba(22, 42, 31, 0.10);
+  background: #f1f4f2;
+  color: #68766e;
+}
+
+html[data-theme="light"] .hero-balance-edit:hover {
+  border-color: rgba(21, 154, 80, 0.30);
+  color: #14783d;
+  background: rgba(21, 154, 80, 0.07);
+}
+
+html[data-theme="light"] .hero-balance-card > strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .hero-balance-flow {
+  border-top-color: rgba(22, 42, 31, 0.08);
+}
+
+html[data-theme="light"] .hero-balance-flow span:first-child {
+  color: #159a50;
+}
+
+html[data-theme="light"] .hero-balance-flow span + span {
+  color: #d94e67;
+}
+
+/* ---------------------------------------------------------
+   OPENING BALANCE
+--------------------------------------------------------- */
+
+html[data-theme="light"] .opening-balance-form {
+  border-top-color: rgba(22, 42, 31, 0.08);
+}
+
+html[data-theme="light"] .opening-balance-form label {
+  color: #68766e;
+}
+
+html[data-theme="light"] .opening-balance-row input {
+  border-color: rgba(22, 42, 31, 0.13);
+  background: #f5f8f6;
+  color: #17221c;
+}
+
+html[data-theme="light"] .opening-balance-row input::placeholder {
+  color: #8a958e;
+}
+
+html[data-theme="light"] .opening-balance-row input:focus {
+  border-color: #159a50;
+  background: #ffffff;
+}
+
+html[data-theme="light"] .opening-balance-row button {
+  background: #159a50;
+  color: #ffffff;
+}
+
+/* ---------------------------------------------------------
+   KPI CARDS
+   Sales = Green
+   Profit = Gold
+   Expenses = Red
+   Inventory = Blue
+--------------------------------------------------------- */
+
+html[data-theme="light"] .dashboard-kpi-card {
+  background: #ffffff;
+  border-color: rgba(22, 42, 31, 0.08);
+  box-shadow:
+    0 7px 25px rgba(20, 45, 31, 0.045);
+}
+
+html[data-theme="light"] .dashboard-kpi-card > span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .dashboard-kpi-card > small {
+  color: #8a958e;
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(1) {
+  border-color: rgba(21, 154, 80, 0.14);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(21, 154, 80, 0.045),
+      #ffffff 65%
+    );
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(1) > strong {
+  color: #14783d;
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(1)::before {
+  background: #159a50;
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(2) {
+  border-color: rgba(168, 117, 14, 0.15);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(168, 117, 14, 0.045),
+      #ffffff 65%
+    );
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(2) > strong {
+  color: #9a6b08;
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(2)::before {
+  background: #a8750e;
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(3) {
+  border-color: rgba(217, 78, 103, 0.14);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(217, 78, 103, 0.045),
+      #ffffff 65%
+    );
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(3) > strong {
+  color: #c33f59;
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(3)::before {
+  background: #d94e67;
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(4) {
+  border-color: rgba(72, 132, 218, 0.14);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(72, 132, 218, 0.045),
+      #ffffff 65%
+    );
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(4) > strong {
+  color: #3978c7;
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(4)::before {
+  background: #4884da;
+}
+
+/* ---------------------------------------------------------
+   MONEY FLOW
+--------------------------------------------------------- */
+
+html[data-theme="light"] .dashboard-money-flow {
+  border-color: rgba(22, 42, 31, 0.08);
+  background: #ffffff;
+  box-shadow:
+    0 7px 28px rgba(20, 45, 31, 0.045);
+}
+
+html[data-theme="light"] .section-heading h2,
+html[data-theme="light"] .panel-heading h2 {
+  color: #17221c;
+}
+
+html[data-theme="light"] .live-pill,
+html[data-theme="light"] .panel-period {
+  border-color: rgba(21, 154, 80, 0.13);
+  background: rgba(21, 154, 80, 0.055);
+  color: #168b45;
+}
+
+html[data-theme="light"] .money-flow-item {
+  border-color: rgba(22, 42, 31, 0.075);
+  background: #f7faf8;
+}
+
+html[data-theme="light"] .money-flow-item span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .money-flow-item small {
+  color: #8a958e;
+}
+
+html[data-theme="light"] .money-flow-item strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .money-flow-in {
+  border-color: rgba(21, 154, 80, 0.13);
+  background: rgba(21, 154, 80, 0.035);
+}
+
+html[data-theme="light"] .money-flow-in .money-flow-icon {
+  background: rgba(21, 154, 80, 0.09);
+  color: #159a50;
+}
+
+html[data-theme="light"] .money-flow-in strong {
+  color: #14783d;
+}
+
+html[data-theme="light"] .money-flow-out {
+  border-color: rgba(217, 78, 103, 0.13);
+  background: rgba(217, 78, 103, 0.035);
+}
+
+html[data-theme="light"] .money-flow-out .money-flow-icon {
+  background: rgba(217, 78, 103, 0.09);
+  color: #d94e67;
+}
+
+html[data-theme="light"] .money-flow-out strong {
+  color: #c33f59;
+}
+
+html[data-theme="light"] .money-flow-balance {
+  border-color: rgba(72, 132, 218, 0.13);
+  background: rgba(72, 132, 218, 0.035);
+}
+
+html[data-theme="light"] .money-flow-balance .money-flow-icon {
+  background: rgba(72, 132, 218, 0.09);
+  color: #4884da;
+}
+
+html[data-theme="light"] .money-flow-balance strong {
+  color: #3978c7;
+}
+
+html[data-theme="light"] .money-flow-arrow {
+  color: #9aa59f;
+}
+
+/* ---------------------------------------------------------
+   MAIN PANELS
+--------------------------------------------------------- */
+
+html[data-theme="light"] .dashboard-panel {
+  border-color: rgba(22, 42, 31, 0.08);
+  background: #ffffff;
+  box-shadow:
+    0 7px 28px rgba(20, 45, 31, 0.045);
+}
+
+/* ---------------------------------------------------------
+   SALES CHART
+--------------------------------------------------------- */
+
+html[data-theme="light"] .real-sales-chart {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(21, 154, 80, 0.025),
+      rgba(244, 247, 245, 0.8)
+    );
+}
+
+html[data-theme="light"] .real-chart-grid span {
+  background: rgba(22, 42, 31, 0.065);
+}
+
+html[data-theme="light"] .real-chart-line {
+  stroke: #159a50 !important;
+  filter:
+    drop-shadow(
+      0 0 5px rgba(21, 154, 80, 0.22)
+    );
+}
+
+html[data-theme="light"] .real-chart-point {
+  border-color: #159a50;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(21, 154, 80, 0.07),
+    0 0 10px rgba(21, 154, 80, 0.16);
+}
+
+html[data-theme="light"] .real-chart-labels {
+  color: #8a958e;
+}
+
+html[data-theme="light"] .performance-summary > div:first-child {
+  border-color: rgba(21, 154, 80, 0.08);
+  background: rgba(21, 154, 80, 0.035);
+}
+
+html[data-theme="light"] .performance-summary > div:first-child strong {
+  color: #14783d;
+}
+
+html[data-theme="light"] .performance-summary > div:last-child {
+  border-color: rgba(168, 117, 14, 0.08);
+  background: rgba(168, 117, 14, 0.035);
+}
+
+html[data-theme="light"] .performance-summary > div:last-child strong {
+  color: #9a6b08;
+}
+
+html[data-theme="light"] .performance-summary span {
+  color: #68766e;
+}
+
+/* ---------------------------------------------------------
+   QUICK ACTIONS
+--------------------------------------------------------- */
+
+html[data-theme="light"] .quick-action {
+  border-color: rgba(22, 42, 31, 0.075);
+  background: #f7faf8;
+  color: #17221c;
+}
+
+html[data-theme="light"] .quick-action:hover {
+  background: #f1f7f3;
+}
+
+html[data-theme="light"] .quick-action > span {
+  background: #e9efeb;
+  color: #68766e;
+}
+
+html[data-theme="light"] .quick-action strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .quick-action small {
+  color: #8a958e;
+}
+
+html[data-theme="light"] .quick-action:nth-child(1) {
+  border-color: rgba(21, 154, 80, 0.14);
+}
+
+html[data-theme="light"] .quick-action:nth-child(1) > span {
+  background: rgba(21, 154, 80, 0.09);
+  color: #159a50;
+}
+
+html[data-theme="light"] .quick-action:nth-child(1) b {
+  color: #159a50;
+}
+
+html[data-theme="light"] .quick-action:nth-child(2) {
+  border-color: rgba(217, 78, 103, 0.13);
+}
+
+html[data-theme="light"] .quick-action:nth-child(2) > span {
+  background: rgba(217, 78, 103, 0.08);
+  color: #d94e67;
+}
+
+html[data-theme="light"] .quick-action:nth-child(2) b {
+  color: #d94e67;
+}
+
+html[data-theme="light"] .quick-action:nth-child(3) {
+  border-color: rgba(168, 117, 14, 0.13);
+}
+
+html[data-theme="light"] .quick-action:nth-child(3) > span {
+  background: rgba(168, 117, 14, 0.08);
+  color: #a8750e;
+}
+
+html[data-theme="light"] .quick-action:nth-child(3) b {
+  color: #a8750e;
+}
+
+/* ---------------------------------------------------------
+   RECENT SALES
+--------------------------------------------------------- */
+
+html[data-theme="light"] .recent-sale-row {
+  border-top-color: rgba(22, 42, 31, 0.065);
+}
+
+html[data-theme="light"] .recent-sale-avatar {
+  background: rgba(21, 154, 80, 0.08);
+  color: #159a50;
+}
+
+html[data-theme="light"] .recent-sale-product strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .recent-sale-product span {
+  color: #8a958e;
+}
+
+html[data-theme="light"] .recent-sale-value strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .recent-sale-value span {
+  color: #159a50;
+}
+
+/* ---------------------------------------------------------
+   EMPTY STATE
+--------------------------------------------------------- */
+
+html[data-theme="light"] .empty-dashboard-state > div {
+  background: rgba(21, 154, 80, 0.08);
+  color: #159a50;
+}
+
+html[data-theme="light"] .empty-dashboard-state strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .empty-dashboard-state span {
+  color: #8a958e;
+}
+
+/* ---------------------------------------------------------
+   BUSINESS HEALTH
+--------------------------------------------------------- */
+
+html[data-theme="light"] .health-score {
+  background: #f7faf8;
+}
+
+html[data-theme="light"] .health-ring {
+  border-color: rgba(21, 154, 80, 0.12);
+  border-top-color: #159a50;
+  border-right-color: #159a50;
+  background: transparent;
+}
+
+html[data-theme="light"] .health-ring span {
+  color: #159a50;
+}
+
+html[data-theme="light"] .health-score strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .health-score p {
+  color: #68766e;
+}
+
+html[data-theme="light"] .health-metrics {
+  border-top-color: rgba(22, 42, 31, 0.07);
+}
+
+html[data-theme="light"] .health-metrics > div {
+  background: #f7faf8;
+}
+
+html[data-theme="light"] .health-metrics span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .health-metrics strong {
+  color: #17221c;
+}
+
+/* ---------------------------------------------------------
+   WARNING / POSITIVE STATES
+--------------------------------------------------------- */
+
+html[data-theme="light"] .dashboard-page .warning,
+html[data-theme="light"] .dashboard-page .low-stock,
+html[data-theme="light"] .dashboard-page .danger {
+  color: #d94e67;
+}
+
+html[data-theme="light"] .dashboard-page .success,
+html[data-theme="light"] .dashboard-page .positive {
+  color: #159a50;
+}
+
+html[data-theme="light"] .dashboard-page .important,
+html[data-theme="light"] .dashboard-page .premium,
+html[data-theme="light"] .dashboard-page .highlight {
+  color: #a8750e;
+}
+
+/* ---------------------------------------------------------
+   MOBILE NAV
+--------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  html[data-theme="light"] .mobile-nav {
+    border-color: rgba(22, 42, 31, 0.09);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow:
+      0 12px 35px rgba(20, 45, 31, 0.13);
+  }
+
+  html[data-theme="light"] .mobile-nav button {
+    color: #8a958e;
+  }
+
+  html[data-theme="light"] .mobile-nav button.active,
+  html[data-theme="light"] .mobile-nav button[aria-current="page"] {
+    background: rgba(21, 154, 80, 0.08);
+    color: #159a50;
+  }
+
+  html[data-theme="light"] .mobile-nav button:hover {
+    color: #159a50;
+  }
+}
+
+/* =========================================================
+   DASHBOARD — LIGHT MODE BACKGROUND
+   Same surface as the Light Mode Sidebar.
+   Dark mode remains untouched.
+========================================================= */
+
+html[data-theme="light"] .dashboard-page {
+  background:
+    linear-gradient(
+      180deg,
+      #e1eee6 0%,
+      #d9e9df 100%
+    );
+}
+
+
+/* =========================================================
+   UPTREND DASHBOARD — LIGHT GREEN SURFACES
+   ---------------------------------------------------------
+   Light Mode only.
+   Removes the pure-white look from Dashboard cards/panels.
+   Dark mode remains completely untouched.
+========================================================= */
+
+/* =========================================================
+   HERO CASH AT HAND
+========================================================= */
+
+html[data-theme="light"] .hero-balance-card {
+  background:
+    linear-gradient(
+      145deg,
+      #edf6f0,
+      #e5f0e9
+    );
+
+  border-color:
+    rgba(22, 70, 42, 0.10);
+
+  box-shadow:
+    0 10px 32px
+    rgba(20, 55, 35, 0.06);
+}
+
+
+/* =========================================================
+   KPI CARDS
+========================================================= */
+
+html[data-theme="light"] .dashboard-kpi-card {
+  background:
+    #edf6f0;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 7px 25px
+    rgba(20, 55, 35, 0.045);
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(1) {
+  background:
+    linear-gradient(
+      145deg,
+      #e8f4ec,
+      #edf6f0
+    );
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(2) {
+  background:
+    linear-gradient(
+      145deg,
+      #f1f3e8,
+      #edf6f0
+    );
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(3) {
+  background:
+    linear-gradient(
+      145deg,
+      #f5ebee,
+      #edf6f0
+    );
+}
+
+html[data-theme="light"] .dashboard-kpi-card:nth-child(4) {
+  background:
+    linear-gradient(
+      145deg,
+      #eaf1f7,
+      #edf6f0
+    );
+}
+
+
+/* =========================================================
+   MONEY FLOW — CASH POSITION
+========================================================= */
+
+html[data-theme="light"] .dashboard-money-flow {
+  background:
+    #e9f3ed;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 7px 28px
+    rgba(20, 55, 35, 0.045);
+}
+
+html[data-theme="light"] .money-flow-item {
+  background:
+    #e2eee7;
+
+  border-color:
+    rgba(22, 70, 42, 0.075);
+}
+
+html[data-theme="light"] .money-flow-in {
+  background:
+    #e5f3ea;
+}
+
+html[data-theme="light"] .money-flow-out {
+  background:
+    #f4e9ec;
+}
+
+html[data-theme="light"] .money-flow-balance {
+  background:
+    #e8eff5;
+}
+
+
+/* =========================================================
+   MAIN DASHBOARD PANELS
+   Sales Performance / Move Faster /
+   Recent Sales / Business Health
+========================================================= */
+
+html[data-theme="light"] .dashboard-panel {
+  background:
+    #e9f3ed;
+
+  border-color:
+    rgba(22, 70, 42, 0.09);
+
+  box-shadow:
+    0 7px 28px
+    rgba(20, 55, 35, 0.045);
+}
+
+
+/* =========================================================
+   SALES PERFORMANCE CHART
+========================================================= */
+
+html[data-theme="light"] .real-sales-chart {
+  background:
+    linear-gradient(
+      180deg,
+      #e4f0e9,
+      #eaf3ed
+    );
+
+  border-color:
+    rgba(22, 70, 42, 0.06);
+}
+
+
+/* =========================================================
+   PERFORMANCE SUMMARY
+========================================================= */
+
+html[data-theme="light"] .performance-summary > div:first-child {
+  background:
+    #e3f1e8;
+
+  border-color:
+    rgba(21, 154, 80, 0.09);
+}
+
+html[data-theme="light"] .performance-summary > div:last-child {
+  background:
+    #f0f0e7;
+
+  border-color:
+    rgba(168, 117, 14, 0.09);
+}
+
+
+/* =========================================================
+   QUICK ACTIONS — MOVE FASTER
+========================================================= */
+
+html[data-theme="light"] .quick-action {
+  background:
+    #e2eee7;
+
+  border-color:
+    rgba(22, 70, 42, 0.075);
+
+  color:
+    #17221c;
+}
+
+html[data-theme="light"] .quick-action:hover {
+  background:
+    #dcebe2;
+}
+
+html[data-theme="light"] .quick-action > span {
+  background:
+    #d8e8df;
+}
+
+
+/* =========================================================
+   RECENT SALES
+========================================================= */
+
+html[data-theme="light"] .recent-sales-panel,
+html[data-theme="light"] .health-panel {
+  background:
+    #e9f3ed;
+}
+
+html[data-theme="light"] .recent-sale-row {
+  border-top-color:
+    rgba(22, 70, 42, 0.07);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+html[data-theme="light"] .empty-dashboard-state {
+  background:
+    #e4f0e9;
+}
+
+
+/* =========================================================
+   BUSINESS HEALTH
+========================================================= */
+
+html[data-theme="light"] .health-score {
+  background:
+    #e2eee7;
+}
+
+html[data-theme="light"] .health-metrics > div {
+  background:
+    #e2eee7;
+}
+
+
+/* =========================================================
+   OPENING BALANCE INPUT
+========================================================= */
+
+html[data-theme="light"] .opening-balance-row input {
+  background:
+    #e5f0e9;
+}
+
+html[data-theme="light"] .opening-balance-row input:focus {
+  background:
+    #edf6f0;
+}
+
+
+/* =========================================================
+   DASHBOARD — LIGHT MODE TEXT WEIGHT
+   Small/supporting text becomes easier to read.
+   Existing bold headings remain unchanged.
+   Dark mode untouched.
+========================================================= */
+
+html[data-theme="light"] .dashboard-page .eyebrow,
+html[data-theme="light"] .dashboard-page small,
+html[data-theme="light"] .dashboard-page span,
+html[data-theme="light"] .dashboard-page label {
+  font-weight: 650;
+}
+
+/* Supporting descriptions */
+html[data-theme="light"] .dashboard-hero-copy p,
+html[data-theme="light"] .dashboard-kpi-card > small,
+html[data-theme="light"] .money-flow-item small,
+html[data-theme="light"] .performance-summary span,
+html[data-theme="light"] .quick-action small,
+html[data-theme="light"] .recent-sale-product span,
+html[data-theme="light"] .recent-sale-value span,
+html[data-theme="light"] .health-score p,
+html[data-theme="light"] .health-metrics span {
+  font-weight: 650;
+}
+
+/* Labels and small interface text */
+html[data-theme="light"] .hero-balance-top > span,
+html[data-theme="light"] .hero-balance-flow span,
+html[data-theme="light"] .dashboard-kpi-card > span,
+html[data-theme="light"] .money-flow-item > div > span,
+html[data-theme="light"] .real-chart-labels span,
+html[data-theme="light"] .panel-period,
+html[data-theme="light"] .live-pill {
+  font-weight: 700;
+}
+
+/* Navigation/supporting text inside Dashboard */
+html[data-theme="light"] .quick-action strong,
+html[data-theme="light"] .recent-sale-product strong,
+html[data-theme="light"] .recent-sale-value strong,
+html[data-theme="light"] .health-metrics strong {
+  font-weight: 750;
+}

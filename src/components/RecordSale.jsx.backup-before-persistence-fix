@@ -1,0 +1,2621 @@
+import "./RecordSale.css";
+
+import { useEffect, useMemo, useState } from "react";
+
+import { supabase } from "../lib/supabase";
+import SaleReceipt from "../Business/SaleReceipt";
+
+function getToday() {
+  const date = new Date();
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(2, "0");
+
+  const day =
+    String(
+      date.getDate()
+    ).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function createEmptySale() {
+  return {
+    date: getToday(),
+    productId: "",
+    quantity: "1",
+    sellingPrice: "",
+  };
+}
+
+function createSaleForm(sale) {
+  return {
+    date: sale?.date || getToday(),
+    productId: sale?.productId || "",
+    quantity: sale?.quantity
+      ? String(sale.quantity)
+      : "1",
+    sellingPrice: sale?.sellingPrice
+      ? String(sale.sellingPrice)
+      : "",
+  };
+}
+
+function createEmptySaleWithDate(date) {
+  return {
+    date: date || getToday(),
+    productId: "",
+    quantity: "1",
+    sellingPrice: "",
+  };
+}
+
+function getSavedRecordDraft() {
+  try {
+    const saved =
+      sessionStorage.getItem(
+        "uptrend_record_sale_draft"
+      );
+
+    return saved
+      ? JSON.parse(saved)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function RecordSale({
+  onBack,
+  editingSale,
+  subscription,
+}) {
+  const [products, setProducts] = useState([]);
+  const [sales, setSales] = useState([]);
+  const [loadingData, setLoadingData] = useState(true);
+
+  const [expenses, setExpenses] =
+    useState([]);
+
+  /*
+   * In normal mode this contains multiple
+   * unsaved sales.
+   *
+   * In edit mode it contains one sale.
+   */
+  const [saleForms, setSaleForms] =
+    useState(() => {
+      const draft =
+        getSavedRecordDraft();
+
+      if (
+        !editingSale &&
+        draft &&
+        Array.isArray(
+          draft.saleForms
+        ) &&
+        draft.saleForms.length > 0
+      ) {
+        return draft.saleForms;
+      }
+
+      return editingSale
+        ? [createSaleForm(editingSale)]
+        : [createEmptySale()];
+    });
+
+  const [editingId, setEditingId] =
+    useState(
+      editingSale?.id || null
+    );
+
+  const [saved, setSaved] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  const [receiptSale, setReceiptSale] =
+    useState(null);
+
+  const isBusiness =
+    subscription?.plan === "business" &&
+    (
+      subscription?.status === "active" ||
+      subscription?.status === "trialing"
+    );
+
+  /*
+   * The date used by the current
+   * recording session.
+   *
+   * New sales inherit this date
+   * instead of going back to today.
+   */
+  const [batchDate, setBatchDate] =
+    useState(() => {
+      const draft =
+        getSavedRecordDraft();
+
+      if (
+        !editingSale &&
+        draft?.batchDate
+      ) {
+        return draft.batchDate;
+      }
+
+      return (
+        editingSale?.date ||
+        getToday()
+      );
+    });
+
+  const isEditing =
+    Boolean(editingId);
+
+  /*
+   * Save unfinished sales continuously.
+   *
+   * This is temporary session data only.
+   * It does not become an actual sale until
+   * the user presses Save.
+   */
+  useEffect(() => {
+    if (isEditing) {
+      return;
+    }
+
+    try {
+      sessionStorage.setItem(
+        "uptrend_record_sale_draft",
+        JSON.stringify({
+          saleForms,
+          batchDate,
+        })
+      );
+    } catch {}
+  }, [
+    saleForms,
+    batchDate,
+    isEditing,
+  ]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadData = async () => {
+      setLoadingData(true);
+      setError("");
+
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          if (mounted) {
+            setProducts([]);
+            setSales([]);
+            setExpenses([]);
+            setError(
+              "Please sign in to record sales."
+            );
+          }
+
+          return;
+        }
+
+        const [
+          productsResult,
+          salesResult,
+          expensesResult,
+        ] = await Promise.all([
+          supabase
+            .from("products")
+            .select("*")
+            .eq("user_id", user.id)
+            .order("created_at", {
+              ascending: false,
+            }),
+
+          supabase
+            .from("sales")
+            .select("*")
+            .eq("user_id", user.id)
+            .order("created_at", {
+              ascending: false,
+            }),
+
+          supabase
+            .from("expenses")
+            .select("*")
+            .eq("user_id", user.id)
+            .order("expense_date", {
+              ascending: false,
+            })
+            .order("created_at", {
+              ascending: false,
+            }),
+        ]);
+
+        if (productsResult.error) {
+          throw productsResult.error;
+        }
+
+        if (salesResult.error) {
+          throw salesResult.error;
+        }
+
+        if (expensesResult.error) {
+          throw expensesResult.error;
+        }
+
+        if (!mounted) {
+          return;
+        }
+
+        setProducts(
+          (productsResult.data || []).map(
+            (product) => ({
+              id: product.id,
+              name: product.name,
+              costPrice: Number(
+                product.cost_price || 0
+              ),
+              stock: Number(
+                product.stock || 0
+              ),
+              lowStockAt: Number(
+                product.low_stock_at ?? 5
+              ),
+            })
+          )
+        );
+
+        setSales(
+          (salesResult.data || []).map(
+            (sale) => ({
+              id: sale.id,
+              date: sale.sale_date,
+              productId: sale.product_id,
+              product: sale.product_name,
+              quantity: Number(
+                sale.quantity || 0
+              ),
+              costPrice: Number(
+                sale.cost_price || 0
+              ),
+              totalCost:
+                Number(
+                  sale.cost_price || 0
+                ) *
+                Number(
+                  sale.quantity || 0
+                ),
+              sellingPrice: Number(
+                sale.selling_price || 0
+              ),
+              totalSelling: Number(
+                sale.total_selling || 0
+              ),
+              grossProfit: Number(
+                sale.gross_profit || 0
+              ),
+              createdAt:
+                sale.created_at,
+            })
+          )
+        );
+
+        setExpenses(
+          (expensesResult.data || []).map(
+            (expense) => ({
+              id: expense.id,
+              name: expense.name,
+              amount: Number(
+                expense.amount || 0
+              ),
+              category:
+                expense.category || "",
+              note:
+                expense.note || "",
+              date:
+                expense.expense_date,
+              createdAt:
+                expense.created_at,
+            })
+          )
+        );
+      } catch (loadError) {
+        console.error(
+          "RecordSale data load error:",
+          loadError
+        );
+
+        if (mounted) {
+          setError(
+            "We couldn't load your sales and inventory. Please try again."
+          );
+        }
+      } finally {
+        if (mounted) {
+          setLoadingData(false);
+        }
+      }
+    };
+
+    loadData();
+
+    return () => {
+      mounted = false;
+    };
+  }, [editingSale]);
+
+  useEffect(() => {
+    if (editingSale) {
+      setEditingId(
+        editingSale.id
+      );
+
+      setBatchDate(
+        editingSale.date ||
+          getToday()
+      );
+
+      setSaleForms([
+        createSaleForm(
+          editingSale
+        ),
+      ]);
+
+      setError("");
+      setSaved(false);
+
+      return;
+    }
+
+    const draft =
+      getSavedRecordDraft();
+
+    /*
+     * If this is a refresh and an
+     * unfinished batch exists, keep it.
+     */
+    if (
+      draft &&
+      Array.isArray(
+        draft.saleForms
+      ) &&
+      draft.saleForms.length > 0
+    ) {
+      setSaleForms(
+        draft.saleForms
+      );
+
+      setBatchDate(
+        draft.batchDate ||
+          getToday()
+      );
+    } else {
+      const freshDate =
+        getToday();
+
+      setBatchDate(
+        freshDate
+      );
+
+      setSaleForms([
+        createEmptySaleWithDate(
+          freshDate
+        ),
+      ]);
+    }
+
+    setEditingId(null);
+    setError("");
+    setSaved(false);
+  }, [editingSale]);
+
+  /*
+   * Find the product selected in a sale row.
+   */
+  const getProductForSale = (
+    sale
+  ) => {
+    return products.find(
+      (product) =>
+        product.id ===
+        sale.productId
+    );
+  };
+
+  /*
+   * Money formatter.
+   */
+  const formatMoney = (
+    value
+  ) => {
+    return `₦${Number(
+      value || 0
+    ).toLocaleString()}`;
+  };
+
+  /*
+   * Update a specific sale row.
+   */
+  const updateSaleField = (
+    index,
+    field,
+    value
+  ) => {
+    setSaleForms(
+      (current) =>
+        current.map(
+          (sale, saleIndex) =>
+            saleIndex === index
+              ? {
+                  ...sale,
+                  [field]:
+                    value,
+                }
+              : sale
+        )
+    );
+
+    setSaved(false);
+    setError("");
+  };
+
+  /*
+   * Selecting a product automatically
+   * fills its current selling price.
+   */
+  const handleProductChange = (
+    index,
+    productId
+  ) => {
+    setSaleForms(
+      (current) =>
+        current.map(
+          (sale, saleIndex) =>
+            saleIndex === index
+              ? {
+                  ...sale,
+                  productId,
+                  sellingPrice: "",
+                }
+              : sale
+        )
+    );
+
+    setSaved(false);
+    setError("");
+  };
+
+  /*
+   * Add another unsaved sale.
+   */
+  const addSale = () => {
+    if (isEditing) {
+      return;
+    }
+
+    setSaleForms(
+      (current) => [
+        ...current,
+        createEmptySaleWithDate(
+          batchDate
+        ),
+      ]
+    );
+
+    setSaved(false);
+    setError("");
+
+    setTimeout(() => {
+      const rows =
+        document.querySelectorAll(
+          ".batch-sale-row"
+        );
+
+      const lastRow =
+        rows[rows.length - 1];
+
+      if (lastRow) {
+        lastRow.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 80);
+  };
+
+  /*
+   * Remove an unsaved sale row.
+   */
+  const removeSale = (
+    index
+  ) => {
+    if (isEditing) {
+      return;
+    }
+
+    if (
+      saleForms.length === 1
+    ) {
+      return;
+    }
+
+    setSaleForms(
+      (current) =>
+        current.filter(
+          (_, saleIndex) =>
+            saleIndex !== index
+        )
+    );
+
+    setSaved(false);
+    setError("");
+  };
+
+  /*
+   * Start editing an existing sale
+   * directly from the history table.
+   */
+  const handleEdit = (
+    sale
+  ) => {
+    setEditingId(sale.id);
+
+    setSaleForms([
+      createSaleForm(sale),
+    ]);
+
+    setError("");
+    setSaved(false);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  /*
+   * Reset the current recording area.
+   */
+  const resetForm = () => {
+    if (isEditing) {
+      /*
+       * When editing, return to the
+       * original sale.
+       */
+      const originalSale =
+        sales.find(
+          (sale) =>
+            sale.id ===
+            editingId
+        );
+
+      if (originalSale) {
+        setSaleForms([
+          createSaleForm(
+            originalSale
+          ),
+        ]);
+      } else {
+        setEditingId(null);
+        setSaleForms([
+          createEmptySale(),
+        ]);
+      }
+    } else {
+      setSaleForms([
+        createEmptySaleWithDate(
+          batchDate
+        ),
+      ]);
+    }
+
+    setSaved(false);
+    setError("");
+  };
+
+  /*
+   * Leave edit mode and return to
+   * normal batch recording.
+   */
+  const cancelEdit = () => {
+    setEditingId(null);
+
+    const freshDate =
+      getToday();
+
+    setBatchDate(
+      freshDate
+    );
+
+    setSaleForms([
+      createEmptySaleWithDate(
+        freshDate
+      ),
+    ]);
+
+    setSaved(false);
+    setError("");
+  };
+
+  /*
+   * DAILY FINANCIAL SUMMARY
+   *
+   * Uses the selected recording date.
+   *
+   * It combines:
+   * 1. Previously saved sales for that date
+   * 2. Sales currently being entered
+   *
+   * Gross Profit = Sales - Product Cost
+   *
+   * If expenses are lower than gross profit:
+   * Net Profit = Gross Profit - Expenses
+   *
+   * If expenses are higher:
+   * Net Profit = 0
+   * Remaining Expenses = Expenses - Gross Profit
+   */
+  const dailyFinancialSummary =
+    useMemo(() => {
+      const savedDateSales =
+        sales.filter(
+          (sale) =>
+            sale.date === batchDate
+        );
+
+      const currentBatchSales =
+        saleForms
+          .filter(
+            (sale) =>
+              sale.date === batchDate
+          )
+          .map((sale) => {
+            const product =
+              getProductForSale(
+                sale
+              );
+
+            const quantity =
+              Number(
+                sale.quantity
+              ) || 0;
+
+            const sellingPrice =
+              Number(
+                sale.sellingPrice
+              ) || 0;
+
+            const costPrice =
+              product
+                ? Number(
+                    product.costPrice
+                  )
+                : 0;
+
+            return {
+              revenue:
+                sellingPrice,
+
+              productCost:
+                costPrice *
+                quantity,
+            };
+          });
+
+      const savedRevenue =
+        savedDateSales.reduce(
+          (sum, sale) =>
+            sum +
+            Number(
+              sale.totalSelling ||
+                sale.totalSales ||
+                0
+            ),
+          0
+        );
+
+      const savedProductCost =
+        savedDateSales.reduce(
+          (sum, sale) =>
+            sum +
+            Number(
+              sale.totalCost ||
+                0
+            ),
+          0
+        );
+
+      const batchRevenue =
+        currentBatchSales.reduce(
+          (sum, sale) =>
+            sum +
+            sale.revenue,
+          0
+        );
+
+      const batchProductCost =
+        currentBatchSales.reduce(
+          (sum, sale) =>
+            sum +
+            sale.productCost,
+          0
+        );
+
+      const revenue =
+        savedRevenue +
+        batchRevenue;
+
+      const productCost =
+        savedProductCost +
+        batchProductCost;
+
+      const grossProfit =
+        revenue -
+        productCost;
+
+      const expenseTotal =
+        expenses
+          .filter(
+            (expense) =>
+              expense.date ===
+              batchDate
+          )
+          .reduce(
+            (sum, expense) =>
+              sum +
+              Number(
+                expense.amount ||
+                  0
+              ),
+            0
+          );
+
+      const netProfit =
+        Math.max(
+          grossProfit -
+            expenseTotal,
+          0
+        );
+
+      const remainingExpenses =
+        Math.max(
+          expenseTotal -
+            grossProfit,
+          0
+        );
+
+      return {
+        revenue,
+        productCost,
+        grossProfit,
+        expenseTotal,
+        netProfit,
+        remainingExpenses,
+      };
+    }, [
+      sales,
+      expenses,
+      saleForms,
+      products,
+      batchDate,
+    ]);
+
+  /*
+   * LIVE BATCH CALCULATION
+   */
+  const batchSummary =
+    useMemo(() => {
+      return saleForms.reduce(
+        (summary, sale) => {
+          const product =
+            getProductForSale(
+              sale
+            );
+
+          const quantity =
+            Number(
+              sale.quantity
+            ) || 0;
+
+          const costPrice =
+            product
+              ? Number(
+                  product.costPrice
+                )
+              : 0;
+
+          const sellingPrice =
+            Number(
+              sale.sellingPrice
+            ) || 0;
+
+          const totalCost =
+            costPrice *
+            quantity;
+
+          const totalSelling =
+            sellingPrice;
+
+          const grossProfit =
+            totalSelling -
+            totalCost;
+
+          return {
+            records:
+              summary.records +
+              1,
+
+            units:
+              summary.units +
+              quantity,
+
+            totalCost:
+              summary.totalCost +
+              totalCost,
+
+            totalSales:
+              summary.totalSales +
+              totalSelling,
+
+            grossProfit:
+              summary.grossProfit +
+              grossProfit,
+          };
+        },
+        {
+          records: 0,
+          units: 0,
+          totalCost: 0,
+          totalSales: 0,
+          grossProfit: 0,
+        }
+      );
+    }, [
+      saleForms,
+      products,
+    ]);
+
+  /*
+   * Validate the entire batch BEFORE
+   * changing localStorage.
+   */
+  const validateBatch = () => {
+    for (
+      let index = 0;
+      index <
+      saleForms.length;
+      index += 1
+    ) {
+      const sale =
+        saleForms[index];
+
+      const row =
+        index + 1;
+
+      if (
+        !sale.date ||
+        !sale.productId ||
+        !sale.quantity ||
+        !sale.sellingPrice
+      ) {
+        return `Sale ${row}: please complete all required fields.`;
+      }
+
+      const product =
+        getProductForSale(
+          sale
+        );
+
+      if (!product) {
+        return `Sale ${row}: please select a valid product.`;
+      }
+
+      const quantity =
+        Number(
+          sale.quantity
+        );
+
+      const sellingPrice =
+        Number(
+          sale.sellingPrice
+        );
+
+      if (
+        !Number.isFinite(
+          quantity
+        ) ||
+        quantity < 1
+      ) {
+        return `Sale ${row}: quantity must be at least 1.`;
+      }
+
+      if (
+        !Number.isFinite(
+          sellingPrice
+        ) ||
+        sellingPrice < 0
+      ) {
+        return `Sale ${row}: selling price cannot be negative.`;
+      }
+    }
+
+    /*
+     * Calculate total quantity requested
+     * for each product in this batch.
+     */
+    const requested =
+      {};
+
+    saleForms.forEach(
+      (sale) => {
+        const quantity =
+          Number(
+            sale.quantity
+          ) || 0;
+
+        requested[
+          sale.productId
+        ] =
+          (requested[
+            sale.productId
+          ] || 0) +
+          quantity;
+      }
+    );
+
+    /*
+     * During an edit, the old sale's
+     * quantity is currently already removed
+     * from stock.
+     *
+     * Give that quantity back for the
+     * stock calculation.
+     */
+    if (editingId) {
+      const oldSale =
+        sales.find(
+          (sale) =>
+            sale.id ===
+            editingId
+        );
+
+      if (oldSale) {
+        requested[
+          oldSale.productId
+        ] =
+          (requested[
+            oldSale.productId
+          ] || 0) -
+          Number(
+            oldSale.quantity
+          );
+      }
+    }
+
+    /*
+     * Check every product.
+     */
+    for (const product of products) {
+      const required =
+        Number(
+          requested[
+            product.id
+          ] || 0
+        );
+
+      if (
+        required >
+        Number(
+          product.stock || 0
+        )
+      ) {
+        return `Not enough ${product.name} in stock. Available: ${product.stock}. Required: ${required}.`;
+      }
+    }
+
+    return "";
+  };
+
+  /*
+   * SAVE EVERYTHING
+   */
+  const handleSubmit = async (
+    event
+  ) => {
+    event.preventDefault();
+
+    setError("");
+    setSaved(false);
+
+    const validationError =
+      validateBatch();
+
+    if (validationError) {
+      setError(
+        validationError
+      );
+
+      return;
+    }
+
+    /*
+     * EDIT EXISTING SALE
+     */
+    if (editingId) {
+      const form =
+        saleForms[0];
+
+      const product =
+        getProductForSale(
+          form
+        );
+
+      const oldSale =
+        sales.find(
+          (sale) =>
+            sale.id ===
+            editingId
+        );
+
+      if (
+        !product ||
+        !oldSale
+      ) {
+        setError(
+          "The sale could not be found."
+        );
+
+        return;
+      }
+
+      const quantity =
+        Number(
+          form.quantity
+        );
+
+      const sellingPrice =
+        Number(
+          form.sellingPrice
+        );
+
+      const costPrice =
+        Number(
+          product.costPrice
+        );
+
+      const sale = {
+        id: oldSale.id,
+
+        date: form.date,
+
+        productId:
+          product.id,
+
+        product:
+          product.name,
+
+        quantity,
+
+        costPrice,
+
+        totalCost:
+          costPrice *
+          quantity,
+
+        sellingPrice,
+
+        totalSelling:
+          sellingPrice,
+
+        grossProfit:
+          sellingPrice -
+          costPrice *
+            quantity,
+
+        createdAt:
+          oldSale.createdAt ||
+          new Date().toISOString(),
+      };
+
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          setError(
+            "Your session has expired. Please sign in again."
+          );
+
+          return;
+        }
+
+        /*
+         * The database handles:
+         * - restoring the old stock
+         * - subtracting the new quantity
+         * - updating the sale
+         *
+         * as one transaction.
+         */
+        const {
+          data: updatedSaleRow,
+          error: saleError,
+        } = await supabase.rpc(
+          "update_sale",
+          {
+            p_sale_id:
+              editingId,
+            p_product_id:
+              product.id,
+            p_product_name:
+              product.name,
+            p_quantity:
+              quantity,
+            p_cost_price:
+              costPrice,
+            p_selling_price:
+              sellingPrice,
+            p_sale_date:
+              form.date,
+          }
+        );
+
+        if (saleError) {
+          throw saleError;
+        }
+
+        const normalizedUpdatedSale =
+          Array.isArray(updatedSaleRow)
+            ? updatedSaleRow[0]
+            : updatedSaleRow;
+
+        if (!normalizedUpdatedSale) {
+          throw new Error(
+            "The sale was updated, but no updated sale record was returned."
+          );
+        }
+
+        const updatedSale = {
+          id:
+            normalizedUpdatedSale.id,
+          date:
+            normalizedUpdatedSale.sale_date,
+          productId:
+            normalizedUpdatedSale.product_id,
+          product:
+            normalizedUpdatedSale.product_name,
+          quantity:
+            Number(
+              normalizedUpdatedSale.quantity || 0
+            ),
+          costPrice:
+            Number(
+              normalizedUpdatedSale.cost_price || 0
+            ),
+          totalCost:
+            Number(
+              normalizedUpdatedSale.cost_price || 0
+            ) *
+            Number(
+              normalizedUpdatedSale.quantity || 0
+            ),
+          sellingPrice:
+            Number(
+              normalizedUpdatedSale.selling_price || 0
+            ),
+          totalSelling:
+            Number(
+              normalizedUpdatedSale.total_selling || 0
+            ),
+          grossProfit:
+            Number(
+              normalizedUpdatedSale.gross_profit || 0
+            ),
+          createdAt:
+            normalizedUpdatedSale.created_at,
+        };
+
+        const {
+          data: refreshedProducts,
+          error: productsError,
+        } = await supabase
+          .from("products")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", {
+            ascending: false,
+          });
+
+        if (productsError) {
+          throw productsError;
+        }
+
+        setProducts(
+          (refreshedProducts || []).map(
+            (item) => ({
+              id: item.id,
+              name: item.name,
+              costPrice:
+                Number(
+                  item.cost_price || 0
+                ),
+              stock:
+                Number(
+                  item.stock || 0
+                ),
+              lowStockAt:
+                Number(
+                  item.low_stock_at ?? 5
+                ),
+            })
+          )
+        );
+
+        setSales(
+          (current) =>
+            current.map(
+              (item) =>
+                item.id === editingId
+                  ? updatedSale
+                  : item
+            )
+        );
+
+        setSaved(true);
+      } catch (saveError) {
+        console.error(
+          "Sale update error:",
+          saveError
+        );
+
+        setError(
+          "We couldn't update this sale. Please try again."
+        );
+
+        return;
+      }
+
+      try {
+        sessionStorage.removeItem(
+          "uptrend_record_sale_draft"
+        );
+      } catch {}
+
+      return;
+    }
+
+    /*
+     * CREATE A NEW BATCH
+     */
+    const newSales =
+      saleForms.map(
+        (form) => {
+          const product =
+            getProductForSale(
+              form
+            );
+
+          const quantity =
+            Number(
+              form.quantity
+            );
+
+          const sellingPrice =
+            Number(
+              form.sellingPrice
+            );
+
+          const costPrice =
+            Number(
+              product.costPrice
+            );
+
+          const totalCost =
+            costPrice *
+            quantity;
+
+          const totalSelling =
+            sellingPrice;
+
+          return {
+            id:
+              `sale-${Date.now()}-${Math.random()
+                .toString(36)
+                .slice(2, 8)}`,
+
+            date:
+              form.date,
+
+            productId:
+              product.id,
+
+            product:
+              product.name,
+
+            quantity,
+
+            costPrice,
+
+            totalCost,
+
+            sellingPrice,
+
+            totalSelling,
+
+            grossProfit:
+              totalSelling -
+              totalCost,
+
+            createdAt:
+              new Date().toISOString(),
+          };
+        }
+      );
+
+    /*
+     * Combine quantities by product.
+     */
+    const quantityByProduct =
+      {};
+
+    newSales.forEach(
+      (sale) => {
+        quantityByProduct[
+          sale.productId
+        ] =
+          (quantityByProduct[
+            sale.productId
+          ] || 0) +
+          Number(
+            sale.quantity
+          );
+      }
+    );
+
+    /*
+     * Update inventory ONCE.
+     */
+    const updatedProducts =
+      products.map(
+        (product) => ({
+          ...product,
+
+          stock:
+            Number(
+              product.stock
+            ) -
+            Number(
+              quantityByProduct[
+                product.id
+              ] || 0
+            ),
+        })
+      );
+
+    /*
+     * Add all new sales together.
+     */
+    const updatedSales = [
+      ...newSales,
+      ...sales,
+    ];
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setError(
+          "Your session has expired. Please sign in again."
+        );
+
+        return;
+      }
+
+      /*
+       * Send the complete batch to the database.
+       *
+       * The RPC handles:
+       * - stock validation
+       * - stock reduction
+       * - sale insertion
+       *
+       * in one transaction.
+       */
+      const rpcPayload =
+        newSales.map(
+          (sale) => ({
+            product_id:
+              sale.productId,
+            product_name:
+              sale.product,
+            quantity:
+              Number(
+                sale.quantity
+              ),
+            cost_price:
+              Number(
+                sale.costPrice
+              ),
+            selling_price:
+              Number(
+                sale.sellingPrice
+              ),
+            sale_date:
+              sale.date,
+          })
+        );
+
+      const {
+        data: insertedSales,
+        error: salesError,
+      } = await supabase.rpc(
+        "record_sales_batch",
+        {
+          p_sales:
+            rpcPayload,
+        }
+      );
+
+      if (salesError) {
+        throw salesError;
+      }
+
+      const normalizedInsertedSales =
+        Array.isArray(insertedSales)
+          ? insertedSales
+          : insertedSales
+            ? [insertedSales]
+            : [];
+
+      const mappedInsertedSales =
+        normalizedInsertedSales.map(
+          (sale) => ({
+            id:
+              sale.id,
+            date:
+              sale.sale_date,
+            productId:
+              sale.product_id,
+            product:
+              sale.product_name,
+            quantity:
+              Number(
+                sale.quantity || 0
+              ),
+            costPrice:
+              Number(
+                sale.cost_price || 0
+              ),
+            totalCost:
+              Number(
+                sale.cost_price || 0
+              ) *
+              Number(
+                sale.quantity || 0
+              ),
+            sellingPrice:
+              Number(
+                sale.selling_price || 0
+              ),
+            totalSelling:
+              Number(
+                sale.total_selling || 0
+              ),
+            grossProfit:
+              Number(
+                sale.gross_profit || 0
+              ),
+            createdAt:
+              sale.created_at,
+          })
+        );
+
+      /*
+       * Reload products so the UI receives
+       * the exact stock values from Supabase.
+       */
+      const {
+        data: refreshedProducts,
+        error: productsError,
+      } = await supabase
+        .from("products")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", {
+          ascending: false,
+        });
+
+      if (productsError) {
+        throw productsError;
+      }
+
+      const mappedProducts =
+        (refreshedProducts || []).map(
+          (item) => ({
+            id: item.id,
+            name: item.name,
+            costPrice:
+              Number(
+                item.cost_price || 0
+              ),
+            stock:
+              Number(
+                item.stock || 0
+              ),
+            lowStockAt:
+              Number(
+                item.low_stock_at ?? 5
+              ),
+          })
+        );
+
+      setProducts(
+        mappedProducts
+      );
+
+      setSales([
+        ...mappedInsertedSales,
+        ...sales,
+      ]);
+
+      setSaved(true);
+    } catch (saveError) {
+      console.error(
+        "Sales save error:",
+        saveError
+      );
+
+      setError(
+        saveError?.message ||
+          "We couldn't save the sales. Please try again."
+      );
+
+      return;
+    }
+
+    try {
+      sessionStorage.removeItem(
+        "uptrend_record_sale_draft"
+      );
+    } catch {}
+
+    /*
+     * Give the user a moment to see
+     * "Sales recorded successfully",
+     * then prepare a completely new batch.
+     */
+    setTimeout(() => {
+      setSaleForms([
+        createEmptySaleWithDate(
+          batchDate
+        ),
+      ]);
+
+      setSaved(false);
+    }, 1000);
+  };
+
+  /*
+   * DELETE EXISTING SALE
+   */
+  const handleDelete = async (
+    id
+  ) => {
+    const sale =
+      sales.find(
+        (item) =>
+          item.id === id
+      );
+
+    if (!sale) {
+      return;
+    }
+
+    const confirmed =
+      window.confirm(
+        `Delete the ${sale.product} sale?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setError(
+          "Your session has expired. Please sign in again."
+        );
+
+        return;
+      }
+
+      /*
+       * The database handles:
+       * - restoring the sold quantity
+       * - deleting the sale
+       *
+       * as one transaction.
+       */
+      const {
+        data: deletedSale,
+        error: deleteError,
+      } = await supabase.rpc(
+        "delete_sale",
+        {
+          p_sale_id: id,
+        }
+      );
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      const {
+        data: refreshedProducts,
+        error: productsError,
+      } = await supabase
+        .from("products")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", {
+          ascending: false,
+        });
+
+      if (productsError) {
+        throw productsError;
+      }
+
+      setProducts(
+        (refreshedProducts || []).map(
+          (item) => ({
+            id: item.id,
+            name: item.name,
+            costPrice:
+              Number(
+                item.cost_price || 0
+              ),
+            stock:
+              Number(
+                item.stock || 0
+              ),
+            lowStockAt:
+              Number(
+                item.low_stock_at ?? 5
+              ),
+          })
+        )
+      );
+
+      setSales(
+        (current) =>
+          current.filter(
+            (item) =>
+              item.id !== id
+          )
+      );
+
+      if (
+        editingId === id
+      ) {
+        cancelEdit();
+      }
+    } catch (deleteError) {
+      console.error(
+        "Sale delete error:",
+        deleteError
+      );
+
+      setError(
+        deleteError?.message ||
+          "We couldn't delete this sale. Please try again."
+      );
+    }
+  };
+
+  if (loadingData) {
+    return (
+      <div className="record-page">
+        <div className="premium-card" style={{
+          padding: "32px",
+          textAlign: "center",
+          color: "var(--muted)",
+        }}>
+          Loading your sales and inventory...
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="record-page">
+
+      {/* PAGE HEADER */}
+      <div className="record-page-top">
+        <div>
+          <div className="mini-label">
+            {isEditing
+              ? "UPDATE TRANSACTION"
+              : "BATCH SALES RECORDING"}
+          </div>
+
+          <h2>
+            {isEditing
+              ? "Update Sale"
+              : "Record Sales"}
+          </h2>
+
+          <p>
+            {isEditing
+              ? "Update this sale and let UpTrend recalculate stock and profit."
+              : "Record multiple sales together and save them all at once."}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          className="record-back-button"
+          onClick={onBack}
+        >
+          ← Dashboard
+        </button>
+      </div>
+
+      <div className="record-layout">
+
+        {/* MAIN FORM */}
+        <form
+          className="record-form-card premium-card"
+          onSubmit={
+            handleSubmit
+          }
+        >
+
+          {/* FORM HEADING */}
+          <div className="record-card-heading">
+            <div className="record-heading-icon">
+              {isEditing
+                ? "✎"
+                : "+"}
+            </div>
+
+            <div>
+              <strong>
+                {isEditing
+                  ? "Edit sale"
+                  : `Sales in this batch (${saleForms.length})`}
+              </strong>
+
+              <span>
+                {isEditing
+                  ? "Update this transaction."
+                  : "Add as many sales as you need before saving."}
+              </span>
+            </div>
+          </div>
+
+          {/* SALES */}
+          <div className="batch-sales-list">
+
+            {saleForms.map(
+              (sale, index) => {
+                const selectedProduct =
+                  getProductForSale(
+                    sale
+                  );
+
+                const selectedCost =
+                  selectedProduct
+                    ? Number(
+                        selectedProduct.costPrice
+                      )
+                    : 0;
+
+                const quantity =
+                  Number(
+                    sale.quantity
+                  ) || 0;
+
+                const sellingPrice =
+                  Number(
+                    sale.sellingPrice
+                  ) || 0;
+
+                const totalCost =
+                  selectedCost *
+                  quantity;
+
+                const totalSelling =
+                  sellingPrice;
+
+                const grossProfit =
+                  totalSelling -
+                  totalCost;
+
+                return (
+                  <div
+                    className="batch-sale-row"
+                    key={index}
+                  >
+
+                    {/* ROW HEADER */}
+                    <div className="batch-sale-header">
+                      <div>
+                        <div className="mini-label">
+                          RECORD
+                        </div>
+
+                        <strong>
+                          Sale {index + 1}
+                        </strong>
+                      </div>
+
+                      {!isEditing &&
+                        saleForms.length >
+                          1 && (
+                          <button
+                            type="button"
+                            className="batch-remove-button"
+                            onClick={() =>
+                              removeSale(
+                                index
+                              )
+                            }
+                          >
+                            Remove
+                          </button>
+                        )}
+                    </div>
+
+                    {/* DATE */}
+                    <label className="record-field full">
+                      <span>
+                        Date
+                      </span>
+
+                      <input
+                        type="date"
+                        value={
+                          sale.date
+                        }
+                        onChange={(event) => {
+                          const newDate =
+                            event.target.value;
+
+                          updateSaleField(
+                            index,
+                            "date",
+                            newDate
+                          );
+
+                          /*
+                           * The date selected
+                           * during this session
+                           * becomes the default
+                           * for new sales.
+                           */
+                          setBatchDate(
+                            newDate
+                          );
+                        }}
+                      />
+                    </label>
+
+                    {/* PRODUCT */}
+                    <label className="record-field full">
+                      <span>
+                        Item sold
+                      </span>
+
+                      <select
+                        value={
+                          sale.productId
+                        }
+                        onChange={(
+                          event
+                        ) =>
+                          handleProductChange(
+                            index,
+                            event.target
+                              .value
+                          )
+                        }
+                      >
+                        <option value="">
+                          Select product
+                        </option>
+
+                        {products.map(
+                          (
+                            product
+                          ) => (
+                            <option
+                              key={
+                                product.id
+                              }
+                              value={
+                                product.id
+                              }
+                              disabled={
+                                Number(
+                                  product.stock
+                                ) <=
+                                  0 &&
+                                product.id !==
+                                  editingSale?.productId
+                              }
+                            >
+                              {
+                                product.name
+                              }{" "}
+                              — Stock{" "}
+                              {
+                                product.stock
+                              }
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </label>
+
+                    {/* QUANTITY + COST */}
+                    <div className="record-field-grid">
+
+                      <label className="record-field">
+                        <span>
+                          Quantity sold
+                        </span>
+
+                        <input
+                          type="number"
+                          min="1"
+                          step="1"
+                          value={
+                            sale.quantity
+                          }
+                          onChange={(
+                            event
+                          ) =>
+                            updateSaleField(
+                              index,
+                              "quantity",
+                              event.target
+                                .value
+                            )
+                          }
+                        />
+                      </label>
+
+                      <div className="record-field">
+                        <span>
+                          Fixed cost price
+                        </span>
+
+                        <div className="record-fixed-value">
+                          {formatMoney(
+                            totalCost
+                          )}
+
+                          <small>
+                            total cost
+                          </small>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* SELLING PRICE */}
+                    <label className="record-field full">
+                      <span>
+                        Selling price
+                      </span>
+
+                      <div className="money-input">
+                        <b>
+                          ₦
+                        </b>
+
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          placeholder="0"
+                          value={
+                            sale.sellingPrice
+                          }
+                          onChange={(
+                            event
+                          ) =>
+                            updateSaleField(
+                              index,
+                              "sellingPrice",
+                              event.target
+                                .value
+                            )
+                          }
+                        />
+                      </div>
+                    </label>
+
+                    {/* STOCK */}
+                    {selectedProduct && (
+                      <div className="record-stock-info">
+                        <span>
+                          AVAILABLE STOCK
+                        </span>
+
+                        <strong>
+                          {
+                            selectedProduct.stock
+                          }{" "}
+                          units
+                        </strong>
+                      </div>
+                    )}
+
+                    {/* LIVE PROFIT */}
+                    {selectedProduct && (
+                      <div className="batch-row-profit">
+                        <span>
+                          Gross profit for Sale{" "}
+                          {index + 1}
+                        </span>
+
+                        <strong
+                          className={
+                            grossProfit <
+                            0
+                              ? "record-loss"
+                              : "record-profit"
+                          }
+                        >
+                          {grossProfit <
+                          0
+                            ? "-"
+                            : "+"}
+
+                          {formatMoney(
+                            Math.abs(
+                              grossProfit
+                            )
+                          )}
+                        </strong>
+                      </div>
+                    )}
+
+                  </div>
+                );
+              }
+            )}
+
+          </div>
+
+          {/* ADD ANOTHER SALE */}
+          {!isEditing && (
+            <button
+              type="button"
+              className="batch-add-button"
+              onClick={
+                addSale
+              }
+            >
+              <span>
+                ＋
+              </span>
+
+              Add Another Sale
+            </button>
+          )}
+
+          {/* ERROR */}
+          {error && (
+            <div className="record-error">
+              <span>
+                !
+              </span>
+
+              {error}
+            </div>
+          )}
+
+          {/* BATCH SUMMARY */}
+          <div className="batch-summary">
+
+            <div className="mini-label">
+              BATCH SUMMARY
+            </div>
+
+            <div className="batch-summary-grid">
+
+              <div>
+                <span>
+                  Records
+                </span>
+
+                <strong>
+                  {
+                    batchSummary.records
+                  }
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Units
+                </span>
+
+                <strong>
+                  {
+                    batchSummary.units
+                  }
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Total Sales
+                </span>
+
+                <strong>
+                  {formatMoney(
+                    batchSummary.totalSales
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Gross Profit
+                </span>
+
+                <strong
+                  className={
+                    batchSummary.grossProfit <
+                    0
+                      ? "record-loss"
+                      : "record-profit"
+                  }
+                >
+                  {batchSummary.grossProfit <
+                  0
+                    ? "-"
+                    : "+"}
+
+                  {formatMoney(
+                    Math.abs(
+                      batchSummary.grossProfit
+                    )
+                  )}
+                </strong>
+              </div>
+
+            </div>
+          </div>
+
+          {/* ACTIONS */}
+          <div className="record-form-actions">
+
+            <button
+              type="button"
+              className="record-cancel"
+              onClick={
+                isEditing
+                  ? cancelEdit
+                  : onBack
+              }
+            >
+              {isEditing
+                ? "Cancel Edit"
+                : "Cancel"}
+            </button>
+
+            <button
+              type="submit"
+              className="record-submit"
+            >
+              <span>
+                {isEditing
+                  ? "Update Sale"
+                  : `Save ${saleForms.length} ${
+                      saleForms.length ===
+                      1
+                        ? "Sale"
+                        : "Sales"
+                    }`}
+              </span>
+
+              <b>
+                →
+              </b>
+            </button>
+
+          </div>
+
+          {/* SUCCESS */}
+          {saved && (
+            <div className="record-success">
+              <span>
+                ✓
+              </span>
+
+              {isEditing
+                ? "Sale updated successfully."
+                : `${saleForms.length} ${
+                    saleForms.length ===
+                    1
+                      ? "sale"
+                      : "sales"
+                  } recorded successfully.`}
+            </div>
+          )}
+
+        </form>
+
+        {/* LIVE SUMMARY */}
+        <aside className="sale-summary premium-card">
+
+          <div className="mini-label">
+            LIVE CALCULATION
+          </div>
+
+          <h3>
+            Batch summary
+          </h3>
+
+          <div className="summary-product">
+
+            <div className="summary-product-icon">
+              {saleForms.length}
+            </div>
+
+            <div>
+              <strong>
+                {isEditing
+                  ? "Editing 1 sale"
+                  : `${saleForms.length} ${
+                      saleForms.length ===
+                      1
+                        ? "sale"
+                        : "sales"
+                    } ready`}
+              </strong>
+
+              <span>
+                {
+                  batchSummary.units
+                }{" "}
+                total unit
+                {batchSummary.units ===
+                1
+                  ? ""
+                  : "s"}
+              </span>
+            </div>
+
+          </div>
+
+          <div className="summary-lines">
+
+            <div>
+              <span>
+                Records
+              </span>
+
+              <strong>
+                {
+                  batchSummary.records
+                }
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Total cost
+              </span>
+
+              <strong>
+                {formatMoney(
+                  batchSummary.totalCost
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Total sales
+              </span>
+
+              <strong>
+                {formatMoney(
+                  batchSummary.totalSales
+                )}
+              </strong>
+            </div>
+
+          </div>
+
+          <div className="summary-total">
+
+            <span>
+              Gross profit
+            </span>
+
+            <strong
+              className={
+                batchSummary.grossProfit <
+                0
+                  ? "record-loss"
+                  : "record-profit"
+              }
+            >
+              {batchSummary.grossProfit <
+              0
+                ? "-"
+                : "+"}
+
+              {formatMoney(
+                Math.abs(
+                  batchSummary.grossProfit
+                )
+              )}
+            </strong>
+
+          </div>
+
+          <div className="summary-note">
+
+            <span>
+              ✦
+            </span>
+
+            <p>
+              {isEditing
+                ? "Stock will be recalculated when this sale is updated."
+                : "Add multiple sales and save them together. Inventory is updated only after the entire batch passes validation."}
+            </p>
+
+          </div>
+
+        </aside>
+
+      </div>
+
+      {/* SALES HISTORY */}
+      <section className="sales-history premium-card">
+
+        <div className="panel-heading">
+
+          <div>
+            <div className="mini-label">
+              SALES HISTORY
+            </div>
+
+            <h2>
+              Recorded sales
+            </h2>
+          </div>
+
+          <span className="sales-count">
+            {sales.length} record
+            {sales.length ===
+            1
+              ? ""
+              : "s"}
+          </span>
+
+        </div>
+
+        {sales.length ===
+        0 ? (
+          <div className="sales-empty">
+
+            <div>
+              ↗
+            </div>
+
+            <strong>
+              No sales recorded yet
+            </strong>
+
+            <span>
+              Your sales will appear here
+              after you save your first
+              transaction.
+            </span>
+
+          </div>
+        ) : (
+          <div className="sales-table-wrap">
+
+            <table className="sales-table">
+
+              <thead>
+                <tr>
+                  <th>
+                    Date
+                  </th>
+
+                  <th>
+                    Item
+                  </th>
+
+                  <th>
+                    Qty
+                  </th>
+
+                  <th>
+                    Cost
+                  </th>
+
+                  <th>
+                    Sales
+                  </th>
+
+                  <th>
+                    Gross Profit
+                  </th>
+
+                  <th>
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                {sales.map(
+                  (sale) => (
+                    <tr
+                      key={
+                        sale.id
+                      }
+                    >
+
+                      <td>
+                        {
+                          sale.date
+                        }
+                      </td>
+
+                      <td>
+                        <strong>
+                          {
+                            sale.product
+                          }
+                        </strong>
+                      </td>
+
+                      <td>
+                        {
+                          sale.quantity
+                        }
+                      </td>
+
+                      <td>
+                        {formatMoney(
+                          sale.totalCost
+                        )}
+                      </td>
+
+                      <td>
+                        {formatMoney(
+                          sale.totalSelling
+                        )}
+                      </td>
+
+                      <td>
+                        <strong
+                          className={
+                            Number(
+                              sale.grossProfit
+                            ) <
+                            0
+                              ? "record-loss"
+                              : "record-profit"
+                          }
+                        >
+                          {Number(
+                            sale.grossProfit
+                          ) <
+                          0
+                            ? "-"
+                            : "+"}
+
+                          {formatMoney(
+                            Math.abs(
+                              Number(
+                                sale.grossProfit
+                              )
+                            )
+                          )}
+                        </strong>
+                      </td>
+
+                      <td>
+                        <div className="sale-actions">
+
+                          {isBusiness && (
+                            <button
+                              type="button"
+                              className="receipt-sale-button"
+                              onClick={() =>
+                                setReceiptSale(
+                                  sale
+                                )
+                              }
+                            >
+                              Receipt
+                            </button>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleEdit(
+                                sale
+                              )
+                            }
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            type="button"
+                            className="delete-sale"
+                            onClick={() =>
+                              handleDelete(
+                                sale.id
+                              )
+                            }
+                          >
+                            Delete
+                          </button>
+
+                        </div>
+                      </td>
+
+                    </tr>
+                  )
+                )}
+
+              </tbody>
+
+            </table>
+
+          </div>
+        )}
+
+      </section>
+
+      {isBusiness && receiptSale && (
+        <SaleReceipt
+          sale={receiptSale}
+          onClose={() =>
+            setReceiptSale(null)
+          }
+        />
+      )}
+
+    </div>
+  );
+}
+
+export default RecordSale;

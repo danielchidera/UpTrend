@@ -533,3 +533,1061 @@
     transition: none !important;
   }
 }
+
+/* =========================================================
+   BUSINESS NAVIGATION — MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .mobile-menu-section-label {
+    margin:
+      16px
+      4px
+      7px;
+
+    color: #707a75;
+
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .16em;
+  }
+
+  .mobile-menu-item {
+    --mobile-accent: #a78bfa;
+  }
+
+  .mobile-menu-item.nav-dashboard {
+    --mobile-accent: #818cf8;
+  }
+
+  .mobile-menu-item.nav-sales {
+    --mobile-accent: #4ade80;
+  }
+
+  .mobile-menu-item.nav-record {
+    --mobile-accent: #d9b86c;
+  }
+
+  .mobile-menu-item.nav-expenses {
+    --mobile-accent: #f87171;
+  }
+
+  .mobile-menu-item.nav-products {
+    --mobile-accent: #60a5fa;
+  }
+
+  .mobile-menu-item.nav-reports {
+    --mobile-accent: #a78bfa;
+  }
+
+  .mobile-menu-item.nav-finance {
+    --mobile-accent: #22d3ee;
+  }
+
+  .mobile-menu-item.nav-settings {
+    --mobile-accent: #d9b86c;
+  }
+
+  /* Expenses is permanently red. */
+  .mobile-menu-item.nav-expenses {
+    color: #f87171;
+  }
+
+  .mobile-menu-item.nav-expenses
+  .mobile-menu-icon {
+    color: #f87171;
+    background: rgba(248,113,113,.09);
+  }
+
+  .mobile-menu-item.active {
+    color: var(--mobile-accent);
+
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(
+          in srgb,
+          var(--mobile-accent) 17%,
+          transparent
+        ),
+        color-mix(
+          in srgb,
+          var(--mobile-accent) 5%,
+          transparent
+        )
+      );
+
+    border-color:
+      color-mix(
+        in srgb,
+        var(--mobile-accent) 22%,
+        transparent
+      );
+  }
+
+  .mobile-menu-item.active
+  .mobile-menu-icon {
+    color: var(--mobile-accent);
+
+    background:
+      color-mix(
+        in srgb,
+        var(--mobile-accent) 16%,
+        transparent
+      );
+  }
+
+  .mobile-menu-item.active
+  .mobile-menu-arrow {
+    color: var(--mobile-accent);
+  }
+
+  /* =======================================================
+     BUSINESS PLAN CARD
+  ======================================================= */
+
+  .mobile-business-section {
+    margin-top: 17px;
+
+    border: 1px solid
+      rgba(217,184,108,.18);
+
+    border-radius: 18px;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(217,184,108,.065),
+        rgba(255,255,255,.018)
+      );
+
+    overflow: hidden;
+
+    box-shadow:
+      inset 0 1px 0
+      rgba(255,255,255,.025);
+  }
+
+  .mobile-business-toggle {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns:
+      44px
+      minmax(0,1fr)
+      22px;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 11px;
+
+    border: 0;
+
+    background: transparent;
+    color: #fff;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+      background .2s ease;
+  }
+
+  .mobile-business-toggle:hover,
+  .mobile-business-toggle.has-active {
+    background:
+      rgba(217,184,108,.07);
+  }
+
+  .mobile-business-icon {
+    width: 44px;
+    height: 44px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 13px;
+
+    color: #d9b86c;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(217,184,108,.20),
+        rgba(217,184,108,.07)
+      );
+
+    font-size: 17px;
+
+    box-shadow:
+      0 0 22px
+      rgba(217,184,108,.08);
+  }
+
+  .mobile-business-copy {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .mobile-business-copy strong {
+    color: #e7c56b;
+
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .mobile-business-copy small {
+    color: #78817d;
+
+    font-size: 9px;
+  }
+
+  .mobile-business-arrow {
+    color: #d9b86c;
+
+    font-size: 23px;
+    line-height: 1;
+
+    transition:
+      transform .28s ease;
+  }
+
+  .mobile-business-toggle.open
+  .mobile-business-arrow {
+    transform: rotate(90deg);
+  }
+
+  /* =======================================================
+     BUSINESS ITEMS PANEL
+  ======================================================= */
+
+  .mobile-business-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+
+    transition:
+      grid-template-rows .3s ease;
+  }
+
+  .mobile-business-panel.open {
+    grid-template-rows: 1fr;
+  }
+
+  .mobile-business-list {
+    min-height: 0;
+    overflow: hidden;
+
+    padding:
+      0 8px;
+  }
+
+  .mobile-business-panel.open
+  .mobile-business-list {
+    padding-bottom: 10px;
+  }
+
+  .mobile-business-item {
+    --business-accent: #d9b86c;
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      40px
+      minmax(0,1fr)
+      25px;
+
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 47px;
+
+    padding: 5px 8px;
+
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+    background: transparent;
+    color: #7f8984;
+
+    font-family: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+      color .2s ease,
+      background .2s ease,
+      border-color .2s ease,
+      transform .2s ease;
+  }
+
+  .mobile-business-item.available:hover {
+    color: var(--business-accent);
+
+    background:
+      color-mix(
+        in srgb,
+        var(--business-accent) 8%,
+        transparent
+      );
+
+    border-color:
+      color-mix(
+        in srgb,
+        var(--business-accent) 13%,
+        transparent
+      );
+
+    transform: translateX(-2px);
+  }
+
+  .mobile-business-item.active {
+    color: var(--business-accent);
+
+    background:
+      color-mix(
+        in srgb,
+        var(--business-accent) 12%,
+        transparent
+      );
+
+    border-color:
+      color-mix(
+        in srgb,
+        var(--business-accent) 18%,
+        transparent
+      );
+  }
+
+  .mobile-business-item-icon {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 11px;
+
+    color: var(--business-accent);
+
+    background:
+      color-mix(
+        in srgb,
+        var(--business-accent) 7%,
+        transparent
+      );
+
+    font-size: 15px;
+  }
+
+  .mobile-business-item-label {
+    min-width: 0;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-business-item-arrow {
+    color: var(--business-accent);
+
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .mobile-business-item-lock {
+    justify-self: end;
+
+    padding: 3px 5px;
+
+    border-radius: 5px;
+
+    background:
+      rgba(255,255,255,.045);
+
+    color: #68716d;
+
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: .5px;
+  }
+
+  .mobile-business-item.locked {
+    opacity: .48;
+    cursor: default;
+  }
+
+  /* Business colors */
+
+  .mobile-business-item.nav-business-insights {
+    --business-accent: #f5c85c;
+  }
+
+  .mobile-business-item.nav-advanced-reports {
+    --business-accent: #b58cff;
+  }
+
+  .mobile-business-item.nav-advanced-inventory {
+    --business-accent: #60a5fa;
+  }
+
+  .mobile-business-item.nav-sales-expense-trends {
+    --business-accent: #45e886;
+  }
+
+  .mobile-business-item.nav-customers {
+    --business-accent: #f59e9e;
+  }
+
+  .mobile-business-item.nav-invoices {
+    --business-accent: #67e8f9;
+  }
+
+  .mobile-business-item.nav-business-targets {
+    --business-accent: #facc15;
+  }
+
+  .mobile-business-item.nav-credit-debt {
+    --business-accent: #fb7185;
+  }
+
+  .mobile-business-item.nav-suppliers {
+    --business-accent: #fb923c;
+  }
+
+  .mobile-business-item.nav-exports {
+    --business-accent: #a3e635;
+  }
+
+  .mobile-business-item.nav-branches {
+    --business-accent: #c084fc;
+  }
+
+  .mobile-business-item.nav-users-permissions {
+    --business-accent: #38bdf8;
+  }
+
+  .mobile-business-item.nav-audit-history {
+    --business-accent: #94a3b8;
+  }
+
+  .mobile-business-item.nav-backups {
+    --business-accent: #34d399;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 430px) {
+  .mobile-business-toggle {
+    grid-template-columns:
+      40px
+      minmax(0,1fr)
+      20px;
+
+    padding: 10px;
+  }
+
+  .mobile-business-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mobile-business-copy strong {
+    font-size: 12px;
+  }
+
+  .mobile-business-item {
+    grid-template-columns:
+      37px
+      minmax(0,1fr)
+      24px;
+
+    min-height: 45px;
+  }
+
+  .mobile-business-item-icon {
+    width: 37px;
+    height: 37px;
+  }
+
+  .mobile-business-item-label {
+    font-size: 10px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE NAVIGATION — LARGE COLORFUL EXPERIENCE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .mobile-menu-panel {
+    width: min(
+      calc(100vw - 30px),
+      360px
+    );
+
+    padding: 19px;
+
+    border-color:
+      rgba(217,184,108,.22);
+
+    box-shadow:
+      0 30px 90px rgba(0,0,0,.58),
+      0 0 35px rgba(217,184,108,.08),
+      inset 0 1px 0 rgba(255,255,255,.07);
+  }
+
+  .mobile-menu-header {
+    padding-bottom: 18px;
+  }
+
+  .mobile-menu-eyebrow {
+    font-size: 10px;
+  }
+
+  .mobile-menu-header strong {
+    font-size: 20px;
+  }
+
+  .mobile-menu-list {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  /* Larger main navigation */
+
+  .mobile-menu-item {
+    min-height: 59px;
+
+    grid-template-columns:
+      46px
+      minmax(0,1fr)
+      22px;
+
+    gap: 12px;
+
+    padding: 7px 11px 7px 7px;
+
+    color: var(--mobile-accent);
+  }
+
+  .mobile-menu-item:hover {
+    color: var(--mobile-accent);
+  }
+
+  .mobile-menu-icon {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 13px;
+
+    color: var(--mobile-accent);
+
+    background:
+      color-mix(
+        in srgb,
+        var(--mobile-accent) 9%,
+        transparent
+      );
+
+    font-size: 20px;
+
+    box-shadow:
+      inset 0 0 12px
+      color-mix(
+        in srgb,
+        var(--mobile-accent) 5%,
+        transparent
+      );
+  }
+
+  .mobile-menu-label {
+    font-size: 15px;
+    font-weight: 750;
+  }
+
+  .mobile-menu-arrow {
+    color: var(--mobile-accent);
+    font-size: 17px;
+  }
+
+  /* Main navigation colors */
+
+  .mobile-menu-item.nav-dashboard {
+    --mobile-accent: #818cf8;
+  }
+
+  .mobile-menu-item.nav-sales {
+    --mobile-accent: #4ade80;
+  }
+
+  .mobile-menu-item.nav-record {
+    --mobile-accent: #d9b86c;
+  }
+
+  .mobile-menu-item.nav-expenses {
+    --mobile-accent: #f87171;
+  }
+
+  .mobile-menu-item.nav-products {
+    --mobile-accent: #60a5fa;
+  }
+
+  .mobile-menu-item.nav-reports {
+    --mobile-accent: #a78bfa;
+  }
+
+  .mobile-menu-item.nav-finance {
+    --mobile-accent: #22d3ee;
+  }
+
+  .mobile-menu-item.nav-settings {
+    --mobile-accent: #d9b86c;
+  }
+
+  .mobile-menu-item.nav-expenses {
+    color: #f87171;
+  }
+
+  /* =======================================================
+     PREMIUM BUSINESS PLAN
+  ======================================================= */
+
+  .mobile-business-section {
+    position: relative;
+
+    margin-top: 21px;
+
+    border:
+      1px solid
+      rgba(217,184,108,.38);
+
+    border-radius: 21px;
+
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(255,215,100,.18),
+        transparent 50%
+      ),
+      linear-gradient(
+        145deg,
+        rgba(217,184,108,.12),
+        rgba(82,60,17,.055),
+        rgba(255,255,255,.018)
+      );
+
+    box-shadow:
+      0 0 32px rgba(217,184,108,.14),
+      0 18px 50px rgba(0,0,0,.28),
+      inset 0 1px 0 rgba(255,235,170,.14);
+
+    overflow: hidden;
+  }
+
+  /* Moving gold ambient light */
+
+  .mobile-business-section::before {
+    content: "";
+
+    position: absolute;
+
+    top: -50%;
+    left: -50%;
+
+    width: 35%;
+    height: 190%;
+
+    pointer-events: none;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,236,166,.18),
+        rgba(255,255,255,.10),
+        transparent
+      );
+
+    transform: rotate(18deg);
+
+    animation:
+      mobileBusinessGoldSweep
+      5.5s ease-in-out
+      infinite;
+  }
+
+  .mobile-business-toggle,
+  .mobile-business-panel {
+    position: relative;
+    z-index: 1;
+  }
+
+  .mobile-business-toggle {
+    min-height: 73px;
+
+    padding: 13px;
+
+    background:
+      radial-gradient(
+        circle at 15% 50%,
+        rgba(255,215,100,.14),
+        transparent 45%
+      );
+  }
+
+  .mobile-business-toggle:hover,
+  .mobile-business-toggle.has-active {
+    background:
+      radial-gradient(
+        circle at 15% 50%,
+        rgba(255,215,100,.20),
+        transparent 50%
+      ),
+      rgba(217,184,108,.08);
+  }
+
+  .mobile-business-icon {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 14px;
+
+    color: #ffe08a;
+
+    background:
+      radial-gradient(
+        circle,
+        rgba(255,224,138,.28),
+        rgba(217,184,108,.08)
+      );
+
+    border:
+      1px solid
+      rgba(255,224,138,.25);
+
+    font-size: 19px;
+
+    box-shadow:
+      0 0 15px rgba(255,215,100,.20),
+      0 0 30px rgba(217,184,108,.10);
+
+    animation:
+      mobileBusinessGoldPulse
+      2.8s ease-in-out
+      infinite;
+  }
+
+  .mobile-business-copy strong {
+    color: #ffe08a;
+
+    font-size: 15px;
+    font-weight: 900;
+
+    text-shadow:
+      0 0 12px rgba(255,215,100,.25);
+  }
+
+  .mobile-business-copy small {
+    color: #b8a66f;
+    font-size: 10px;
+  }
+
+  .mobile-business-arrow {
+    color: #ffe08a;
+    font-size: 25px;
+
+    text-shadow:
+      0 0 12px rgba(255,215,100,.35);
+  }
+
+  /* =======================================================
+     BUSINESS DROPDOWN
+  ======================================================= */
+
+  .mobile-business-panel {
+    grid-template-rows: 0fr;
+
+    opacity: .15;
+
+    transform:
+      translateY(-8px)
+      scaleY(.94);
+
+    transform-origin: top;
+
+    transition:
+      grid-template-rows .48s cubic-bezier(.16,1,.3,1),
+      opacity .35s ease,
+      transform .48s cubic-bezier(.16,1,.3,1);
+  }
+
+  .mobile-business-panel.open {
+    grid-template-rows: 1fr;
+
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scaleY(1);
+  }
+
+  .mobile-business-list {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .mobile-business-panel.open
+  .mobile-business-item {
+    animation:
+      mobileBusinessItemDrop
+      .42s
+      cubic-bezier(.16,1,.3,1)
+      both;
+  }
+
+  .mobile-business-item {
+    min-height: 51px;
+
+    grid-template-columns:
+      42px
+      minmax(0,1fr)
+      27px;
+
+    gap: 10px;
+
+    padding: 6px 9px;
+
+    font-size: 13px;
+  }
+
+  .mobile-business-item-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    font-size: 17px;
+
+    box-shadow:
+      inset 0 0 12px
+      color-mix(
+        in srgb,
+        var(--business-accent) 5%,
+        transparent
+      );
+  }
+
+  .mobile-business-item-label {
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  .mobile-business-item-arrow {
+    font-size: 16px;
+  }
+
+  /* =======================================================
+     BUSINESS COLORS
+  ======================================================= */
+
+  .mobile-business-item.nav-business-insights {
+    --business-accent: #f5c85c;
+  }
+
+  .mobile-business-item.nav-advanced-reports {
+    --business-accent: #c29cff;
+  }
+
+  .mobile-business-item.nav-advanced-inventory {
+    --business-accent: #60b5ff;
+  }
+
+  .mobile-business-item.nav-sales-expense-trends {
+    --business-accent: #4fe98a;
+  }
+
+  .mobile-business-item.nav-customers {
+    --business-accent: #ff9eb0;
+  }
+
+  .mobile-business-item.nav-invoices {
+    --business-accent: #67e8f9;
+  }
+
+  .mobile-business-item.nav-business-targets {
+    --business-accent: #ffd447;
+  }
+
+  .mobile-business-item.nav-credit-debt {
+    --business-accent: #ff667e;
+  }
+
+  .mobile-business-item.nav-suppliers {
+    --business-accent: #ff9a3d;
+  }
+
+  .mobile-business-item.nav-exports {
+    --business-accent: #b4ed45;
+  }
+
+  .mobile-business-item.nav-branches {
+    --business-accent: #ca91ff;
+  }
+
+  .mobile-business-item.nav-users-permissions {
+    --business-accent: #45c9ff;
+  }
+
+  .mobile-business-item.nav-audit-history {
+    --business-accent: #a9b5c8;
+  }
+
+  .mobile-business-item.nav-backups {
+    --business-accent: #43e0a0;
+  }
+
+  @keyframes mobileBusinessGoldSweep {
+    0%, 42% {
+      left: -55%;
+      opacity: 0;
+    }
+
+    52% {
+      opacity: 1;
+    }
+
+    72% {
+      left: 115%;
+      opacity: .7;
+    }
+
+    100% {
+      left: 125%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes mobileBusinessGoldPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 12px rgba(255,215,100,.15),
+        0 0 28px rgba(217,184,108,.07);
+    }
+
+    50% {
+      box-shadow:
+        0 0 20px rgba(255,215,100,.32),
+        0 0 42px rgba(217,184,108,.16);
+    }
+  }
+
+  @keyframes mobileBusinessItemDrop {
+    from {
+      opacity: 0;
+      transform:
+        translateY(-8px)
+        scale(.97);
+    }
+
+    to {
+      opacity: 1;
+      transform:
+        translateY(0)
+        scale(1);
+    }
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 430px) {
+
+  .mobile-menu-panel {
+    width: min(
+      calc(100vw - 24px),
+      350px
+    );
+
+    padding: 17px;
+  }
+
+  .mobile-menu-item {
+    min-height: 56px;
+
+    grid-template-columns:
+      43px
+      minmax(0,1fr)
+      21px;
+  }
+
+  .mobile-menu-icon {
+    width: 43px;
+    height: 43px;
+  }
+
+  .mobile-menu-label {
+    font-size: 14px;
+  }
+
+  .mobile-business-toggle {
+    min-height: 69px;
+  }
+
+  .mobile-business-icon {
+    width: 43px;
+    height: 43px;
+  }
+
+  .mobile-business-copy strong {
+    font-size: 14px;
+  }
+
+  .mobile-business-item {
+    min-height: 48px;
+
+    grid-template-columns:
+      39px
+      minmax(0,1fr)
+      24px;
+  }
+
+  .mobile-business-item-icon {
+    width: 39px;
+    height: 39px;
+  }
+
+  .mobile-business-item-label {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-business-section::before,
+  .mobile-business-icon,
+  .mobile-business-panel.open
+  .mobile-business-item {
+    animation: none !important;
+  }
+}

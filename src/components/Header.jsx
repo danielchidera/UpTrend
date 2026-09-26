@@ -2,6 +2,7 @@ import "./Header.css";
 
 import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import SmartAlerts from "./SmartAlerts";
 
 function Header({
   activePage,
@@ -18,6 +19,9 @@ function Header({
   } = useTheme();
 
   const [themeMenuOpen, setThemeMenuOpen] =
+    useState(false);
+
+  const [alertsOpen, setAlertsOpen] =
     useState(false);
 
   const pageTitles = {
@@ -222,16 +226,35 @@ function Header({
           )}
         </div>
 
-        <button
-          className="header-icon notification"
-          aria-label="Notifications"
-        >
-          <span className="notification-icon">
-            ♢
-          </span>
+        <div className="notification-control">
 
-          <i />
-        </button>
+          <button
+            className={`header-icon notification ${
+              alertsOpen
+                ? "active"
+                : ""
+            }`}
+            type="button"
+            aria-label="Notifications"
+            aria-expanded={alertsOpen}
+            onClick={() =>
+              setAlertsOpen(
+                (open) => !open
+              )
+            }
+          >
+            <span className="notification-icon">
+              ♢
+            </span>
+
+            <i />
+          </button>
+
+          {alertsOpen && (
+            <SmartAlerts />
+          )}
+
+        </div>
 
         <button
           className="primary-action header-record-button"

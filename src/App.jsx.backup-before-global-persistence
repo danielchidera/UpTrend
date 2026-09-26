@@ -1,0 +1,1011 @@
+import { useEffect, useState } from "react";
+import "./App.css";
+
+import { supabase } from "./lib/supabase";
+import { ThemeProvider } from "./context/ThemeContext";
+
+import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
+import Dashboard from "./components/Dashboard";
+import RecordSale from "./components/RecordSale";
+import Expenses from "./components/Expenses";
+import Products from "./components/Products";
+import Sales from "./components/Sales";
+import Reports from "./components/Reports";
+import Finance from "./components/Finance";
+import Customers from "./Business/Customers";
+import Invoices from "./Business/Invoices";
+import PublicHome from "./components/PublicHome";
+import Settings from "./components/Settings";
+import SignUp from "./components/SignUp";
+import SignIn from "./components/SignIn";
+import MobileMenu from "./components/MobileMenu";
+import ResponsivePreview from "./components/ResponsivePreview";
+import PublicInvoice from "./Business/PublicInvoice";
+import AdvancedInventory from "./Business/AdvancedInventory";
+import SalesExpenseTrends from "./Business/SalesExpenseTrends";
+import BusinessTargets from "./Business/BusinessTargets";
+import CreditDebt from "./Business/CreditDebt";
+import Suppliers from "./Business/Suppliers";
+
+function AppContent() {
+  /* =========================================================
+     SUPABASE AUTH STATE
+  ========================================================= */
+
+  const [authLoading, setAuthLoading] = useState(true);
+  const [supabaseUser, setSupabaseUser] = useState(null);
+
+  /* =========================================================
+     UPTREND SUBSCRIPTION STATE
+
+     Every authenticated user has a subscription record.
+
+     Current plans:
+       - free
+       - business
+
+     Current statuses:
+       - active
+       - trialing
+       - expired
+       - cancelled
+  ========================================================= */
+
+  const [subscriptionLoading, setSubscriptionLoading] =
+    useState(false);
+
+  const [subscription, setSubscription] = useState(null);
+
+  /* =========================================================
+     PUBLIC / AUTH STATE
+  ========================================================= */
+
+  const [publicPage, setPublicPage] = useState("home");
+  const [showPublicHome, setShowPublicHome] = useState(true);
+
+  /* =========================================================
+     ACTIVE APP PAGE
+  ========================================================= */
+
+  const [activePage, setActivePage] = useState("dashboard");
+
+  /* =========================================================
+     INVOICE NAVIGATION FILTER
+
+     Used when opening invoices directly from a customer.
+     Example:
+       customer + paid
+       customer + overdue
+       customer + outstanding
+  ========================================================= */
+
+  const [invoiceFilter, setInvoiceFilter] = useState({
+    customerId: null,
+    status: null,
+  });
+
+  const [newInvoiceCustomerId, setNewInvoiceCustomerId] =
+    useState(null);
+
+  const [customerToOpenId, setCustomerToOpenId] =
+    useState(null);
+
+  const [supplierToOpenId, setSupplierToOpenId] =
+    useState(null);
+
+  /* =========================================================
+     NAVIGATION STATES
+
+     IMPORTANT:
+     sidebarOpen and mobileMenuOpen are SEPARATE.
+
+     The mobile floating menu must NEVER open the
+     desktop/sidebar drawer.
+  ========================================================= */
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [editingSale, setEditingSale] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(
+        "uptrend_editing_sale"
+      );
+
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  /* =========================================================
+     LOAD CURRENT USER SUBSCRIPTION
+
+     This reads only the signed-in user's subscription.
+
+     RLS on uptrend_subscriptions protects the table.
+  ========================================================= */
+
+  const loadSubscription = async (user) => {
+    if (!user?.id) {
+      setSubscription(null);
+      setSubscriptionLoading(false);
+      return;
+    }
+
+    setSubscriptionLoading(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("uptrend_subscriptions")
+        .select(
+          `
+            id,
+            user_id,
+            plan,
+            status,
+            started_at,
+            trial_started_at,
+            trial_ends_at,
+            expires_at,
+            created_at,
+            updated_at
+          `
+        )
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error(
+          "Failed to load UpTrend subscription:",
+          error
+        );
+
+        /*
+         * If the subscription cannot be read, do not
+         * accidentally grant Business access.
+         */
+        setSubscription(null);
+        return;
+      }
+
+      if (!data) {
+        console.warn(
+          "No UpTrend subscription found for user:",
+          user.id
+        );
+
+        setSubscription(null);
+        return;
+      }
+
+      setSubscription(data);
+    } catch (error) {
+      console.error(
+        "Unexpected subscription loading error:",
+        error
+      );
+
+      setSubscription(null);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
+  /* =========================================================
+     LOAD REAL SUPABASE SESSION
+  ========================================================= */
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadSession = async () => {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        if (error) {
+          console.error(
+            "Supabase session error:",
+            error
+          );
+        }
+
+        if (!mounted) return;
+
+        const user = session?.user ?? null;
+
+        setSupabaseUser(user);
+
+        if (user) {
+          setShowPublicHome(false);
+          setPublicPage("dashboard");
+          setActivePage("dashboard");
+
+          await loadSubscription(user);
+        } else {
+          setSubscription(null);
+          setSubscriptionLoading(false);
+
+          setShowPublicHome(true);
+          setPublicPage("home");
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load Supabase session:",
+          error
+        );
+
+        if (!mounted) return;
+
+        setSupabaseUser(null);
+        setSubscription(null);
+        setSubscriptionLoading(false);
+
+        setShowPublicHome(true);
+        setPublicPage("home");
+      } finally {
+        if (mounted) {
+          setAuthLoading(false);
+        }
+      }
+    };
+
+    loadSession();
+
+    const {
+      data: { subscription: authSubscription },
+    } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!mounted) return;
+
+        const user = session?.user ?? null;
+
+        setSupabaseUser(user);
+
+        if (user) {
+          setShowPublicHome(false);
+          setPublicPage("dashboard");
+          setActivePage("dashboard");
+
+          /*
+           * Delay the subscription query slightly so that
+           * Supabase auth state processing completes first.
+           */
+          setTimeout(() => {
+            if (mounted) {
+              loadSubscription(user);
+            }
+          }, 0);
+        } else {
+          setSubscription(null);
+          setSubscriptionLoading(false);
+
+          /*
+           * No Supabase session = public Home.
+           */
+
+          setShowPublicHome(true);
+          setPublicPage("home");
+          setActivePage("dashboard");
+
+          setSidebarOpen(false);
+          setMobileMenuOpen(false);
+        }
+      }
+    );
+
+    return () => {
+      mounted = false;
+      authSubscription.unsubscribe();
+    };
+  }, []);
+
+  /* =========================================================
+     PUBLIC PAGE PERSISTENCE
+  ========================================================= */
+
+  useEffect(() => {
+    if (!supabaseUser) return;
+
+    try {
+      sessionStorage.setItem(
+        "uptrend_public_page",
+        publicPage
+      );
+    } catch {}
+  }, [publicPage, supabaseUser]);
+
+  /* =========================================================
+     OPEN DASHBOARD
+
+     Only an existing Supabase session can open
+     the dashboard.
+  ========================================================= */
+
+  const openDashboard = async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.user) {
+        setShowPublicHome(true);
+        setPublicPage("signin");
+
+        try {
+          sessionStorage.setItem(
+            "uptrend_public_home",
+            "true"
+          );
+
+          sessionStorage.setItem(
+            "uptrend_public_page",
+            "signin"
+          );
+        } catch {}
+
+        return;
+      }
+
+      setSupabaseUser(session.user);
+      setShowPublicHome(false);
+      setPublicPage("dashboard");
+      setActivePage("dashboard");
+
+      setSidebarOpen(false);
+      setMobileMenuOpen(false);
+
+      await loadSubscription(session.user);
+    } catch (error) {
+      console.error(
+        "Unable to verify dashboard access:",
+        error
+      );
+
+      setShowPublicHome(true);
+      setPublicPage("signin");
+    }
+  };
+
+  /* =========================================================
+     OPEN SIGN UP
+  ========================================================= */
+
+  const openSignUp = () => {
+    setShowPublicHome(true);
+    setPublicPage("signup");
+
+    try {
+      sessionStorage.setItem(
+        "uptrend_public_home",
+        "true"
+      );
+
+      sessionStorage.setItem(
+        "uptrend_public_page",
+        "signup"
+      );
+    } catch {}
+  };
+
+  /* =========================================================
+     OPEN SIGN IN
+  ========================================================= */
+
+  const openSignIn = () => {
+    setShowPublicHome(true);
+    setPublicPage("signin");
+
+    try {
+      sessionStorage.setItem(
+        "uptrend_public_home",
+        "true"
+      );
+
+      sessionStorage.setItem(
+        "uptrend_public_page",
+        "signin"
+      );
+    } catch {}
+  };
+
+  /* =========================================================
+     BACK TO HOME
+  ========================================================= */
+
+  const backToPublicHome = () => {
+    setShowPublicHome(true);
+    setPublicPage("home");
+
+    try {
+      sessionStorage.setItem(
+        "uptrend_public_home",
+        "true"
+      );
+
+      sessionStorage.setItem(
+        "uptrend_public_page",
+        "home"
+      );
+    } catch {}
+  };
+
+  /* =========================================================
+     REGISTRATION COMPLETE
+  ========================================================= */
+
+  const handleRegistered = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.user) {
+      setShowPublicHome(true);
+      setPublicPage("signin");
+      return;
+    }
+
+    setSupabaseUser(session.user);
+    setShowPublicHome(false);
+    setPublicPage("dashboard");
+    setActivePage("dashboard");
+
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+
+    await loadSubscription(session.user);
+  };
+
+  /* =========================================================
+     SIGN IN COMPLETE
+  ========================================================= */
+
+  const handleSignedIn = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.user) {
+      console.error(
+        "Sign in completed without an active Supabase session."
+      );
+
+      setShowPublicHome(true);
+      setPublicPage("signin");
+      return;
+    }
+
+    setSupabaseUser(session.user);
+    setShowPublicHome(false);
+    setPublicPage("dashboard");
+    setActivePage("dashboard");
+
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+
+    await loadSubscription(session.user);
+  };
+
+  /* =========================================================
+     LOGOUT
+  ========================================================= */
+
+  const handleLogout = async () => {
+    try {
+      const { error } =
+        await supabase.auth.signOut();
+
+      if (error) {
+        console.error(
+          "Supabase logout error:",
+          error
+        );
+        return;
+      }
+
+      sessionStorage.removeItem(
+        "uptrend_authenticated"
+      );
+
+      sessionStorage.setItem(
+        "uptrend_public_home",
+        "true"
+      );
+
+      sessionStorage.setItem(
+        "uptrend_public_page",
+        "home"
+      );
+
+      setSupabaseUser(null);
+      setSubscription(null);
+      setSubscriptionLoading(false);
+
+      setShowPublicHome(true);
+      setPublicPage("home");
+      setActivePage("dashboard");
+
+      setSidebarOpen(false);
+      setMobileMenuOpen(false);
+    } catch (error) {
+      console.error(
+        "Logout failed:",
+        error
+      );
+    }
+  };
+
+  /* =========================================================
+     APP NAVIGATION
+  ========================================================= */
+
+  const handleRecordSale = () => {
+    setEditingSale(null);
+
+    try {
+      sessionStorage.removeItem(
+        "uptrend_editing_sale"
+      );
+    } catch {}
+
+    setActivePage("record");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const handleRecordExpense = () => {
+    setActivePage("expenses");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const handleAddProduct = () => {
+    setActivePage("products");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const handleEditSale = (sale) => {
+    setEditingSale(sale);
+
+    try {
+      sessionStorage.setItem(
+        "uptrend_editing_sale",
+        JSON.stringify(sale)
+      );
+    } catch {}
+
+    setActivePage("record");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const goToDashboard = () => {
+    setEditingSale(null);
+
+    try {
+      sessionStorage.removeItem(
+        "uptrend_editing_sale"
+      );
+    } catch {}
+
+    setActivePage("dashboard");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const goToReports = () => {
+    setActivePage("reports");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  /* =========================================================
+     OPEN CUSTOMER INVOICES
+
+     Customers can open the invoice page with an optional
+     customer and status filter.
+  ========================================================= */
+
+  const openCustomerInvoices = ({
+    customerId,
+    status = null,
+  }) => {
+    setInvoiceFilter({
+      customerId: customerId || null,
+      status: status || null,
+    });
+
+    setActivePage("invoices");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const clearInvoiceFilter = () => {
+    setInvoiceFilter({
+      customerId: null,
+      status: null,
+    });
+  };
+
+  const openNewCustomerInvoice = (customerId) => {
+    if (!customerId) {
+      return;
+    }
+
+    setInvoiceFilter({
+      customerId: null,
+      status: null,
+    });
+
+    setNewInvoiceCustomerId(customerId);
+    setActivePage("invoices");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const clearNewInvoiceCustomer = () => {
+    setNewInvoiceCustomerId(null);
+  };
+
+  const openCustomerProfile = (customerId) => {
+    if (!customerId) {
+      return;
+    }
+
+    setInvoiceFilter({
+      customerId: null,
+      status: null,
+    });
+
+    setNewInvoiceCustomerId(null);
+    setCustomerToOpenId(customerId);
+    setActivePage("customers");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const clearCustomerToOpen = () => {
+    setCustomerToOpenId(null);
+  };
+
+  const openSupplierProfile = (supplierId) => {
+    if (!supplierId) {
+      return;
+    }
+
+    setSupplierToOpenId(supplierId);
+    setActivePage("suppliers");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const clearSupplierToOpen = () => {
+    setSupplierToOpenId(null);
+  };
+
+  const handleSetActivePage = (page) => {
+    /*
+     * Direct navigation to another page clears any
+     * customer invoice filter.
+     *
+     * When opening invoices through openCustomerInvoices(),
+     * the filter is already established before the page opens.
+     */
+    if (page !== "invoices") {
+      clearInvoiceFilter();
+    }
+
+    setActivePage(page);
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  /* =========================================================
+     PUBLIC INVOICE VIEWER
+
+     This route is intentionally checked before the
+     authentication gate so customers can open a shared
+     invoice without having an UpTrend account.
+  ========================================================= */
+
+  if (
+    window.location.pathname.startsWith("/invoice/")
+  ) {
+    return <PublicInvoice />;
+  }
+
+  /* =========================================================
+     RESPONSIVE DEVELOPMENT PREVIEW
+
+     This route intentionally loads before authentication so
+     the developer can inspect the real UpTrend application
+     inside an exact viewport-size iframe.
+  ========================================================= */
+
+  if (window.location.pathname === "/_responsive") {
+    return <ResponsivePreview />;
+  }
+
+  /* =========================================================
+     AUTH LOADING
+  ========================================================= */
+
+  if (authLoading) {
+    return (
+      <div className="command-app">
+        <main className="command-main">
+          <section className="command-content">
+            <div
+              style={{
+                minHeight: "100vh",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--muted)",
+                fontSize: "13px",
+              }}
+            >
+              Loading UpTrend...
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  /* =========================================================
+     HARD AUTH GATE
+  ========================================================= */
+
+  if (!supabaseUser) {
+    if (publicPage === "signup") {
+      return (
+        <SignUp
+          onBackHome={backToPublicHome}
+          onRegistered={handleRegistered}
+          onSignIn={openSignIn}
+        />
+      );
+    }
+
+    if (publicPage === "signin") {
+      return (
+        <SignIn
+          onBackHome={backToPublicHome}
+          onSignUp={openSignUp}
+          onSignedIn={handleSignedIn}
+        />
+      );
+    }
+
+    return (
+      <PublicHome
+        onOpenDashboard={openDashboard}
+        onOpenSignUp={openSignUp}
+        onOpenSignIn={openSignIn}
+      />
+    );
+  }
+
+  /* =========================================================
+     SUBSCRIPTION LOADING
+  ========================================================= */
+
+  if (subscriptionLoading) {
+    return (
+      <div className="command-app">
+        <main className="command-main">
+          <section className="command-content">
+            <div
+              style={{
+                minHeight: "100vh",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--muted)",
+                fontSize: "13px",
+              }}
+            >
+              Loading your UpTrend plan...
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  /* =========================================================
+     RENDER AUTHENTICATED APP PAGE
+  ========================================================= */
+
+  const renderPage = () => {
+    switch (activePage) {
+      case "dashboard":
+        return (
+          <Dashboard
+            onRecordSale={handleRecordSale}
+            onRecordExpense={handleRecordExpense}
+            onAddProduct={handleAddProduct}
+            onViewReports={goToReports}
+            subscription={subscription}
+          />
+        );
+
+      case "sales":
+        return (
+          <Sales
+            onEditSale={handleEditSale}
+          />
+        );
+
+      case "record":
+        return (
+          <RecordSale
+            onBack={goToDashboard}
+            editingSale={editingSale}
+            subscription={subscription}
+          />
+        );
+
+      case "expenses":
+        return <Expenses />;
+
+      case "products":
+        return (
+          <Products
+            onOpenSupplier={openSupplierProfile}
+          />
+        );
+
+      case "advanced-inventory":
+        return (
+          <AdvancedInventory
+            subscription={subscription}
+          />
+        );
+
+      case "sales-expense-trends":
+        return (
+          <SalesExpenseTrends
+            subscription={subscription}
+          />
+        );
+
+      case "business-targets":
+        return (
+          <BusinessTargets
+            subscription={subscription}
+          />
+        );
+
+      case "credit-debt":
+        return (
+          <CreditDebt
+            subscription={subscription}
+          />
+        );
+
+      case "suppliers":
+        return (
+          <Suppliers
+            subscription={subscription}
+            supplierToOpenId={supplierToOpenId}
+            onSupplierOpenHandled={clearSupplierToOpen}
+          />
+        );
+
+      case "reports":
+        return (
+          <Reports
+            subscription={subscription}
+          />
+        );
+
+      case "finance":
+        return <Finance />;
+
+      case "customers":
+        return (
+          <Customers
+            subscription={subscription}
+            onOpenInvoices={openCustomerInvoices}
+            onCreateInvoice={openNewCustomerInvoice}
+            customerToOpenId={customerToOpenId}
+            onCustomerOpenHandled={clearCustomerToOpen}
+          />
+        );
+
+      case "invoices":
+        return (
+          <Invoices
+            subscription={subscription}
+            invoiceFilter={invoiceFilter}
+            onClearFilter={clearInvoiceFilter}
+            newInvoiceCustomerId={newInvoiceCustomerId}
+            onNewInvoiceHandled={clearNewInvoiceCustomer}
+            onOpenCustomer={openCustomerProfile}
+          />
+        );
+
+      case "settings":
+        return (
+          <Settings
+            onLogout={handleLogout}
+          />
+        );
+
+      default:
+        return (
+          <Dashboard
+            onRecordSale={handleRecordSale}
+            onRecordExpense={handleRecordExpense}
+            onAddProduct={handleAddProduct}
+            onViewReports={goToReports}
+            subscription={subscription}
+          />
+        );
+    }
+  };
+
+  /* =========================================================
+     AUTHENTICATED APPLICATION
+  ========================================================= */
+
+  return (
+    <div className="command-app">
+
+      {/* DESKTOP / TABLET SIDEBAR
+          This has its OWN state. */}
+      <Sidebar
+        activePage={activePage}
+        setActivePage={handleSetActivePage}
+        isOpen={sidebarOpen}
+        setIsOpen={setSidebarOpen}
+        onLogout={handleLogout}
+      />
+
+      <main className="command-main">
+
+        <Header
+          activePage={activePage}
+          setIsOpen={setSidebarOpen}
+          onRecordSale={handleRecordSale}
+        />
+
+        <section className="command-content">
+          {renderPage()}
+        </section>
+
+      </main>
+
+      {/* MOBILE FLOATING POP-UP
+          This has a completely SEPARATE state.
+
+          Opening this will NOT open Sidebar. */}
+      <MobileMenu
+        activePage={activePage}
+        setActivePage={handleSetActivePage}
+        isOpen={mobileMenuOpen}
+        setIsOpen={setMobileMenuOpen}
+      />
+
+    </div>
+  );
+}
+
+/* =========================================================
+   APP ROOT
+========================================================= */
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
+export default App;

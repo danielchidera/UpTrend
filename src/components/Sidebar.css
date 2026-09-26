@@ -1,11 +1,10 @@
 /* =========================================================
-   SIDEBAR
+   UPTREND DESKTOP SIDEBAR
 ========================================================= */
 
 .command-sidebar {
   position: fixed;
   z-index: 1000;
-
   top: 0;
   left: 0;
 
@@ -16,13 +15,12 @@
   flex-direction: column;
 
   box-sizing: border-box;
-
   padding: 28px 18px;
 
   background:
     color-mix(
       in srgb,
-      var(--panel) 94%,
+      var(--panel) 96%,
       transparent
     );
 
@@ -35,18 +33,32 @@
 
   overflow-x: hidden;
   overflow-y: auto;
-
   overscroll-behavior: contain;
 
+  scrollbar-width: thin;
+  scrollbar-color:
+    rgba(255,255,255,.08)
+    transparent;
+
   transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease,
-    color 0.3s ease,
-    transform 0.28s
-      cubic-bezier(0.2, 0.8, 0.2, 1);
+    background-color .3s ease,
+    border-color .3s ease,
+    color .3s ease,
+    transform .28s cubic-bezier(.2,.8,.2,1);
 }
 
-/* Keep sidebar above everything when opened */
+.command-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.command-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.command-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.08);
+  border-radius: 10px;
+}
 
 .command-sidebar.open {
   z-index: 1001;
@@ -60,7 +72,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-
   flex: 0 0 auto;
 
   padding: 0 8px;
@@ -72,7 +83,6 @@
 
   width: 42px;
   height: 42px;
-
   flex: 0 0 42px;
 
   display: grid;
@@ -88,13 +98,12 @@
     );
 
   color: #061009;
-
   font-size: 20px;
   font-weight: 900;
 
   box-shadow:
     0 10px 30px
-    rgba(74, 222, 128, 0.16);
+    rgba(74,222,128,.16);
 
   animation:
     logoFloat 4s ease-in-out infinite;
@@ -102,14 +111,13 @@
 
 .brand-symbol::after {
   content: "";
-
   position: absolute;
   inset: -5px;
 
   border-radius: 16px;
 
   border: 1px solid
-    rgba(74, 222, 128, 0.12);
+    rgba(74,222,128,.12);
 
   animation:
     logoPulse 3s ease-in-out infinite;
@@ -125,17 +133,14 @@
 
 .brand-copy strong {
   color: var(--text);
-
   font-size: 17px;
-  letter-spacing: -0.3px;
-
+  letter-spacing: -.3px;
   white-space: nowrap;
 }
 
 .brand-copy span {
   color: var(--muted);
   font-size: 11px;
-
   white-space: nowrap;
 }
 
@@ -162,35 +167,24 @@
   background:
     linear-gradient(
       145deg,
-      color-mix(
-        in srgb,
-        var(--text) 2.5%,
-        transparent
-      ),
-      color-mix(
-        in srgb,
-        var(--text) 0.8%,
-        transparent
-      )
+      color-mix(in srgb,var(--text) 2.5%,transparent),
+      color-mix(in srgb,var(--text) .8%,transparent)
     );
 
   transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    background 0.3s ease;
+    transform .25s ease,
+    border-color .25s ease,
+    background .3s ease;
 }
 
 .business-card:hover {
   transform: translateY(-2px);
-
-  border-color:
-    var(--line-strong);
+  border-color: var(--line-strong);
 }
 
 .business-logo {
   width: 34px;
   height: 34px;
-
   flex: 0 0 34px;
 
   display: grid;
@@ -215,7 +209,6 @@
 
 .business-card strong {
   color: var(--text);
-
   font-size: 12px;
 
   white-space: nowrap;
@@ -226,14 +219,12 @@
 .business-card span {
   color: var(--muted);
   font-size: 10px;
-
   white-space: nowrap;
 }
 
 .online-dot {
   width: 8px;
   height: 8px;
-
   flex: 0 0 8px;
 
   border-radius: 50%;
@@ -241,24 +232,21 @@
   background: var(--green);
 
   box-shadow:
-    0 0 0 4px
-      rgba(74, 222, 128, 0.06),
-    0 0 14px
-      rgba(74, 222, 128, 0.7);
+    0 0 0 4px rgba(74,222,128,.06),
+    0 0 14px rgba(74,222,128,.7);
 
   animation:
-    onlinePulse 2.5s
-    ease-in-out infinite;
+    onlinePulse 2.5s ease-in-out infinite;
 }
 
 /* =========================================================
-   NAVIGATION LABEL
+   MAIN LABEL
 ========================================================= */
 
 .side-label {
   flex: 0 0 auto;
 
-  margin: 30px 10px 10px;
+  margin: 26px 10px 10px;
 
   color: var(--muted-2);
 
@@ -268,19 +256,17 @@
 }
 
 /* =========================================================
-   NAVIGATION
+   MAIN NAV
 ========================================================= */
 
 .command-nav {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-
+  gap: 4px;
   flex: 0 0 auto;
 }
 
-.command-nav button,
-.settings-link {
+.command-nav button {
   position: relative;
 
   width: 100%;
@@ -290,7 +276,7 @@
   align-items: center;
   gap: 12px;
 
-  padding: 11px 12px;
+  padding: 10px 12px;
 
   border: 0;
   border-radius: 12px;
@@ -305,13 +291,12 @@
   cursor: pointer;
 
   transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
+    background .2s ease,
+    color .2s ease,
+    transform .2s ease;
 }
 
-.command-nav button:hover,
-.settings-link:hover {
+.command-nav button:hover {
   background:
     color-mix(
       in srgb,
@@ -320,59 +305,51 @@
     );
 
   color: var(--text);
-
   transform: translateX(2px);
 }
 
 .command-nav button.selected {
-  background: var(--green-soft);
-  color: var(--green);
+  background: var(--nav-soft);
+  color: var(--nav-accent);
 }
 
 .command-nav button.selected::before {
   content: "";
 
   position: absolute;
-
   left: 0;
-  top: 8px;
-  bottom: 8px;
+  top: 7px;
+  bottom: 7px;
 
   width: 2px;
-
   border-radius: 4px;
 
-  background: var(--green);
+  background: var(--nav-accent);
 
   box-shadow:
-    0 0 12px
-    rgba(74, 222, 128, 0.5);
+    0 0 12px var(--nav-glow);
 }
 
 .nav-symbol {
   width: 22px;
-
   flex: 0 0 22px;
 
   display: grid;
   place-items: center;
 
-  color: inherit;
+  color: var(--nav-accent, var(--muted));
 
   font-size: 15px;
 }
 
 .nav-label {
   min-width: 0;
-
   color: inherit;
-
   white-space: nowrap;
 }
 
 .nav-alert {
   margin-left: auto;
-
   padding: 3px 6px;
 
   flex: 0 0 auto;
@@ -380,28 +357,422 @@
   border-radius: 5px;
 
   background:
-    rgba(217, 184, 108, 0.12);
+    rgba(217,184,108,.12);
 
   color: var(--gold);
 
   font-size: 7px;
   font-weight: 800;
-  letter-spacing: 0.5px;
-}
-
-.nav-active-glow {
-  pointer-events: none;
+  letter-spacing: .5px;
 }
 
 /* =========================================================
-   SIDEBAR FOOTER
+   MAIN NAV COLORS
+   Colors remain visible even when inactive.
+========================================================= */
+
+.nav-dashboard {
+  --nav-accent: #818cf8;
+  --nav-soft: rgba(129,140,248,.12);
+  --nav-glow: rgba(129,140,248,.45);
+}
+
+.nav-sales {
+  --nav-accent: #4ade80;
+  --nav-soft: rgba(74,222,128,.12);
+  --nav-glow: rgba(74,222,128,.5);
+}
+
+.nav-record {
+  --nav-accent: #d9b86c;
+  --nav-soft: rgba(217,184,108,.13);
+  --nav-glow: rgba(217,184,108,.45);
+}
+
+.nav-expenses {
+  --nav-accent: #f87171;
+  --nav-soft: rgba(248,113,113,.13);
+  --nav-glow: rgba(248,113,113,.48);
+}
+
+.nav-products {
+  --nav-accent: #60a5fa;
+  --nav-soft: rgba(96,165,250,.12);
+  --nav-glow: rgba(96,165,250,.45);
+}
+
+.nav-reports {
+  --nav-accent: #a78bfa;
+  --nav-soft: rgba(167,139,250,.12);
+  --nav-glow: rgba(167,139,250,.45);
+}
+
+.nav-finance {
+  --nav-accent: #22d3ee;
+  --nav-soft: rgba(34,211,238,.11);
+  --nav-glow: rgba(34,211,238,.45);
+}
+
+.nav-settings {
+  --nav-accent: #d9b86c;
+  --nav-soft: rgba(217,184,108,.10);
+  --nav-glow: rgba(217,184,108,.4);
+}
+
+/* Expense is deliberately red from the start. */
+.command-nav button.nav-expenses {
+  color: #f87171;
+}
+
+.command-nav button.nav-expenses:hover {
+  color: #fb8a8a;
+  background: rgba(248,113,113,.07);
+}
+
+/* =========================================================
+   BUSINESS PLAN SECTION
+========================================================= */
+
+.business-navigation {
+  margin-top: 18px;
+  flex: 0 0 auto;
+
+  border: 1px solid
+    rgba(217,184,108,.16);
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(217,184,108,.055),
+      rgba(255,255,255,.018)
+    );
+
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255,255,255,.025);
+}
+
+.business-menu-toggle {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px;
+
+  border: 0;
+  background: transparent;
+  color: var(--text);
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    border-color .2s ease;
+}
+
+.business-menu-toggle:hover {
+  background:
+    rgba(217,184,108,.07);
+}
+
+.business-menu-toggle.has-active {
+  background:
+    rgba(217,184,108,.07);
+}
+
+.business-menu-icon {
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(217,184,108,.22),
+      rgba(217,184,108,.07)
+    );
+
+  color: var(--gold);
+
+  font-size: 13px;
+
+  box-shadow:
+    0 0 18px
+    rgba(217,184,108,.08);
+}
+
+.business-menu-copy {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.business-menu-copy strong {
+  color: var(--gold);
+
+  font-size: 11px;
+  letter-spacing: .3px;
+}
+
+.business-menu-copy small {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.business-menu-arrow {
+  color: var(--gold);
+
+  font-size: 20px;
+  line-height: 1;
+
+  transform: rotate(0deg);
+
+  transition:
+    transform .25s ease;
+}
+
+.business-menu-toggle.open
+.business-menu-arrow {
+  transform: rotate(90deg);
+}
+
+/* =========================================================
+   BUSINESS ITEMS
+========================================================= */
+
+.business-menu-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+
+  transition:
+    grid-template-rows .28s ease;
+}
+
+.business-menu-panel.open {
+  grid-template-rows: 1fr;
+}
+
+.business-menu-inner {
+  min-height: 0;
+  overflow: hidden;
+
+  padding: 0 7px 0;
+
+  transition:
+    padding .28s ease;
+}
+
+.business-menu-panel.open
+.business-menu-inner {
+  padding-bottom: 8px;
+}
+
+.business-nav-item {
+  --business-accent: #d9b86c;
+
+  position: relative;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 8px 8px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: transparent;
+  color: var(--muted);
+
+  font-family: inherit;
+  font-size: 10px;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background .18s ease,
+    color .18s ease,
+    transform .18s ease;
+}
+
+.business-nav-item.available:hover {
+  background:
+    color-mix(
+      in srgb,
+      var(--business-accent) 8%,
+      transparent
+    );
+
+  color: var(--business-accent);
+
+  transform: translateX(2px);
+}
+
+.business-nav-item.selected {
+  background:
+    color-mix(
+      in srgb,
+      var(--business-accent) 12%,
+      transparent
+    );
+
+  color: var(--business-accent);
+}
+
+.business-nav-item.selected::before {
+  content: "";
+
+  position: absolute;
+
+  left: -1px;
+  top: 7px;
+  bottom: 7px;
+
+  width: 2px;
+  border-radius: 4px;
+
+  background: var(--business-accent);
+
+  box-shadow:
+    0 0 9px
+    color-mix(
+      in srgb,
+      var(--business-accent) 50%,
+      transparent
+    );
+}
+
+.business-nav-item.locked {
+  opacity: .45;
+  cursor: default;
+}
+
+.business-nav-symbol {
+  width: 20px;
+  flex: 0 0 20px;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--business-accent);
+
+  font-size: 12px;
+}
+
+.business-nav-label {
+  min-width: 0;
+  flex: 1;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.business-nav-arrow {
+  color: var(--business-accent);
+  font-size: 13px;
+}
+
+.business-nav-lock {
+  margin-left: auto;
+
+  padding: 2px 4px;
+
+  border-radius: 4px;
+
+  background: rgba(255,255,255,.05);
+  color: var(--muted-2);
+
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+
+/* Business-specific colors */
+
+.business-nav-item.nav-business-insights {
+  --business-accent: #f5c85c;
+}
+
+.business-nav-item.nav-advanced-reports {
+  --business-accent: #b58cff;
+}
+
+.business-nav-item.nav-advanced-inventory {
+  --business-accent: #60a5fa;
+}
+
+.business-nav-item.nav-sales-expense-trends {
+  --business-accent: #45e886;
+}
+
+.business-nav-item.nav-customers {
+  --business-accent: #f59e9e;
+}
+
+.business-nav-item.nav-invoices {
+  --business-accent: #67e8f9;
+}
+
+.business-nav-item.nav-business-targets {
+  --business-accent: #facc15;
+}
+
+.business-nav-item.nav-credit-debt {
+  --business-accent: #fb7185;
+}
+
+.business-nav-item.nav-suppliers {
+  --business-accent: #fb923c;
+}
+
+.business-nav-item.nav-exports {
+  --business-accent: #a3e635;
+}
+
+.business-nav-item.nav-branches {
+  --business-accent: #c084fc;
+}
+
+.business-nav-item.nav-users-permissions {
+  --business-accent: #38bdf8;
+}
+
+.business-nav-item.nav-audit-history {
+  --business-accent: #94a3b8;
+}
+
+.business-nav-item.nav-backups {
+  --business-accent: #34d399;
+}
+
+/* =========================================================
+   FOOTER
 ========================================================= */
 
 .sidebar-footer {
   margin-top: auto;
-
   flex: 0 0 auto;
-
   padding-top: 16px;
 }
 
@@ -413,15 +784,11 @@
   padding: 12px;
 
   border-top: 1px solid var(--line);
-
-  transition:
-    border-color 0.3s ease;
 }
 
 .profile-avatar {
   width: 34px;
   height: 34px;
-
   flex: 0 0 34px;
 
   display: grid;
@@ -446,7 +813,6 @@
 
 .profile strong {
   color: var(--text);
-
   font-size: 11px;
 
   white-space: nowrap;
@@ -457,99 +823,16 @@
 .profile span {
   color: var(--muted);
   font-size: 9px;
-
   white-space: nowrap;
 }
 
 .profile-arrow {
   margin-left: auto;
-
   color: var(--muted);
-
-  flex: 0 0 auto;
 }
 
 /* =========================================================
-   LOGOUT
-========================================================= */
-
-.sidebar-logout {
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  margin-top: 5px;
-
-  padding: 11px 12px;
-
-  border: 0;
-  border-radius: 12px;
-
-  background: transparent;
-  color: var(--muted);
-
-  font-family: inherit;
-  font-size: 12px;
-  text-align: left;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.sidebar-logout:hover {
-  background:
-    color-mix(
-      in srgb,
-      var(--red) 8%,
-      transparent
-    );
-
-  color: var(--red);
-
-  transform: translateX(2px);
-}
-
-.sidebar-logout .nav-symbol {
-  color: inherit;
-}
-
-/* =========================================================
-   SETTINGS ACTIVE STATE
-========================================================= */
-
-.settings-link.selected {
-  background: var(--green-soft);
-  color: var(--green);
-}
-
-.settings-link.selected::before {
-  content: "";
-
-  position: absolute;
-
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-
-  width: 2px;
-
-  border-radius: 4px;
-
-  background: var(--green);
-
-  box-shadow:
-    0 0 12px
-    rgba(74, 222, 128, 0.5);
-}
-
-/* =========================================================
-   DESKTOP / TABLET
+   MOBILE DRAWER
 ========================================================= */
 
 @media (max-width: 1100px) {
@@ -558,19 +841,8 @@
   }
 }
 
-/* =========================================================
-   MOBILE DRAWER
-========================================================= */
-
 @media (max-width: 760px) {
-
   .command-sidebar {
-    /*
-      Do not use a fixed 280px drawer on small phones.
-      It should occupy most of the available screen,
-      while still leaving a little visual space.
-    */
-
     width: min(86vw, 320px);
     max-width: 320px;
 
@@ -590,11 +862,11 @@
 
     box-shadow:
       20px 0 60px
-      rgba(0, 0, 0, 0.28);
+      rgba(0,0,0,.28);
   }
 
   .command-sidebar.open {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0,0,0);
   }
 
   .sidebar-brand {
@@ -618,6 +890,10 @@
     padding: 10px 11px;
   }
 
+  .business-navigation {
+    margin-top: 14px;
+  }
+
   .sidebar-footer {
     margin-top: auto;
     padding-top: 12px;
@@ -635,7 +911,6 @@
 
     width: 34px;
     height: 34px;
-
     flex: 0 0 34px;
 
     border: 1px solid var(--line);
@@ -656,13 +931,8 @@
     border-color: var(--line-strong);
   }
 
-  /* =======================================================
-     BACKDROP
-  ======================================================= */
-
   .mobile-backdrop {
     position: fixed;
-
     inset: 0;
 
     z-index: 1000;
@@ -670,24 +940,17 @@
     width: 100vw;
     height: 100dvh;
 
-    background:
-      rgba(0, 0, 0, 0.62);
+    background: rgba(0,0,0,.62);
 
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
 
     animation:
-      backdropReveal
-      0.25s ease both;
+      backdropReveal .25s ease both;
   }
 }
 
-/* =========================================================
-   VERY SMALL PHONES
-========================================================= */
-
 @media (max-width: 380px) {
-
   .command-sidebar {
     width: 88vw;
     max-width: 300px;
@@ -725,7 +988,7 @@
   }
 
   .command-nav button,
-  .sidebar-logout {
+  .business-nav-item {
     font-size: 11px;
   }
 
@@ -740,10 +1003,12 @@
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-
   .command-sidebar,
   .command-nav button,
-  .sidebar-logout,
+  .business-nav-item,
+  .business-menu-panel,
+  .business-menu-inner,
+  .business-menu-arrow,
   .business-card {
     transition: none;
   }
@@ -751,4 +1016,1179 @@
   .mobile-backdrop {
     animation: none;
   }
+}
+
+
+/* =========================================================
+   PREMIUM NAVIGATION VISUAL UPGRADE
+========================================================= */
+
+.command-nav button {
+  min-height: 46px;
+  padding: 10px 12px;
+  gap: 13px;
+  color: var(--nav-accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.command-nav button:hover {
+  color: var(--nav-accent);
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--nav-accent) 10%, transparent),
+      color-mix(in srgb, var(--nav-accent) 3%, transparent)
+    );
+}
+
+.nav-symbol {
+  width: 25px;
+  flex-basis: 25px;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.nav-label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nav-alert {
+  font-size: 8px;
+}
+
+/* Persistent main-menu colors */
+
+.command-nav button.nav-dashboard {
+  color: #818cf8;
+}
+
+.command-nav button.nav-sales {
+  color: #4ade80;
+}
+
+.command-nav button.nav-record {
+  color: #d9b86c;
+}
+
+.command-nav button.nav-expenses {
+  color: #f87171;
+}
+
+.command-nav button.nav-products {
+  color: #60a5fa;
+}
+
+.command-nav button.nav-reports {
+  color: #a78bfa;
+}
+
+.command-nav button.nav-finance {
+  color: #22d3ee;
+}
+
+.command-nav button.nav-settings {
+  color: #d9b86c;
+}
+
+.command-nav button.selected {
+  font-weight: 800;
+}
+
+.command-nav button.selected .nav-symbol {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 7px var(--nav-glow));
+}
+
+/* =========================================================
+   BUSINESS PLAN — PREMIUM GOLD
+========================================================= */
+
+.business-navigation {
+  position: relative;
+  margin-top: 20px;
+
+  border: 1px solid rgba(217,184,108,.36);
+  border-radius: 18px;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(255,215,100,.16),
+      transparent 48%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(217,184,108,.12),
+      rgba(95,70,20,.055) 48%,
+      rgba(255,255,255,.018)
+    );
+
+  box-shadow:
+    0 0 0 1px rgba(217,184,108,.04),
+    0 0 28px rgba(217,184,108,.13),
+    0 10px 38px rgba(0,0,0,.20),
+    inset 0 1px 0 rgba(255,235,170,.13);
+
+  overflow: hidden;
+}
+
+.business-navigation::before {
+  content: "";
+
+  position: absolute;
+  z-index: 0;
+
+  top: -40%;
+  left: -45%;
+
+  width: 35%;
+  height: 180%;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,236,166,.20),
+      rgba(255,255,255,.12),
+      transparent
+    );
+
+  transform: rotate(18deg);
+
+  animation:
+    businessGoldSweep
+    5.5s ease-in-out
+    infinite;
+}
+
+.business-navigation > * {
+  position: relative;
+  z-index: 1;
+}
+
+.business-menu-toggle {
+  min-height: 68px;
+  padding: 13px;
+  gap: 12px;
+
+  background:
+    radial-gradient(
+      circle at 18% 50%,
+      rgba(255,215,100,.13),
+      transparent 42%
+    );
+
+  transition:
+    background .3s ease,
+    box-shadow .3s ease,
+    transform .25s ease;
+}
+
+.business-menu-toggle:hover,
+.business-menu-toggle.has-active {
+  background:
+    radial-gradient(
+      circle at 18% 50%,
+      rgba(255,215,100,.20),
+      transparent 48%
+    ),
+    rgba(217,184,108,.08);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,235,170,.10);
+}
+
+.business-menu-icon {
+  width: 40px;
+  height: 40px;
+  flex-basis: 40px;
+
+  border-radius: 12px;
+
+  color: #ffe08a;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,224,138,.26),
+      rgba(217,184,108,.08)
+    );
+
+  font-size: 17px;
+
+  border: 1px solid rgba(255,224,138,.22);
+
+  box-shadow:
+    0 0 12px rgba(255,215,100,.18),
+    0 0 28px rgba(217,184,108,.10);
+
+  animation:
+    businessGoldPulse
+    2.8s ease-in-out
+    infinite;
+}
+
+.business-menu-copy strong {
+  color: #ffe08a;
+
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .35px;
+
+  text-shadow:
+    0 0 12px rgba(255,215,100,.24);
+}
+
+.business-menu-copy small {
+  color: #b8a66f;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.business-menu-arrow {
+  color: #ffe08a;
+  font-size: 24px;
+
+  text-shadow:
+    0 0 12px rgba(255,215,100,.35);
+}
+
+/* =========================================================
+   BUSINESS DROPDOWN ANIMATION
+========================================================= */
+
+.business-menu-panel {
+  grid-template-rows: 0fr;
+  opacity: .15;
+
+  transform:
+    translateY(-8px)
+    scaleY(.94);
+
+  transform-origin: top;
+
+  transition:
+    grid-template-rows .48s cubic-bezier(.16,1,.3,1),
+    opacity .35s ease,
+    transform .48s cubic-bezier(.16,1,.3,1);
+}
+
+.business-menu-panel.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+
+  transform:
+    translateY(0)
+    scaleY(1);
+}
+
+.business-menu-inner {
+  padding-left: 9px;
+  padding-right: 9px;
+}
+
+.business-menu-panel.open
+.business-nav-item {
+  animation:
+    businessItemDrop
+    .42s
+    cubic-bezier(.16,1,.3,1)
+    both;
+}
+
+.business-nav-item {
+  min-height: 39px;
+  padding: 7px 9px;
+  gap: 10px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    background .2s ease,
+    color .2s ease,
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.business-nav-symbol {
+  width: 24px;
+  flex-basis: 24px;
+  font-size: 15px;
+
+  filter:
+    drop-shadow(
+      0 0 4px
+      color-mix(
+        in srgb,
+        var(--business-accent) 40%,
+        transparent
+      )
+    );
+}
+
+.business-nav-label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.business-nav-arrow {
+  font-size: 15px;
+}
+
+.business-nav-item.available:hover {
+  transform: translateX(3px);
+
+  box-shadow:
+    0 0 18px
+    color-mix(
+      in srgb,
+      var(--business-accent) 7%,
+      transparent
+    );
+}
+
+.business-nav-item.selected {
+  font-weight: 900;
+
+  box-shadow:
+    inset 0 0 20px
+    color-mix(
+      in srgb,
+      var(--business-accent) 7%,
+      transparent
+    ),
+    0 0 16px
+    color-mix(
+      in srgb,
+      var(--business-accent) 8%,
+      transparent
+    );
+}
+
+.business-nav-item.selected
+.business-nav-symbol {
+  filter:
+    drop-shadow(
+      0 0 7px
+      var(--business-accent)
+    );
+}
+
+/* =========================================================
+   BUSINESS COLORS
+========================================================= */
+
+.business-nav-item.nav-business-insights {
+  --business-accent: #f5c85c;
+}
+
+.business-nav-item.nav-advanced-reports {
+  --business-accent: #c29cff;
+}
+
+.business-nav-item.nav-advanced-inventory {
+  --business-accent: #60b5ff;
+}
+
+.business-nav-item.nav-sales-expense-trends {
+  --business-accent: #4fe98a;
+}
+
+.business-nav-item.nav-customers {
+  --business-accent: #ff9eb0;
+}
+
+.business-nav-item.nav-invoices {
+  --business-accent: #67e8f9;
+}
+
+.business-nav-item.nav-business-targets {
+  --business-accent: #ffd447;
+}
+
+.business-nav-item.nav-credit-debt {
+  --business-accent: #ff667e;
+}
+
+.business-nav-item.nav-suppliers {
+  --business-accent: #ff9a3d;
+}
+
+.business-nav-item.nav-exports {
+  --business-accent: #b4ed45;
+}
+
+.business-nav-item.nav-branches {
+  --business-accent: #ca91ff;
+}
+
+.business-nav-item.nav-users-permissions {
+  --business-accent: #45c9ff;
+}
+
+.business-nav-item.nav-audit-history {
+  --business-accent: #a9b5c8;
+}
+
+.business-nav-item.nav-backups {
+  --business-accent: #43e0a0;
+}
+
+/* =========================================================
+   PREMIUM GOLD ANIMATIONS
+========================================================= */
+
+@keyframes businessGoldSweep {
+  0%, 42% {
+    left: -55%;
+    opacity: 0;
+  }
+
+  52% {
+    opacity: 1;
+  }
+
+  72% {
+    left: 115%;
+    opacity: .7;
+  }
+
+  100% {
+    left: 125%;
+    opacity: 0;
+  }
+}
+
+@keyframes businessGoldPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 12px rgba(255,215,100,.15),
+      0 0 28px rgba(217,184,108,.07);
+  }
+
+  50% {
+    box-shadow:
+      0 0 18px rgba(255,215,100,.30),
+      0 0 38px rgba(217,184,108,.14);
+  }
+}
+
+@keyframes businessItemDrop {
+  from {
+    opacity: 0;
+    transform:
+      translateY(-8px)
+      scale(.97);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+/* =========================================================
+   MOBILE SIDEBAR SIZE
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .command-nav button {
+    min-height: 54px;
+    padding: 10px 12px;
+    gap: 13px;
+    font-size: 14px;
+  }
+
+  .nav-symbol {
+    width: 29px;
+    flex-basis: 29px;
+    font-size: 20px;
+  }
+
+  .nav-label {
+    font-size: 14px;
+    font-weight: 750;
+  }
+
+  .business-navigation {
+    margin-top: 18px;
+    border-radius: 19px;
+
+    box-shadow:
+      0 0 30px rgba(217,184,108,.14),
+      0 15px 45px rgba(0,0,0,.28),
+      inset 0 1px 0 rgba(255,235,170,.12);
+  }
+
+  .business-menu-toggle {
+    min-height: 70px;
+    padding: 13px;
+  }
+
+  .business-menu-icon {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+
+  .business-menu-copy strong {
+    font-size: 14px;
+  }
+
+  .business-menu-copy small {
+    font-size: 9px;
+  }
+
+  .business-nav-item {
+    min-height: 48px;
+    padding: 7px 9px;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .business-nav-symbol {
+    width: 27px;
+    flex-basis: 27px;
+    font-size: 17px;
+  }
+
+  .business-nav-label {
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  .business-nav-arrow {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .command-nav button {
+    min-height: 51px;
+  }
+
+  .nav-label {
+    font-size: 13px;
+  }
+
+  .business-menu-toggle {
+    min-height: 66px;
+  }
+
+  .business-nav-item {
+    min-height: 46px;
+  }
+
+  .business-nav-label {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .business-navigation::before,
+  .business-menu-icon,
+  .business-menu-panel.open
+  .business-nav-item {
+    animation: none !important;
+  }
+}
+
+
+/* =========================================================
+   UPTREND SIDEBAR — LIGHT MODE ONLY
+   ---------------------------------------------------------
+   Dark mode is intentionally untouched.
+   These rules activate ONLY when:
+   html[data-theme="light"]
+========================================================= */
+
+/* =========================================================
+   SIDEBAR BASE
+========================================================= */
+
+html[data-theme="light"] .command-sidebar {
+  background:
+    rgba(247, 250, 248, 0.96);
+
+  border-right-color:
+    rgba(22, 42, 31, 0.08);
+
+  color: #17221c;
+
+  box-shadow:
+    8px 0 30px rgba(20, 45, 31, 0.035);
+
+  scrollbar-color:
+    rgba(22, 42, 31, 0.10)
+    transparent;
+}
+
+html[data-theme="light"] .command-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(22, 42, 31, 0.10);
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+html[data-theme="light"] .brand-copy strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .brand-copy span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .brand-symbol {
+  color: #ffffff;
+  box-shadow:
+    0 10px 28px rgba(21, 154, 80, 0.16);
+}
+
+html[data-theme="light"] .brand-symbol::after {
+  border-color:
+    rgba(21, 154, 80, 0.14);
+}
+
+
+/* =========================================================
+   BUSINESS ACCOUNT CARD
+========================================================= */
+
+html[data-theme="light"] .business-card {
+  border-color:
+    rgba(22, 42, 31, 0.08);
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f5f8f6
+    );
+
+  box-shadow:
+    0 6px 22px rgba(20, 45, 31, 0.035);
+}
+
+html[data-theme="light"] .business-card:hover {
+  border-color:
+    rgba(21, 154, 80, 0.20);
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f2f8f4
+    );
+}
+
+html[data-theme="light"] .business-logo {
+  background:
+    rgba(21, 154, 80, 0.09);
+
+  color:
+    #159a50;
+}
+
+html[data-theme="light"] .business-card strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .business-card span {
+  color: #68766e;
+}
+
+html[data-theme="light"] .online-dot {
+  background:
+    #159a50;
+
+  box-shadow:
+    0 0 0 4px rgba(21, 154, 80, 0.07),
+    0 0 14px rgba(21, 154, 80, 0.30);
+}
+
+
+/* =========================================================
+   SECTION LABEL
+========================================================= */
+
+html[data-theme="light"] .side-label {
+  color:
+    #8a958e;
+}
+
+
+/* =========================================================
+   MAIN NAVIGATION
+========================================================= */
+
+html[data-theme="light"] .command-nav button {
+  color:
+    var(--nav-accent);
+
+  background:
+    transparent;
+}
+
+html[data-theme="light"] .command-nav button:hover {
+  color:
+    var(--nav-accent);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--nav-accent) 7%,
+      transparent
+    );
+}
+
+html[data-theme="light"] .command-nav button.selected {
+  background:
+    color-mix(
+      in srgb,
+      var(--nav-accent) 10%,
+      transparent
+    );
+
+  color:
+    var(--nav-accent);
+}
+
+html[data-theme="light"] .command-nav button.selected::before {
+  background:
+    var(--nav-accent);
+
+  box-shadow:
+    0 0 9px
+    color-mix(
+      in srgb,
+      var(--nav-accent) 28%,
+      transparent
+    );
+}
+
+html[data-theme="light"] .nav-symbol {
+  color:
+    var(--nav-accent);
+}
+
+html[data-theme="light"] .nav-alert {
+  background:
+    rgba(168, 117, 14, 0.09);
+
+  color:
+    #a8750e;
+}
+
+
+/* =========================================================
+   MAIN NAV — LIGHT MODE COLOR REFINEMENT
+   Keeps the same semantic colors but makes them
+   comfortable on a light background.
+========================================================= */
+
+html[data-theme="light"] .command-nav button.nav-dashboard {
+  color: #5965d8;
+}
+
+html[data-theme="light"] .command-nav button.nav-sales {
+  color: #168b45;
+}
+
+html[data-theme="light"] .command-nav button.nav-record {
+  color: #9a6b08;
+}
+
+html[data-theme="light"] .command-nav button.nav-expenses {
+  color: #c33f59;
+}
+
+html[data-theme="light"] .command-nav button.nav-products {
+  color: #3978c7;
+}
+
+html[data-theme="light"] .command-nav button.nav-reports {
+  color: #7755c7;
+}
+
+html[data-theme="light"] .command-nav button.nav-finance {
+  color: #168da5;
+}
+
+html[data-theme="light"] .command-nav button.nav-settings {
+  color: #9a6b08;
+}
+
+
+/* =========================================================
+   BUSINESS PLAN — LIGHT MODE
+========================================================= */
+
+html[data-theme="light"] .business-navigation {
+  border-color:
+    rgba(168, 117, 14, 0.18);
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(168, 117, 14, 0.07),
+      transparent 48%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(168, 117, 14, 0.045),
+      rgba(255, 255, 255, 0.98)
+    );
+
+  box-shadow:
+    0 0 0 1px rgba(168, 117, 14, 0.025),
+    0 8px 26px rgba(20, 45, 31, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+html[data-theme="light"] .business-navigation::before {
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(168, 117, 14, 0.08),
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+}
+
+
+/* =========================================================
+   BUSINESS MENU HEADER
+========================================================= */
+
+html[data-theme="light"] .business-menu-toggle {
+  background:
+    radial-gradient(
+      circle at 18% 50%,
+      rgba(168, 117, 14, 0.055),
+      transparent 42%
+    );
+}
+
+html[data-theme="light"] .business-menu-toggle:hover,
+html[data-theme="light"] .business-menu-toggle.has-active {
+  background:
+    radial-gradient(
+      circle at 18% 50%,
+      rgba(168, 117, 14, 0.09),
+      transparent 48%
+    ),
+    rgba(168, 117, 14, 0.035);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, 0.8);
+}
+
+html[data-theme="light"] .business-menu-icon {
+  color:
+    #9a6b08;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(168, 117, 14, 0.13),
+      rgba(168, 117, 14, 0.045)
+    );
+
+  border-color:
+    rgba(168, 117, 14, 0.16);
+
+  box-shadow:
+    0 0 12px rgba(168, 117, 14, 0.07),
+    0 0 25px rgba(168, 117, 14, 0.035);
+}
+
+html[data-theme="light"] .business-menu-copy strong {
+  color:
+    #9a6b08;
+
+  text-shadow:
+    none;
+}
+
+html[data-theme="light"] .business-menu-copy small {
+  color:
+    #68766e;
+}
+
+html[data-theme="light"] .business-menu-arrow {
+  color:
+    #9a6b08;
+
+  text-shadow:
+    none;
+}
+
+
+/* =========================================================
+   BUSINESS NAVIGATION ITEMS
+========================================================= */
+
+html[data-theme="light"] .business-nav-item {
+  color:
+    #68766e;
+}
+
+html[data-theme="light"] .business-nav-item.available:hover {
+  background:
+    color-mix(
+      in srgb,
+      var(--business-accent) 7%,
+      transparent
+    );
+
+  color:
+    var(--business-accent);
+}
+
+html[data-theme="light"] .business-nav-item.selected {
+  background:
+    color-mix(
+      in srgb,
+      var(--business-accent) 9%,
+      transparent
+    );
+
+  color:
+    var(--business-accent);
+
+  box-shadow:
+    inset 0 0 16px
+    color-mix(
+      in srgb,
+      var(--business-accent) 4%,
+      transparent
+    );
+}
+
+html[data-theme="light"] .business-nav-item.selected::before {
+  background:
+    var(--business-accent);
+
+  box-shadow:
+    0 0 7px
+    color-mix(
+      in srgb,
+      var(--business-accent) 30%,
+      transparent
+    );
+}
+
+html[data-theme="light"] .business-nav-symbol {
+  filter: none;
+}
+
+html[data-theme="light"] .business-nav-item.selected
+.business-nav-symbol {
+  filter:
+    drop-shadow(
+      0 0 4px
+      color-mix(
+        in srgb,
+        var(--business-accent) 22%,
+        transparent
+      )
+    );
+}
+
+html[data-theme="light"] .business-nav-lock {
+  background:
+    rgba(22, 42, 31, 0.045);
+
+  color:
+    #8a958e;
+}
+
+
+/* =========================================================
+   BUSINESS ITEM COLORS — LIGHT MODE
+========================================================= */
+
+html[data-theme="light"] .business-nav-item.nav-business-insights {
+  --business-accent: #a8750e;
+}
+
+html[data-theme="light"] .business-nav-item.nav-advanced-reports {
+  --business-accent: #7755c7;
+}
+
+html[data-theme="light"] .business-nav-item.nav-advanced-inventory {
+  --business-accent: #3978c7;
+}
+
+html[data-theme="light"] .business-nav-item.nav-sales-expense-trends {
+  --business-accent: #168b45;
+}
+
+html[data-theme="light"] .business-nav-item.nav-customers {
+  --business-accent: #c45c72;
+}
+
+html[data-theme="light"] .business-nav-item.nav-invoices {
+  --business-accent: #168da5;
+}
+
+html[data-theme="light"] .business-nav-item.nav-business-targets {
+  --business-accent: #9a7800;
+}
+
+html[data-theme="light"] .business-nav-item.nav-credit-debt {
+  --business-accent: #c33f59;
+}
+
+html[data-theme="light"] .business-nav-item.nav-suppliers {
+  --business-accent: #c66b1c;
+}
+
+html[data-theme="light"] .business-nav-item.nav-exports {
+  --business-accent: #5f941b;
+}
+
+html[data-theme="light"] .business-nav-item.nav-branches {
+  --business-accent: #8050c5;
+}
+
+html[data-theme="light"] .business-nav-item.nav-users-permissions {
+  --business-accent: #287fae;
+}
+
+html[data-theme="light"] .business-nav-item.nav-audit-history {
+  --business-accent: #687687;
+}
+
+html[data-theme="light"] .business-nav-item.nav-backups {
+  --business-accent: #198b61;
+}
+
+
+/* =========================================================
+   PROFILE / FOOTER
+========================================================= */
+
+html[data-theme="light"] .profile {
+  border-top-color:
+    rgba(22, 42, 31, 0.08);
+}
+
+html[data-theme="light"] .profile-avatar {
+  background:
+    #f1f5f2;
+
+  color:
+    #a8750e;
+}
+
+html[data-theme="light"] .profile strong {
+  color:
+    #17221c;
+}
+
+html[data-theme="light"] .profile span {
+  color:
+    #68766e;
+}
+
+html[data-theme="light"] .profile-arrow {
+  color:
+    #8a958e;
+}
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+========================================================= */
+
+@media (max-width: 760px) {
+
+  html[data-theme="light"] .command-sidebar {
+    background:
+      rgba(247, 250, 248, 0.985);
+
+    box-shadow:
+      20px 0 60px
+      rgba(20, 45, 31, 0.12);
+  }
+
+  html[data-theme="light"] .close-sidebar {
+    border-color:
+      rgba(22, 42, 31, 0.09);
+
+    background:
+      #f1f5f2;
+
+    color:
+      #68766e;
+  }
+
+  html[data-theme="light"] .close-sidebar:hover {
+    color:
+      #17221c;
+
+    border-color:
+      rgba(21, 154, 80, 0.22);
+  }
+
+  html[data-theme="light"] .mobile-backdrop {
+    background:
+      rgba(23, 34, 28, 0.38);
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 380px) {
+
+  html[data-theme="light"] .command-sidebar {
+    background:
+      rgba(247, 250, 248, 0.985);
+  }
+}
+
+/* =========================================================
+   SIDEBAR — DEEP LIGHT GREEN BACKGROUND
+========================================================= */
+
+html[data-theme="light"] .command-sidebar {
+  background:
+    linear-gradient(
+      180deg,
+      #e1eee6 0%,
+      #d9e9df 100%
+    );
+
+  border-right-color:
+    rgba(22, 70, 42, 0.12);
+
+  color: #17221c;
+
+  box-shadow:
+    8px 0 30px rgba(20, 55, 35, 0.06);
+
+  scrollbar-color:
+    rgba(22, 70, 42, 0.18)
+    transparent;
+}
+
+html[data-theme="light"] .command-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(22, 70, 42, 0.16);
 }
