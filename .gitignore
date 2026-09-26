@@ -8,3 +8,12 @@ Backup/
 *.backup
 *.before-step8-final
 *.backup.css
+
+# Local Supabase CLI files
+supabase/.temp/
+
+# Backup files
+*.backup
+*.backup-*
+*.before-*
+*.finance-backup
