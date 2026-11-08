@@ -8,11 +8,13 @@ import {
   Users,
   FileText,
   CircleDollarSign,
+  AlertCircle,
   Eye,
   Receipt,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import BusinessGate from "./BusinessGate";
+import CreditDebt from "./CreditDebt";
 import "./Customers.css";
 
 function Customers({
@@ -25,6 +27,7 @@ function Customers({
 }) {
   const [customers, setCustomers] = useState([]);
   const [customerInvoices, setCustomerInvoices] = useState([]);
+  const [customerDebts, setCustomerDebts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -66,6 +69,7 @@ function Customers({
       const [
         customersResult,
         invoicesResult,
+        debtsResult,
       ] = await Promise.all([
         supabase
           .from("uptrend_customers")
@@ -81,6 +85,14 @@ function Customers({
             "id, customer_id, invoice_number, status, total, issue_date, due_date"
           )
           .eq("user_id", user.id),
+
+        supabase
+          .from("uptrend_credit_debts")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", {
+            ascending: false,
+          }),
       ]);
 
       if (customersResult.error) {
@@ -91,12 +103,20 @@ function Customers({
         throw invoicesResult.error;
       }
 
+      if (debtsResult.error) {
+        throw debtsResult.error;
+      }
+
       setCustomers(
         customersResult.data || []
       );
 
       setCustomerInvoices(
         invoicesResult.data || []
+      );
+
+      setCustomerDebts(
+        debtsResult.data || []
       );
     } catch (loadError) {
       console.error(
@@ -111,6 +131,14 @@ function Customers({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isBusiness) {
+      loadCustomers();
+    } else {
+      setLoading(false);
+    }
+  }, [isBusiness]);
 
   useEffect(() => {
     if (
@@ -190,6 +218,45 @@ function Customers({
       paid,
       outstanding,
       overdue,
+    };
+  };
+
+  const getCustomerDebtStats = (customerId) => {
+    const debts = customerDebts.filter(
+      (debt) =>
+        String(debt.customer_id) === String(customerId)
+    );
+
+    const paid = debts.reduce(
+      (sum, debt) =>
+        sum + Number(debt.amount_paid || 0),
+      0
+    );
+
+    const outstanding = debts.reduce(
+      (sum, debt) =>
+        sum +
+        Math.max(
+          Number(debt.original_amount || 0) -
+            Number(debt.amount_paid || 0),
+          0
+        ),
+      0
+    );
+
+    const activeDebts = debts.filter(
+      (debt) =>
+        Math.max(
+          Number(debt.original_amount || 0) -
+            Number(debt.amount_paid || 0),
+          0
+        ) > 0
+    );
+
+    return {
+      count: activeDebts.length,
+      paid,
+      outstanding,
     };
   };
 
@@ -702,121 +769,120 @@ function Customers({
                     </span>
                   )}
 
-                  <div className="customer-financials">
+                  {(() => {
+                    const debtStats =
+                      getCustomerDebtStats(customer.id);
 
-                    <button
-                      type="button"
-                      className="customer-financial-item"
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId: customer.id,
-                        })
-                      }
-                      title="View this customer's invoices"
-                    >
-                      <span>
-                        <FileText size={13} />
-                        Invoices
-                      </span>
+                    return (
+                      <>
+                        <div className="customer-financials">
 
-                      <strong>
-                        {stats.count}
-                      </strong>
-                    </button>
+                          <button
+                            type="button"
+                            className="customer-financial-item customer-financial-invoices"
+                            onClick={() =>
+                              onOpenInvoices?.({
+                                customerId: customer.id,
+                              })
+                            }
+                            title="View this customer's invoices"
+                          >
+                            <span>
+                              <FileText size={13} />
+                              Invoices
+                            </span>
 
-                    <button
-                      type="button"
-                      className="customer-financial-item"
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId: customer.id,
-                        })
-                      }
-                      title="View billed invoices"
-                    >
-                      <span>
-                        Billed
-                      </span>
+                            <strong>
+                              {stats.count}
+                            </strong>
+                          </button>
 
-                      <strong>
-                        {formatMoney(
-                          stats.billed
+                          <button
+                            type="button"
+                            className={`customer-financial-item customer-financial-debts ${
+                              debtStats.count > 0 ? "has-debts" : ""
+                            }`}
+                            onClick={() =>
+                              openCustomerDetail(customer)
+                            }
+                            title="View this customer's debts"
+                          >
+                            <span>
+                              <AlertCircle size={13} />
+                              Debts
+                            </span>
+
+                            <strong>
+                              {debtStats.count}
+                            </strong>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="customer-financial-item customer-financial-paid"
+                            onClick={() =>
+                              openCustomerDetail(customer)
+                            }
+                            title="View payments received"
+                          >
+                            <span>
+                              Paid
+                            </span>
+
+                            <strong className="customer-paid">
+                              {formatMoney(
+                                debtStats.paid
+                              )}
+                            </strong>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="customer-financial-item customer-financial-outstanding"
+                            onClick={() =>
+                              openCustomerDetail(customer)
+                            }
+                            title="View outstanding debts"
+                          >
+                            <span>
+                              Outstanding
+                            </span>
+
+                            <strong
+                              className={
+                                debtStats.outstanding > 0
+                                  ? "customer-outstanding has-outstanding"
+                                  : ""
+                              }
+                            >
+                              {debtStats.outstanding > 0
+                                ? "YES"
+                                : "NO"}
+                            </strong>
+                          </button>
+
+                        </div>
+
+                        {debtStats.outstanding > 0 && (
+                          <button
+                            type="button"
+                            className="customer-overdue customer-debt-summary"
+                            onClick={() =>
+                              openCustomerDetail(customer)
+                            }
+                            title="View outstanding debt"
+                          >
+                            <AlertCircle size={14} />
+
+                            {formatMoney(
+                              debtStats.outstanding
+                            )}{" "}
+                            outstanding debt
+                          </button>
                         )}
-                      </strong>
-                    </button>
-
-                    <button
-                      type="button"
-                      className="customer-financial-item"
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId: customer.id,
-                          status: "paid",
-                        })
-                      }
-                      title="View paid invoices"
-                    >
-                      <span>
-                        Paid
-                      </span>
-
-                      <strong className="customer-paid">
-                        {formatMoney(
-                          stats.paid
-                        )}
-                      </strong>
-                    </button>
-
-                    <button
-                      type="button"
-                      className="customer-financial-item"
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId: customer.id,
-                          status: "outstanding",
-                        })
-                      }
-                      title="View outstanding invoices"
-                    >
-                      <span>
-                        Outstanding
-                      </span>
-
-                      <strong
-                        className={
-                          stats.outstanding > 0
-                            ? "customer-outstanding"
-                            : ""
-                        }
-                      >
-                        {formatMoney(
-                          stats.outstanding
-                        )}
-                      </strong>
-                    </button>
-
-                  </div>
-
-                  {stats.overdue > 0 && (
-                    <button
-                      type="button"
-                      className="customer-overdue"
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId: customer.id,
-                          status: "overdue",
-                        })
-                      }
-                      title="View overdue invoices"
-                    >
-                      <CircleDollarSign size={14} />
-
-                      {stats.overdue} overdue invoice
-                      {stats.overdue === 1
-                        ? ""
-                        : "s"}
-                    </button>
-                  )}
+                      </>
+                    );
+                  })()}
 
                   {customer.notes && (
                     <p>
@@ -934,83 +1000,76 @@ function Customers({
 
               return (
                 <>
-                  <div className="customer-detail-stats">
+                  {(() => {
+                    const detailDebtStats =
+                      getCustomerDebtStats(
+                        selectedCustomer.id
+                      );
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId:
-                            selectedCustomer.id,
-                        })
-                      }
-                    >
-                      <span>Invoices</span>
-                      <strong>
-                        {detailStats.count}
-                      </strong>
-                    </button>
+                    return (
+                      <div className="customer-detail-stats">
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId:
-                            selectedCustomer.id,
-                        })
-                      }
-                    >
-                      <span>Billed</span>
-                      <strong>
-                        {formatMoney(
-                          detailStats.billed
-                        )}
-                      </strong>
-                    </button>
+                        <button
+                          type="button"
+                          className="detail-stat-invoices"
+                          onClick={() =>
+                            onOpenInvoices?.({
+                              customerId:
+                                selectedCustomer.id,
+                            })
+                          }
+                        >
+                          <span>Invoices</span>
+                          <strong>
+                            {detailStats.count}
+                          </strong>
+                        </button>
 
-                    <button
-                      type="button"
-                      className="detail-stat-paid"
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId:
-                            selectedCustomer.id,
-                          status: "paid",
-                        })
-                      }
-                    >
-                      <span>Paid</span>
-                      <strong>
-                        {formatMoney(
-                          detailStats.paid
-                        )}
-                      </strong>
-                    </button>
+                        <button
+                          type="button"
+                          className={
+                            detailDebtStats.count > 0
+                              ? "detail-stat-debts has-debts"
+                              : "detail-stat-debts"
+                          }
+                        >
+                          <span>Debts</span>
+                          <strong>
+                            {detailDebtStats.count}
+                          </strong>
+                        </button>
 
-                    <button
-                      type="button"
-                      className={
-                        detailStats.outstanding > 0
-                          ? "detail-stat-outstanding"
-                          : ""
-                      }
-                      onClick={() =>
-                        onOpenInvoices?.({
-                          customerId:
-                            selectedCustomer.id,
-                          status: "outstanding",
-                        })
-                      }
-                    >
-                      <span>Outstanding</span>
-                      <strong>
-                        {formatMoney(
-                          detailStats.outstanding
-                        )}
-                      </strong>
-                    </button>
+                        <button
+                          type="button"
+                          className="detail-stat-paid"
+                        >
+                          <span>Paid</span>
+                          <strong>
+                            {formatMoney(
+                              detailDebtStats.paid
+                            )}
+                          </strong>
+                        </button>
 
-                  </div>
+                        <button
+                          type="button"
+                          className={
+                            detailDebtStats.outstanding > 0
+                              ? "detail-stat-outstanding has-outstanding"
+                              : "detail-stat-outstanding"
+                          }
+                        >
+                          <span>Outstanding</span>
+                          <strong>
+                            {detailDebtStats.outstanding > 0
+                              ? "YES"
+                              : "NO"}
+                          </strong>
+                        </button>
+
+                      </div>
+                    );
+                  })()}
 
                   <div className="customer-detail-section">
 
@@ -1018,7 +1077,7 @@ function Customers({
 
                       <div>
                         <div className="mini-label">
-                          BILLING
+                          INVOICES
                         </div>
 
                         <h4>
@@ -1112,6 +1171,31 @@ function Customers({
                       </div>
                     )}
 
+                  </div>
+
+                  <div className="customer-detail-section customer-credit-debt-section">
+                    <div className="customer-detail-section-header">
+                      <div>
+                        <div className="mini-label">
+                          CUSTOMER FINANCE
+                        </div>
+
+                        <h4>
+                          Credit & debt
+                        </h4>
+
+                        <p className="customer-finance-helper">
+                          Track credit given to this customer, payments received and the remaining balance.
+                        </p>
+                      </div>
+                    </div>
+
+                    <CreditDebt
+                      subscription={subscription}
+                      onUpgrade={onUpgrade}
+                      customerId={selectedCustomer.id}
+                      customerName={selectedCustomer.name}
+                    />
                   </div>
 
                   {selectedCustomer.notes && (

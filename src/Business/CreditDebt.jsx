@@ -33,7 +33,22 @@ const getInitialForm = () => ({
 function CreditDebt({
   subscription,
   onUpgrade,
+  customerId = null,
+  customerName = "",
 }) {
+  const customerMode = Boolean(customerId);
+
+  const formatDate = (date) => {
+    if (!date) return "—";
+    const d = new Date(date);
+    if (Number.isNaN(d.getTime())) return "—";
+    return d.toLocaleDateString("en-NG", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   const [debts, setDebts] = useState([]);
   const [payments, setPayments] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -124,7 +139,24 @@ function CreditDebt({
         throw customersResult.error;
       }
 
-      setDebts(debtsResult.data || []);
+      const allDebts = debtsResult.data || [];
+
+      const customerDebts = customerId
+        ? allDebts.filter(
+            (debt) =>
+              String(debt.customer_id) ===
+              String(customerId)
+          )
+        : allDebts;
+
+      console.log("CREDIT DEBUG", {
+        customerId,
+        allDebts,
+        customerDebts,
+        customerDebtCount: customerDebts.length,
+      });
+
+      setDebts(customerDebts);
       setPayments(paymentsResult.data || []);
       setCustomers(customersResult.data || []);
     } catch (error) {
@@ -144,7 +176,7 @@ function CreditDebt({
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [customerId]);
 
   /*
    * Payment totals are calculated from the ledger.
@@ -303,7 +335,10 @@ function CreditDebt({
 
   const openCreateForm = () => {
     setEditingDebt(null);
-    setForm(getInitialForm());
+    setForm({
+      ...getInitialForm(),
+      customerId: customerId || "",
+    });
     setShowForm(true);
   };
 
@@ -691,8 +726,111 @@ function CreditDebt({
 
   return (
     <BusinessGate subscription={subscription} onUpgrade={onUpgrade}>
-      <div className="inner-page credit-debt-page">
-        <div className="credit-debt-header">
+      <div className={`inner-page credit-debt-page${customerMode ? " customer-credit-mode" : ""}`}>
+        {customerMode && (
+          <section className="customer-credit-panel">
+            <div className="customer-credit-panel-header">
+              <div>
+                <span className="business-kicker">CUSTOMER CREDIT & DEBIT</span>
+                <h2>{customerName || "Customer"}</h2>
+                <p>Track credit, payments and outstanding balances for this customer.</p>
+              </div>
+
+              <button
+                type="button"
+                className="credit-primary-btn"
+                onClick={openCreateForm}
+              >
+                + New Credit
+              </button>
+            </div>
+
+            {!loading && (
+              <div className="customer-credit-summary">
+                <div
+                  className={
+                    overview.outstanding > 0
+                      ? "has-outstanding"
+                      : "no-outstanding"
+                  }
+                >
+                  <span>Outstanding</span>
+                  <strong>{money(overview.outstanding)}</strong>
+                </div>
+
+                <div>
+                  <span>Collected</span>
+                  <strong>{money(overview.collected)}</strong>
+                </div>
+
+                <div>
+                  <span>Records</span>
+                  <strong>{enrichedDebts.length}</strong>
+                </div>
+              </div>
+            )}
+
+            {loading ? (
+              <div className="credit-loading">
+                Loading credit records...
+              </div>
+            ) : enrichedDebts.length === 0 ? (
+              <div className="customer-credit-empty">
+                <strong>No credit records yet</strong>
+                <span>
+                  Add a credit record for this customer to start tracking their balance.
+                </span>
+              </div>
+            ) : (
+              <div className="customer-credit-list">
+                {enrichedDebts.map((debt) => (
+                  <div className="customer-credit-row" key={debt.id}>
+                    <div className="customer-credit-row-main">
+                      <strong>{debt.description || "Credit record"}</strong>
+                      <span>
+                        {debt.due_date
+                          ? `Due ${formatDate(debt.due_date)}`
+                          : "No due date"}
+                      </span>
+                    </div>
+
+                    <div className="customer-credit-row-amount">
+                      <strong
+                  className={
+                    debt.balance > 0
+                      ? "customer-credit-amount-outstanding"
+                      : "customer-credit-amount-paid"
+                  }
+                >
+                  {money(debt.balance)}
+                </strong>
+                      <span>{getStatusLabel(debt.status)}</span>
+                    </div>
+
+                    <div className="customer-credit-row-actions">
+                      <button type="button" onClick={() => openDetails(debt)}>
+                        View
+                      </button>
+
+                      <button type="button" onClick={() => openPaymentForm(debt)}>
+                        Payment
+                      </button>
+
+
+
+                      <button type="button" onClick={() => deleteDebt(debt)}>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        <div className={customerMode ? "customer-credit-global-hidden" : ""}>
+          <div className="credit-debt-header">
           <div>
             <span className="business-kicker">BUSINESS PLAN</span>
             <h1>Credit & Debt</h1>
@@ -860,6 +998,8 @@ function CreditDebt({
           </>
         )}
 
+        </div>
+
         {showForm && (
           <div
             className="credit-modal-backdrop"
@@ -891,28 +1031,35 @@ function CreditDebt({
                 className="credit-form"
                 onSubmit={saveDebt}
               >
-                <label>
-                  Customer
-                  <select
-                    value={form.customerId}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        customerId: event.target.value,
-                      }))
-                    }
-                  >
-                    <option value="">No customer selected</option>
-                    {customers.map((customer) => (
-                      <option
-                        key={customer.id}
-                        value={customer.id}
-                      >
-                        {customer.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                {customerMode ? (
+                  <div className="credit-customer-fixed">
+                    <span>Customer</span>
+                    <strong>{customerName || "Selected customer"}</strong>
+                  </div>
+                ) : (
+                  <label>
+                    Customer
+                    <select
+                      value={form.customerId}
+                      onChange={(event) =>
+                        setForm((current) => ({
+                          ...current,
+                          customerId: event.target.value,
+                        }))
+                      }
+                    >
+                      <option value="">No customer selected</option>
+                      {customers.map((customer) => (
+                        <option
+                          key={customer.id}
+                          value={customer.id}
+                        >
+                          {customer.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
 
                 <label>
                   Description
@@ -1140,13 +1287,6 @@ function CreditDebt({
               </div>
 
               <div className="credit-form-actions">
-                <button
-                  className="credit-secondary-btn"
-                  onClick={() => openEditForm(selectedDebt)}
-                >
-                  Edit Credit
-                </button>
-
                 <button
                   className="credit-primary-btn"
                   onClick={() => setShowDetails(false)}

@@ -1,0 +1,230 @@
+/* Sales insights: financial summary and product performance */
+.sales-insights {
+  width: 100%;
+  min-width: 0;
+}
+
+.sales-insights .reports-main-grid,
+.sales-insights .reports-performance-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+
+.sales-insights .premium-card {
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.sales-insights .panel-heading {
+  margin-bottom: 16px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sales-insights .panel-heading h2 {
+  margin: 5px 0 0;
+  line-height: 1.35;
+}
+
+/* Financial summary */
+.sales-insights .report-summary-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+.sales-insights .report-summary-lines > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.sales-insights .report-summary-lines > div:last-child {
+  border-bottom: 0;
+}
+
+.sales-insights .report-summary-lines span {
+  min-width: 0;
+  color: var(--text-secondary, #a5b2ad);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.sales-insights .report-summary-lines strong {
+  flex: 0 0 auto;
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sales-insights .report-summary-lines .report-remaining-line {
+  margin-top: 4px;
+  padding: 12px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.sales-insights .report-summary-lines > div:last-child {
+  padding-top: 14px;
+}
+
+.sales-insights .report-summary-lines > div:last-child span,
+.sales-insights .report-summary-lines > div:last-child strong {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* Best-selling products */
+.sales-insights .report-product-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sales-insights .report-product-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) minmax(100px, auto);
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sales-insights .report-product-row:last-child {
+  border-bottom: 0;
+}
+
+.sales-insights .report-rank {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary, #a5b2ad);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sales-insights .report-product-name,
+.sales-insights .report-product-money {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 5px;
+}
+
+.sales-insights .report-product-name strong,
+.sales-insights .report-product-money strong {
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.sales-insights .report-product-name span,
+.sales-insights .report-product-money span {
+  color: var(--text-secondary, #a5b2ad);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.sales-insights .report-product-money {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.sales-insights .report-product-money strong {
+  color: var(--text-primary, #e8f0ec);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sales-insights .report-no-data {
+  padding: 18px 0;
+  color: var(--text-secondary, #a5b2ad);
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .sales-insights .premium-card {
+    padding: 14px;
+  }
+
+  .sales-insights .report-summary-lines > div {
+    gap: 10px;
+  }
+
+  .sales-insights .report-summary-lines span,
+  .sales-insights .report-summary-lines strong {
+    font-size: 12px;
+  }
+
+  .sales-insights .report-product-row {
+    grid-template-columns: 26px minmax(0, 1fr) minmax(90px, auto);
+    gap: 9px;
+  }
+
+  .sales-insights .report-rank {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+
+/* Sales page section spacing and financial summary colors */
+.sales-page .sales-insights {
+  margin: 20px 0;
+}
+
+.sales-page .sales-product-performance {
+  margin-top: 20px;
+}
+
+.sales-page .report-summary-lines > div:nth-child(1) strong,
+.sales-page .report-summary-lines > div:nth-child(3) strong {
+  color: var(--sales-green, #32d88b) !important;
+}
+
+.sales-page .report-summary-lines > div:nth-child(2) strong {
+  color: #58a6ff !important;
+}
+
+.sales-page .report-summary-lines > div:nth-child(4) strong,
+.sales-page .report-summary-lines .record-loss {
+  color: #ff737d !important;
+}
+
+.sales-page .report-summary-lines .record-profit {
+  color: var(--sales-green, #32d88b) !important;
+}
+
+.sales-page .report-summary-lines .report-total-line {
+  margin-top: 8px;
+  padding: 14px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.sales-page .report-summary-lines .report-total-line span,
+.sales-page .report-summary-lines .report-total-line strong {
+  color: #fff !important;
+  font-weight: 800;
+}

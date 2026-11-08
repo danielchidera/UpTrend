@@ -1,11 +1,22 @@
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
+
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
 import "./App.css";
 
 import { supabase } from "./lib/supabase";
+import {
+  saveCachedSubscription,
+  getCachedSubscription,
+} from "./lib/localDb";
 import { ThemeProvider } from "./context/ThemeContext";
 
 import Sidebar from "./components/Sidebar";
@@ -17,6 +28,7 @@ import Products from "./components/Products";
 import Sales from "./components/Sales";
 import Reports from "./components/Reports";
 import Finance from "./components/Finance";
+import Transactions from "./components/Transactions";
 import Customers from "./Business/Customers";
 import Invoices from "./Business/Invoices";
 import PublicHome from "./components/PublicHome";
@@ -33,8 +45,158 @@ import CreditDebt from "./Business/CreditDebt";
 import Suppliers from "./Business/Suppliers";
 import Exports from "./Business/Exports";
 import BusinessInsights from "./Business/BusinessInsights";
+import BusinessUpgradeModal from "./components/Business/BusinessUpgradeModal";
+import OfflineDiagnostics from "./components/OfflineDiagnostics";
+
+/* =========================================================
+   REAL URL ROUTES
+
+   These routes are now the source of truth for the
+   authenticated application pages.
+
+   The existing activePage state is still preserved because
+   the rest of the UpTrend application uses it.
+========================================================= */
+
+const pagePathMap = {
+  dashboard: "/dashboard",
+  sales: "/sales",
+  record: "/record-sale",
+  expenses: "/expenses",
+  products: "/products",
+  reports: "/reports",
+  finance: "/finance",
+  transactions: "/transactions",
+  customers: "/customers",
+  invoices: "/invoices",
+  suppliers: "/suppliers",
+  exports: "/exports",
+  "business-insights": "/business-insights",
+  "advanced-inventory": "/advanced-inventory",
+  "sales-expense-trends": "/sales-expense-trends",
+  "business-targets": "/business-targets",
+  "credit-debt": "/credit-debt",
+  settings: "/settings",
+  "offline-diagnostics": "/offline-diagnostics",
+};
+
+const pathPageMap = Object.fromEntries(
+  Object.entries(pagePathMap).map(
+    ([page, path]) => [path, page]
+  )
+);
+
+const protectedPaths = Object.values(pagePathMap);
+
+const publicPaths = [
+  "/",
+  "/sign-in",
+  "/sign-up",
+];
+
+/* =========================================================
+   PAGE NOT FOUND
+
+   Unknown URLs must never silently open Dashboard.
+========================================================= */
+
+function PageNotFound({
+  authenticated = false,
+}) {
+  return (
+    <div
+      className="command-app"
+      style={{
+        minHeight: "100vh",
+      }}
+    >
+      <main
+        className="command-main"
+        style={{
+          width: "100%",
+        }}
+      >
+        <section
+          className="command-content"
+          style={{
+            minHeight: "100vh",
+            display: "grid",
+            placeItems: "center",
+            padding: "24px",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "520px",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "72px",
+                lineHeight: 1,
+                fontWeight: 800,
+                marginBottom: "16px",
+              }}
+            >
+              404
+            </div>
+
+            <h1
+              style={{
+                margin: "0 0 10px",
+              }}
+            >
+              Page Not Found
+            </h1>
+
+            <p
+              style={{
+                margin: "0 0 24px",
+                color: "var(--muted)",
+                lineHeight: 1.6,
+              }}
+            >
+              The page you are looking for does not
+              exist or the address is incorrect.
+            </p>
+
+            <a
+              href={
+                authenticated
+                  ? "/dashboard"
+                  : "/"
+              }
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: "42px",
+                padding: "0 18px",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: 700,
+                background:
+                  "var(--green-bright, #22c55e)",
+                color: "#ffffff",
+              }}
+            >
+              {authenticated
+                ? "Go to Dashboard"
+                : "Go to Home"}
+            </a>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
 
 function AppContent() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   /* =========================================================
      SUPABASE AUTH STATE
   ========================================================= */
@@ -63,6 +225,13 @@ function AppContent() {
 
   const [subscription, setSubscription] = useState(null);
 
+  const [businessUpgradeOpen, setBusinessUpgradeOpen] =
+    useState(false);
+
+  const handleUpgrade = () => {
+    setBusinessUpgradeOpen(true);
+  };
+
   /* =========================================================
      PUBLIC / AUTH STATE
   ========================================================= */
@@ -73,9 +242,14 @@ function AppContent() {
   /* =========================================================
      ACTIVE APP PAGE
 
-     UpTrend remembers the last authenticated page so a
-     browser refresh does NOT automatically return to
-     Dashboard.
+     The active page is still kept in state because the
+     existing UpTrend components depend on it.
+
+     The browser URL is now the source of truth for which
+     page should be active.
+
+     sessionStorage is retained for compatibility and for
+     the existing scroll/page persistence system.
   ========================================================= */
 
   const getSavedActivePage = () => {
@@ -99,13 +273,10 @@ function AppContent() {
   );
 
   /* =========================================================
-     GLOBAL PAGE + SCROLL PERSISTENCE
+     GLOBAL PAGE PERSISTENCE
 
-     Applies to every current and future UpTrend page.
-
-     Remembers:
-       - active page
-       - scroll position for each page
+     Remembers the active page, but NEVER remembers
+     or restores the previous scroll position.
   ========================================================= */
 
   useEffect(() => {
@@ -119,127 +290,59 @@ function AppContent() {
     } catch {}
   }, [activePage]);
 
-  useEffect(() => {
-    const pageKey = activePage;
+  /* =========================================================
+     GLOBAL SCROLL RESET
 
-    const getScrollPosition = () => {
+     Refresh any page -> Start at the top.
+     Navigate to another page -> Start at the top.
+     Browser back/forward -> Start at the top.
+
+     The current URL and active page remain preserved.
+  ========================================================= */
+
+  useLayoutEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    const scrollToTop = () => {
       const commandMain =
-        document.querySelector(
-          ".command-main"
-        );
+        document.querySelector(".command-main");
 
-      const mainScroll =
-        commandMain?.scrollTop || 0;
+      const commandContent =
+        document.querySelector(".command-content");
 
-      const windowScroll =
-        window.scrollY || 0;
+      if (commandMain) {
+        commandMain.scrollTop = 0;
+        commandMain.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "instant",
+        });
+      }
 
-      return Math.max(
-        mainScroll,
-        windowScroll
-      );
+      if (commandContent) {
+        commandContent.scrollTop = 0;
+        commandContent.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "instant",
+        });
+      }
+
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant",
+      });
+
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     };
 
-    const saveScrollPosition = () => {
-      try {
-        sessionStorage.setItem(
-          `uptrend_scroll_${pageKey}`,
-          String(getScrollPosition())
-        );
-      } catch {}
-    };
+    scrollToTop();
 
-    const restoreScrollPosition = () => {
-      let attempts = 0;
-
-      const restore = () => {
-        attempts += 1;
-
-        let savedPosition = 0;
-
-        try {
-          savedPosition = Number(
-            sessionStorage.getItem(
-              `uptrend_scroll_${pageKey}`
-            ) || 0
-          );
-        } catch {}
-
-        const commandMain =
-          document.querySelector(
-            ".command-main"
-          );
-
-        if (commandMain) {
-          commandMain.scrollTop =
-            savedPosition;
-        }
-
-        window.scrollTo(
-          0,
-          savedPosition
-        );
-
-        /*
-         * Pages such as Sales, Invoices and
-         * Suppliers can render content after
-         * the first frame. Retry several times
-         * so the saved position is restored
-         * after the page has finished rendering.
-         */
-        if (attempts < 10) {
-          requestAnimationFrame(
-            restore
-          );
-        }
-      };
-
-      requestAnimationFrame(restore);
-    };
-
-    const commandMain =
-      document.querySelector(
-        ".command-main"
-      );
-
-    window.addEventListener(
-      "scroll",
-      saveScrollPosition,
-      { passive: true }
-    );
-
-    commandMain?.addEventListener(
-      "scroll",
-      saveScrollPosition,
-      { passive: true }
-    );
-
-    window.addEventListener(
-      "beforeunload",
-      saveScrollPosition
-    );
-
-    restoreScrollPosition();
-
-    return () => {
-      saveScrollPosition();
-
-      window.removeEventListener(
-        "scroll",
-        saveScrollPosition
-      );
-
-      commandMain?.removeEventListener(
-        "scroll",
-        saveScrollPosition
-      );
-
-      window.removeEventListener(
-        "beforeunload",
-        saveScrollPosition
-      );
-    };
-  }, [activePage]);
+  }, [location.pathname, location.key]);
 
   /* =========================================================
      INVOICE NAVIGATION FILTER
@@ -264,6 +367,11 @@ function AppContent() {
 
   const [supplierToOpenId, setSupplierToOpenId] =
     useState(null);
+  const [supplierToOpenPurchaseId, setSupplierToOpenPurchaseId] =
+    useState(null);
+
+  const [saleToOpenId, setSaleToOpenId] = useState(null);
+  const [expenseToOpenId, setExpenseToOpenId] = useState(null);
 
   /* =========================================================
      NAVIGATION STATES
@@ -307,7 +415,18 @@ function AppContent() {
 
     setSubscriptionLoading(true);
 
+    const restoreCachedSubscription = async () => {
+      const cached = await getCachedSubscription(user.id);
+      setSubscription(cached);
+      return Boolean(cached);
+    };
+
     try {
+      if (!navigator.onLine) {
+        await restoreCachedSubscription();
+        return;
+      }
+
       const { data, error } = await supabase
         .from("uptrend_subscriptions")
         .select(
@@ -333,11 +452,18 @@ function AppContent() {
           error
         );
 
-        /*
-         * If the subscription cannot be read, do not
-         * accidentally grant Business access.
-         */
-        setSubscription(null);
+        const networkFailure =
+          !navigator.onLine ||
+          /fetch|network|timeout|offline|connection/i.test(
+            error.message || ""
+          );
+
+        if (networkFailure) {
+          await restoreCachedSubscription();
+        } else {
+          setSubscription(null);
+        }
+
         return;
       }
 
@@ -352,13 +478,40 @@ function AppContent() {
       }
 
       setSubscription(data);
+
+      try {
+        await saveCachedSubscription(user.id, data);
+      } catch (cacheError) {
+        console.warn(
+          "Subscription cache could not be saved:",
+          cacheError
+        );
+      }
     } catch (error) {
       console.error(
         "Unexpected subscription loading error:",
         error
       );
 
-      setSubscription(null);
+      const networkFailure =
+        !navigator.onLine ||
+        /fetch|network|timeout|offline|connection/i.test(
+          error?.message || ""
+        );
+
+      if (networkFailure) {
+        try {
+          await restoreCachedSubscription();
+        } catch (cacheError) {
+          console.warn(
+            "Cached subscription could not be restored:",
+            cacheError
+          );
+          setSubscription(null);
+        }
+      } else {
+        setSubscription(null);
+      }
     } finally {
       setSubscriptionLoading(false);
     }
@@ -395,17 +548,24 @@ function AppContent() {
           setShowPublicHome(false);
           setPublicPage("dashboard");
 
-          try {
-            const savedPage =
-              sessionStorage.getItem(
-                "uptrend_active_page"
-              );
+          /*
+           * The URL is now authoritative.
 
-            setActivePage(
-              savedPage || "dashboard"
-            );
-          } catch {
-            setActivePage("dashboard");
+           * If the user directly opens /sales, /reports,
+           * /invoices, etc., the routing synchronization
+           * effect below will select that page.
+
+           * We therefore do not use sessionStorage here
+           * to override an explicitly requested URL.
+           */
+          const currentPath =
+            location.pathname;
+
+          const currentPage =
+            pathPageMap[currentPath];
+
+          if (currentPage) {
+            setActivePage(currentPage);
           }
 
           await loadSubscription(user);
@@ -453,17 +613,17 @@ function AppContent() {
           setShowPublicHome(false);
           setPublicPage("dashboard");
 
-          try {
-            const savedPage =
-              sessionStorage.getItem(
-                "uptrend_active_page"
-              );
+          /*
+           * The current browser URL remains authoritative.
+           */
+          const currentPath =
+            window.location.pathname;
 
-            setActivePage(
-              savedPage || "dashboard"
-            );
-          } catch {
-            setActivePage("dashboard");
+          const currentPage =
+            pathPageMap[currentPath];
+
+          if (currentPage) {
+            setActivePage(currentPage);
           }
 
           /*
@@ -498,6 +658,131 @@ function AppContent() {
       authSubscription.unsubscribe();
     };
   }, []);
+
+  /* =========================================================
+     ROUTE / AUTHENTICATION SYNCHRONIZATION
+
+     This is the main routing layer.
+
+     Rules:
+
+       Logged out:
+         /             -> Public Home
+         /sign-in      -> Sign In
+         /sign-up      -> Sign Up
+         protected URL -> /sign-in
+         unknown URL   -> 404
+
+       Logged in:
+         /             -> /dashboard
+         /sign-in      -> /dashboard
+         /sign-up      -> /dashboard
+         protected URL -> matching application page
+         unknown URL   -> 404
+
+       Public invoice:
+         /invoice/:id  -> PublicInvoice
+  ========================================================= */
+
+  useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
+    const pathname =
+      location.pathname;
+
+    /*
+     * Public invoice routes are handled separately below.
+     */
+    if (pathname.startsWith("/invoice/")) {
+      return;
+    }
+
+    /*
+     * Developer responsive preview is intentionally
+     * available before authentication.
+     */
+    if (pathname === "/_responsive") {
+      return;
+    }
+
+    /*
+     * LOGGED OUT ROUTING
+     */
+    if (!supabaseUser) {
+      if (protectedPaths.includes(pathname)) {
+        navigate("/sign-in", {
+          replace: true,
+        });
+
+        return;
+      }
+
+      if (pathname === "/") {
+        setShowPublicHome(true);
+        setPublicPage("home");
+        return;
+      }
+
+      if (pathname === "/sign-in") {
+        setShowPublicHome(true);
+        setPublicPage("signin");
+        return;
+      }
+
+      if (pathname === "/sign-up") {
+        setShowPublicHome(true);
+        setPublicPage("signup");
+        return;
+      }
+
+      /*
+       * Unknown public URL.
+       *
+       * We intentionally do not redirect it to Home.
+       * It must render the 404 page.
+       */
+      return;
+    }
+
+    /*
+     * LOGGED IN ROUTING
+     */
+
+    if (pathname === "/") {
+      navigate("/dashboard", {
+        replace: true,
+      });
+
+      return;
+    }
+
+    if (
+      pathname === "/sign-in" ||
+      pathname === "/sign-up"
+    ) {
+      navigate("/dashboard", {
+        replace: true,
+      });
+
+      return;
+    }
+
+    const page =
+      pathPageMap[pathname];
+
+    if (page) {
+      setActivePage(page);
+      setShowPublicHome(false);
+      setPublicPage("dashboard");
+    }
+  }, [
+    authLoading,
+    supabaseUser,
+    location.pathname,
+    navigate,
+  ]);
 
   /* =========================================================
      PUBLIC PAGE PERSISTENCE
@@ -543,6 +828,8 @@ function AppContent() {
           );
         } catch {}
 
+        navigate("/sign-in");
+
         return;
       }
 
@@ -554,6 +841,8 @@ function AppContent() {
       setSidebarOpen(false);
       setMobileMenuOpen(false);
 
+      navigate("/dashboard");
+
       await loadSubscription(session.user);
     } catch (error) {
       console.error(
@@ -563,6 +852,8 @@ function AppContent() {
 
       setShowPublicHome(true);
       setPublicPage("signin");
+
+      navigate("/sign-in");
     }
   };
 
@@ -585,6 +876,8 @@ function AppContent() {
         "signup"
       );
     } catch {}
+
+    navigate("/sign-up");
   };
 
   /* =========================================================
@@ -606,6 +899,8 @@ function AppContent() {
         "signin"
       );
     } catch {}
+
+    navigate("/sign-in");
   };
 
   /* =========================================================
@@ -627,6 +922,8 @@ function AppContent() {
         "home"
       );
     } catch {}
+
+    navigate("/");
   };
 
   /* =========================================================
@@ -641,6 +938,9 @@ function AppContent() {
     if (!session?.user) {
       setShowPublicHome(true);
       setPublicPage("signin");
+
+      navigate("/sign-in");
+
       return;
     }
 
@@ -651,6 +951,8 @@ function AppContent() {
 
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/dashboard");
 
     await loadSubscription(session.user);
   };
@@ -671,6 +973,9 @@ function AppContent() {
 
       setShowPublicHome(true);
       setPublicPage("signin");
+
+      navigate("/sign-in");
+
       return;
     }
 
@@ -681,6 +986,8 @@ function AppContent() {
 
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/dashboard");
 
     await loadSubscription(session.user);
   };
@@ -725,6 +1032,10 @@ function AppContent() {
 
       setSidebarOpen(false);
       setMobileMenuOpen(false);
+
+      navigate("/", {
+        replace: true,
+      });
     } catch (error) {
       console.error(
         "Logout failed:",
@@ -749,18 +1060,24 @@ function AppContent() {
     setActivePage("record");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/record-sale");
   };
 
   const handleRecordExpense = () => {
     setActivePage("expenses");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/expenses");
   };
 
   const handleAddProduct = () => {
     setActivePage("products");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/products");
   };
 
   const handleEditSale = (sale) => {
@@ -776,6 +1093,8 @@ function AppContent() {
     setActivePage("record");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/record-sale");
   };
 
   const goToDashboard = () => {
@@ -790,12 +1109,16 @@ function AppContent() {
     setActivePage("dashboard");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/dashboard");
   };
 
   const goToReports = () => {
     setActivePage("reports");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/reports");
   };
 
   /* =========================================================
@@ -817,6 +1140,12 @@ function AppContent() {
     setActivePage("invoices");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    /*
+     * The filter is established BEFORE the page opens.
+     * The URL is changed only after the state is prepared.
+     */
+    navigate("/invoices");
   };
 
   const clearInvoiceFilter = () => {
@@ -840,6 +1169,8 @@ function AppContent() {
     setActivePage("invoices");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/invoices");
   };
 
   const clearNewInvoiceCustomer = () => {
@@ -861,25 +1192,57 @@ function AppContent() {
     setActivePage("customers");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/customers");
   };
 
   const clearCustomerToOpen = () => {
     setCustomerToOpenId(null);
   };
 
-  const openSupplierProfile = (supplierId) => {
+  const openSupplierProfile = (supplierId, purchaseId = null) => {
     if (!supplierId) {
       return;
     }
 
     setSupplierToOpenId(supplierId);
+    setSupplierToOpenPurchaseId(purchaseId);
     setActivePage("suppliers");
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    navigate("/suppliers");
   };
 
   const clearSupplierToOpen = () => {
     setSupplierToOpenId(null);
+    setSupplierToOpenPurchaseId(null);
+  };
+
+  const openSaleRecord = (saleId) => {
+    if (!saleId) return;
+    setSaleToOpenId(saleId);
+    setActivePage("sales");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+    navigate("/sales");
+  };
+
+  const clearSaleToOpen = () => {
+    setSaleToOpenId(null);
+  };
+
+  const openExpenseRecord = (expenseId) => {
+    if (!expenseId) return;
+    setExpenseToOpenId(expenseId);
+    setActivePage("expenses");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+    navigate("/expenses");
+  };
+
+  const clearExpenseToOpen = () => {
+    setExpenseToOpenId(null);
   };
 
   const handleSetActivePage = (page) => {
@@ -897,6 +1260,13 @@ function AppContent() {
     setActivePage(page);
     setSidebarOpen(false);
     setMobileMenuOpen(false);
+
+    const path =
+      pagePathMap[page];
+
+    if (path) {
+      navigate(path);
+    }
   };
 
   /* =========================================================
@@ -908,7 +1278,7 @@ function AppContent() {
   ========================================================= */
 
   if (
-    window.location.pathname.startsWith("/invoice/")
+    location.pathname.startsWith("/invoice/")
   ) {
     return <PublicInvoice />;
   }
@@ -921,7 +1291,9 @@ function AppContent() {
      inside an exact viewport-size iframe.
   ========================================================= */
 
-  if (window.location.pathname === "/_responsive") {
+  if (
+    location.pathname === "/_responsive"
+  ) {
     return <ResponsivePreview />;
   }
 
@@ -953,10 +1325,14 @@ function AppContent() {
 
   /* =========================================================
      HARD AUTH GATE
+
+     Public pages are now determined by the actual URL.
   ========================================================= */
 
   if (!supabaseUser) {
-    if (publicPage === "signup") {
+    if (
+      location.pathname === "/sign-up"
+    ) {
       return (
         <SignUp
           onBackHome={backToPublicHome}
@@ -966,7 +1342,9 @@ function AppContent() {
       );
     }
 
-    if (publicPage === "signin") {
+    if (
+      location.pathname === "/sign-in"
+    ) {
       return (
         <SignIn
           onBackHome={backToPublicHome}
@@ -976,11 +1354,25 @@ function AppContent() {
       );
     }
 
+    if (location.pathname === "/") {
+      return (
+        <PublicHome
+          onOpenDashboard={openDashboard}
+          onOpenSignUp={openSignUp}
+          onOpenSignIn={openSignIn}
+        />
+      );
+    }
+
+    /*
+     * Protected URLs should already have been redirected
+     * to /sign-in by the routing effect.
+     *
+     * Any other unknown URL is a genuine 404.
+     */
     return (
-      <PublicHome
-        onOpenDashboard={openDashboard}
-        onOpenSignUp={openSignUp}
-        onOpenSignIn={openSignIn}
+      <PageNotFound
+        authenticated={false}
       />
     );
   }
@@ -1012,11 +1404,39 @@ function AppContent() {
   }
 
   /* =========================================================
+     UNKNOWN AUTHENTICATED ROUTE
+
+     This prevents the old behavior where the default case
+     silently rendered Dashboard.
+  ========================================================= */
+
+  if (
+    !protectedPaths.includes(
+      location.pathname
+    )
+  ) {
+    /*
+     * /, /sign-in and /sign-up are handled by the routing
+     * synchronization effect and redirect to /dashboard.
+     *
+     * Any other path that reaches this point is unknown.
+     */
+    return (
+      <PageNotFound
+        authenticated={true}
+      />
+    );
+  }
+
+  /* =========================================================
      RENDER AUTHENTICATED APP PAGE
   ========================================================= */
 
   const renderPage = () => {
     switch (activePage) {
+      case "offline-diagnostics":
+        return <OfflineDiagnostics userId={supabaseUser?.id} />;
+
       case "dashboard":
         return (
           <Dashboard
@@ -1025,6 +1445,7 @@ function AppContent() {
             onAddProduct={handleAddProduct}
             onViewReports={goToReports}
             subscription={subscription}
+            onUpgrade={handleUpgrade}
           />
         );
 
@@ -1032,6 +1453,10 @@ function AppContent() {
         return (
           <Sales
             onEditSale={handleEditSale}
+            saleToOpenId={saleToOpenId}
+            onSaleOpenHandled={clearSaleToOpen}
+            subscription={subscription}
+            onUpgrade={handleUpgrade}
           />
         );
 
@@ -1040,17 +1465,36 @@ function AppContent() {
           <RecordSale
             onBack={goToDashboard}
             editingSale={editingSale}
+            onEditComplete={() => {
+              setEditingSale(null);
+
+              try {
+                sessionStorage.removeItem(
+                  "uptrend_editing_sale"
+                );
+              } catch {}
+            }}
             subscription={subscription}
+            onUpgrade={handleUpgrade}
           />
         );
 
       case "expenses":
-        return <Expenses />;
+        return (
+          <Expenses
+            expenseToOpenId={expenseToOpenId}
+            onExpenseOpenHandled={clearExpenseToOpen}
+            subscription={subscription}
+            onUpgrade={handleUpgrade}
+          />
+        );
 
       case "products":
         return (
           <Products
             onOpenSupplier={openSupplierProfile}
+            subscription={subscription}
+            onUpgrade={handleUpgrade}
           />
         );
 
@@ -1096,6 +1540,7 @@ function AppContent() {
           <Suppliers
             subscription={subscription}
             supplierToOpenId={supplierToOpenId}
+            supplierToOpenPurchaseId={supplierToOpenPurchaseId}
             onSupplierOpenHandled={clearSupplierToOpen}
           />
         );
@@ -1111,6 +1556,15 @@ function AppContent() {
         return (
           <Reports
             subscription={subscription}
+          />
+        );
+
+      case "transactions":
+        return (
+          <Transactions
+            onOpenSupplier={openSupplierProfile}
+            onOpenSale={openSaleRecord}
+            onOpenExpense={openExpenseRecord}
           />
         );
 
@@ -1149,13 +1603,15 @@ function AppContent() {
         );
 
       default:
+        /*
+         * This should no longer be reached for a valid route.
+         *
+         * We deliberately do NOT fall back to Dashboard here,
+         * because doing so would hide routing errors.
+         */
         return (
-          <Dashboard
-            onRecordSale={handleRecordSale}
-            onRecordExpense={handleRecordExpense}
-            onAddProduct={handleAddProduct}
-            onViewReports={goToReports}
-            subscription={subscription}
+          <PageNotFound
+            authenticated={true}
           />
         );
     }
@@ -1203,6 +1659,11 @@ function AppContent() {
         setIsOpen={setMobileMenuOpen}
       />
 
+      <BusinessUpgradeModal
+        open={businessUpgradeOpen}
+        onClose={() => setBusinessUpgradeOpen(false)}
+      />
+
     </div>
   );
 }
@@ -1212,6 +1673,12 @@ function AppContent() {
 ========================================================= */
 
 function App() {
+  console.log("VIEWPORT:", {
+    innerWidth: window.innerWidth,
+    clientWidth: document.documentElement.clientWidth,
+    innerHeight: window.innerHeight,
+    devicePixelRatio: window.devicePixelRatio
+  });
   return (
     <ThemeProvider>
       <AppContent />

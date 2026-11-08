@@ -17,3 +17,12 @@ supabase/.temp/
 *.backup-*
 *.before-*
 *.finance-backup
+.vercel
+
+# Local backup archive
+BACKUPS/
+*.bak*
+*.old
+*.tmp
+*.orig
+*.part*

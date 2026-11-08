@@ -1071,3 +1071,781 @@ html[data-theme="light"] .settings-page .settings-note,
 html[data-theme="light"] .settings-page .account-access-row {
   -webkit-tap-highlight-color: transparent;
 }
+/* =========================================================
+   PROFILE SETTINGS
+========================================================= */
+
+.settings-profile-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.settings-profile-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.settings-profile-fields label:last-child {
+  grid-column: 1 / -1;
+}
+
+.settings-profile-fields label > span {
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.settings-profile-fields input {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+
+  padding: 11px 13px;
+
+  border: 1px solid var(--line);
+  border-radius: 11px;
+
+  outline: none;
+
+  background: var(--panel-2);
+  color: var(--text);
+
+  font-family: inherit;
+  font-size: 11px;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.settings-profile-fields input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.settings-profile-fields input:focus {
+  border-color: rgba(69, 232, 134, 0.45);
+
+  background: var(--panel-3);
+
+  box-shadow:
+    0 0 0 3px rgba(69, 232, 134, 0.07);
+}
+
+.settings-profile-fields input:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+
+  background: var(--panel-3);
+  color: var(--muted);
+}
+
+/* =========================================================
+   PROFILE FEEDBACK
+========================================================= */
+
+.settings-form-error,
+.settings-form-success {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.settings-form-error {
+  border: 1px solid rgba(255, 113, 135, 0.20);
+
+  background: rgba(255, 113, 135, 0.07);
+
+  color: var(--red);
+}
+
+.settings-form-success {
+  border: 1px solid rgba(69, 232, 134, 0.20);
+
+  background: rgba(69, 232, 134, 0.07);
+
+  color: var(--green);
+}
+
+/* =========================================================
+   PROFILE SAVE BUTTON
+========================================================= */
+
+.settings-save-button {
+  min-height: 40px;
+
+  padding: 10px 17px;
+
+  border: 1px solid rgba(69, 232, 134, 0.28);
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(69, 232, 134, 0.16),
+      rgba(69, 232, 134, 0.08)
+    );
+
+  color: var(--green);
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.settings-save-button:hover {
+  border-color: rgba(69, 232, 134, 0.45);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(69, 232, 134, 0.22),
+      rgba(69, 232, 134, 0.11)
+    );
+
+  box-shadow:
+    0 8px 22px rgba(69, 232, 134, 0.08);
+
+  transform: translateY(-1px);
+}
+
+.settings-save-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* =========================================================
+   PROFILE — LIGHT MODE
+========================================================= */
+
+html[data-theme="light"] .settings-profile-fields label > span {
+  color: #17221c;
+}
+
+html[data-theme="light"] .settings-profile-fields input {
+  background:
+    linear-gradient(
+      135deg,
+      #dce8df,
+      #d7e5dc
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+
+  color: #17221c;
+}
+
+html[data-theme="light"] .settings-profile-fields input::placeholder {
+  color: #718078;
+}
+
+html[data-theme="light"] .settings-profile-fields input:focus {
+  border-color: rgba(21, 154, 80, 0.28);
+
+  background: #e0ebe3;
+
+  box-shadow:
+    0 0 0 3px rgba(21, 154, 80, 0.055);
+}
+
+html[data-theme="light"] .settings-profile-fields input:disabled {
+  background: #d2e0d7;
+  color: #68776f;
+}
+
+html[data-theme="light"] .settings-form-error {
+  border-color: rgba(217, 78, 103, 0.16);
+  background: rgba(217, 78, 103, 0.055);
+  color: #c93650;
+}
+
+html[data-theme="light"] .settings-form-success {
+  border-color: rgba(21, 154, 80, 0.16);
+  background: rgba(21, 154, 80, 0.055);
+  color: #08783b;
+}
+
+html[data-theme="light"] .settings-save-button {
+  border-color: rgba(21, 154, 80, 0.22);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(21, 154, 80, 0.11),
+      rgba(21, 154, 80, 0.055)
+    );
+
+  color: #08783b;
+}
+
+html[data-theme="light"] .settings-save-button:hover {
+  border-color: rgba(21, 154, 80, 0.34);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(21, 154, 80, 0.15),
+      rgba(21, 154, 80, 0.075)
+    );
+
+  box-shadow:
+    0 8px 22px rgba(21, 154, 80, 0.055);
+}
+
+/* =========================================================
+   PROFILE — MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+  .settings-profile-fields {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .settings-profile-fields label:last-child {
+    grid-column: auto;
+  }
+
+  .settings-save-button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   ACCOUNT DETAILS
+========================================================= */
+
+.account-details-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  margin-bottom: 12px;
+  padding: 14px;
+
+  border: 1px solid var(--line);
+  border-radius: 16px;
+
+  background: var(--panel-2);
+}
+
+.account-detail-icon {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 42px;
+
+  border-radius: 12px;
+
+  background: rgba(69, 232, 134, 0.10);
+  color: var(--green);
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.account-detail-copy {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account-detail-copy span {
+  color: var(--muted);
+
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.account-detail-copy strong {
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: var(--text);
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   ACCOUNT — LIGHT MODE
+========================================================= */
+
+html[data-theme="light"] .account-details-card {
+  background:
+    linear-gradient(
+      135deg,
+      #dce8df,
+      #d7e5dc
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+}
+
+html[data-theme="light"] .account-detail-icon {
+  background: rgba(21, 154, 80, 0.08);
+  color: #08783b;
+}
+
+html[data-theme="light"] .account-detail-copy span {
+  color: #718078;
+}
+
+html[data-theme="light"] .account-detail-copy strong {
+  color: #17221c;
+}
+
+/* =========================================================
+   ACCOUNT — MOBILE
+========================================================= */
+
+@media (max-width: 560px) {
+  .account-details-card {
+    align-items: flex-start;
+  }
+
+  .account-detail-copy {
+    padding-top: 3px;
+  }
+}
+
+/* =========================================================
+   NOTIFICATION SETTINGS
+========================================================= */
+
+.notification-preference-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin-bottom: 18px;
+}
+
+.notification-preference {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  min-height: 68px;
+  box-sizing: border-box;
+
+  padding: 13px 14px;
+
+  border: 1px solid var(--line);
+  border-radius: 15px;
+
+  background: var(--panel-2);
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.notification-preference:hover {
+  border-color: rgba(69, 232, 134, 0.28);
+  background: var(--panel-3);
+  transform: translateY(-1px);
+}
+
+.notification-preference.master {
+  border-color: rgba(69, 232, 134, 0.24);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(69, 232, 134, 0.08),
+      rgba(69, 232, 134, 0.025)
+    );
+}
+
+.notification-preference.disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.notification-preference-copy {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notification-preference-copy strong {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.notification-preference-copy span {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   NOTIFICATION TOGGLE
+========================================================= */
+
+.notification-preference input {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.notification-toggle {
+  position: relative;
+
+  width: 42px;
+  height: 23px;
+
+  flex: 0 0 42px;
+
+  border-radius: 999px;
+
+  background: var(--panel-3);
+  border: 1px solid var(--line-strong);
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.notification-toggle::after {
+  content: "";
+
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 15px;
+  height: 15px;
+
+  border-radius: 50%;
+
+  background: var(--muted);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.notification-preference input:checked
+  + .notification-toggle {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.notification-preference input:checked
+  + .notification-toggle::after {
+  transform: translateX(19px);
+  background: #061009;
+}
+
+/* =========================================================
+   NOTIFICATION SETTINGS — LIGHT MODE
+========================================================= */
+
+html[data-theme="light"] .notification-preference {
+  background:
+    linear-gradient(
+      135deg,
+      #dce8df,
+      #d7e5dc
+    );
+
+  border-color: rgba(16, 31, 23, 0.075);
+}
+
+html[data-theme="light"] .notification-preference:hover {
+  background: #dceae1;
+  border-color: rgba(21, 154, 80, 0.20);
+}
+
+html[data-theme="light"] .notification-preference.master {
+  border-color: rgba(21, 154, 80, 0.20);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(21, 154, 80, 0.08),
+      rgba(21, 154, 80, 0.035)
+    );
+}
+
+html[data-theme="light"] .notification-preference-copy strong {
+  color: #17221c;
+}
+
+html[data-theme="light"] .notification-preference-copy span {
+  color: #64736b;
+}
+
+html[data-theme="light"] .notification-toggle {
+  background: #cfddd4;
+  border-color: rgba(16, 31, 23, 0.13);
+}
+
+html[data-theme="light"] .notification-toggle::after {
+  background: #718078;
+}
+
+html[data-theme="light"]
+.notification-preference input:checked
++ .notification-toggle {
+  background: #159a50;
+  border-color: #159a50;
+}
+
+html[data-theme="light"]
+.notification-preference input:checked
++ .notification-toggle::after {
+  background: #ffffff;
+}
+
+/* =========================================================
+   NOTIFICATION SETTINGS — MOBILE
+========================================================= */
+
+@media (max-width: 560px) {
+  .notification-preference {
+    min-height: 64px;
+    padding: 12px;
+  }
+
+  .notification-preference-copy {
+    padding-right: 2px;
+  }
+
+  .notification-preference-copy strong {
+    font-size: 10px;
+  }
+
+  .notification-preference-copy span {
+    font-size: 8px;
+  }
+
+  .notification-toggle {
+    width: 40px;
+    flex-basis: 40px;
+  }
+}
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+.security-status-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(201, 161, 74, 0.18);
+  border-radius: 16px;
+  background: rgba(201, 161, 74, 0.045);
+}
+
+.security-status-icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(201, 161, 74, 0.12);
+  color: #c9a14a;
+  font-weight: 800;
+}
+
+.security-status-copy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.security-status-copy strong {
+  color: var(--text-primary, #f5f5f5);
+  font-size: 14px;
+}
+
+.security-status-copy span {
+  color: var(--text-secondary, #9b9b9b);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.security-status-badge {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(55, 180, 110, 0.1);
+  color: #4ac47b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.security-password-card {
+  padding-top: 20px;
+}
+
+.security-password-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+  max-width: 560px;
+}
+
+.security-password-fields label {
+  color: var(--text-primary, #f5f5f5);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.security-password-input {
+  position: relative;
+  width: 100%;
+}
+
+.security-password-input input {
+  width: 100%;
+  min-height: 46px;
+  box-sizing: border-box;
+  padding: 0 78px 0 14px;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 12px;
+  background: var(--input-bg, rgba(255, 255, 255, 0.035));
+  color: var(--text-primary, #f5f5f5);
+  outline: none;
+  font: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.security-password-input input:focus {
+  border-color: rgba(201, 161, 74, 0.55);
+  box-shadow: 0 0 0 3px rgba(201, 161, 74, 0.08);
+}
+
+.security-password-input input::placeholder {
+  color: var(--text-secondary, #777);
+}
+
+.security-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #c9a14a;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 7px 5px;
+}
+
+.security-password-toggle:hover {
+  color: #e1bd67;
+}
+
+html[data-theme="light"] .security-status-card {
+  border-color: rgba(150, 112, 35, 0.18);
+  background: rgba(150, 112, 35, 0.045);
+}
+
+html[data-theme="light"] .security-status-copy strong,
+html[data-theme="light"] .security-password-fields label {
+  color: #171717;
+}
+
+html[data-theme="light"] .security-status-copy span {
+  color: #707070;
+}
+
+html[data-theme="light"] .security-password-input input {
+  background: #fff;
+  color: #171717;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 650px) {
+  .security-status-card {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .security-status-badge {
+    margin-left: auto;
+  }
+
+  .security-status-copy span {
+    font-size: 11px;
+  }
+
+  .security-password-card {
+    padding: 16px;
+  }
+
+  .security-password-fields {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .security-status-card {
+    flex-wrap: wrap;
+  }
+
+  .security-status-copy {
+    flex: 1 1 calc(100% - 58px);
+  }
+
+  .security-status-badge {
+    margin-left: 54px;
+  }
+}

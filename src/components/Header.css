@@ -70,7 +70,9 @@
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
-    background-color 0.3s ease;
+    background-color 0.3s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .header-icon:hover {
@@ -78,24 +80,363 @@
   border-color: var(--line-strong);
 }
 
-.notification i {
-  position: absolute;
+/* =========================================================
+   REAL NOTIFICATION BELL
+========================================================= */
 
-  top: 8px;
-  right: 8px;
+.notification-control {
+  position: relative;
+  z-index: 1003;
+}
 
-  width: 5px;
-  height: 5px;
-
-  border-radius: 50%;
-  background: var(--green);
-
-  animation:
-    onlinePulse 2s ease-in-out infinite;
+.notification {
+  overflow: visible;
 }
 
 .notification-icon {
-  font-size: 16px;
+  width: 19px;
+  height: 19px;
+
+  display: grid;
+  place-items: center;
+
+  color: currentColor;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.notification-icon svg {
+  width: 19px;
+  height: 19px;
+
+  display: block;
+}
+
+/* =========================================================
+   NORMAL NOTIFICATION STATE
+========================================================= */
+
+.notification:not(.has-notifications) {
+  color: var(--muted);
+}
+
+.notification:not(.has-notifications)
+  .notification-badge,
+.notification:not(.has-notifications)
+  .notification-dot {
+  display: none;
+}
+
+/* =========================================================
+   NOTIFICATION AVAILABLE
+========================================================= */
+
+.notification.has-notifications {
+  color: #ef4444;
+
+  border-color:
+    rgba(239, 68, 68, 0.38);
+
+  background:
+    rgba(239, 68, 68, 0.07);
+
+  box-shadow:
+    0 0 0 1px
+      rgba(239, 68, 68, 0.04),
+    0 0 22px
+      rgba(239, 68, 68, 0.08);
+}
+
+.notification.has-notifications:hover {
+  color: #f87171;
+
+  border-color:
+    rgba(239, 68, 68, 0.55);
+
+  background:
+    rgba(239, 68, 68, 0.1);
+
+  box-shadow:
+    0 0 0 1px
+      rgba(239, 68, 68, 0.06),
+    0 0 28px
+      rgba(239, 68, 68, 0.12);
+}
+
+/* =========================================================
+   BELL RINGING ANIMATION
+========================================================= */
+
+.notification.ringing
+  .notification-icon {
+  animation:
+    notificationBellRing
+    0.85s
+    ease-in-out
+    infinite;
+
+  transform-origin:
+    50% 8%;
+}
+
+@keyframes notificationBellRing {
+
+  0% {
+    transform:
+      rotate(0deg);
+  }
+
+  10% {
+    transform:
+      rotate(16deg);
+  }
+
+  20% {
+    transform:
+      rotate(-14deg);
+  }
+
+  30% {
+    transform:
+      rotate(12deg);
+  }
+
+  40% {
+    transform:
+      rotate(-10deg);
+  }
+
+  50% {
+    transform:
+      rotate(7deg);
+  }
+
+  60% {
+    transform:
+      rotate(-5deg);
+  }
+
+  70% {
+    transform:
+      rotate(3deg);
+  }
+
+  80%,
+  100% {
+    transform:
+      rotate(0deg);
+  }
+}
+
+/* =========================================================
+   RED NOTIFICATION DOT
+========================================================= */
+
+.notification-dot {
+  position: absolute;
+
+  top: 7px;
+  right: 7px;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #ef4444;
+
+  border: 1px solid
+    var(--panel);
+
+  box-shadow:
+    0 0 0 3px
+      rgba(239, 68, 68, 0.1),
+    0 0 10px
+      rgba(239, 68, 68, 0.3);
+
+  animation:
+    notificationDotPulse
+    1.5s
+    ease-in-out
+    infinite;
+}
+
+@keyframes notificationDotPulse {
+
+  0%,
+  100% {
+    transform:
+      scale(1);
+
+    opacity: 1;
+  }
+
+  50% {
+    transform:
+      scale(1.25);
+
+    opacity: 0.72;
+  }
+}
+
+/* =========================================================
+   NOTIFICATION COUNT BADGE
+========================================================= */
+
+.notification-badge {
+  position: absolute;
+
+  top: -7px;
+  right: -7px;
+
+  min-width: 17px;
+  height: 17px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0 4px;
+
+  border: 2px solid
+    var(--panel);
+
+  border-radius: 999px;
+
+  background: #ef4444;
+  color: #ffffff;
+
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+
+  box-shadow:
+    0 5px 14px
+      rgba(239, 68, 68, 0.25);
+
+  animation:
+    notificationBadgeIn
+    0.25s
+    ease both;
+}
+
+@keyframes notificationBadgeIn {
+
+  from {
+    opacity: 0;
+
+    transform:
+      scale(0.6);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      scale(1);
+  }
+}
+
+/* =========================================================
+   ACKNOWLEDGED / OPEN NOTIFICATION
+========================================================= */
+
+.notification.active {
+  border-color:
+    var(--line-strong);
+
+  background:
+    var(--panel);
+
+  color:
+    var(--text);
+}
+
+.notification.active.has-notifications {
+  color: #ef4444;
+
+  border-color:
+    rgba(239, 68, 68, 0.3);
+
+  background:
+    rgba(239, 68, 68, 0.055);
+}
+
+/*
+ * Once the user taps the bell, Header removes
+ * the "ringing" state. This rule is an extra
+ * safeguard against the animation continuing.
+ */
+
+.notification.active.ringing
+  .notification-icon {
+  animation: none;
+}
+
+/* =========================================================
+   SMART ALERT PANEL
+========================================================= */
+
+.notification-control
+  .smart-alerts {
+  position: absolute;
+
+  top:
+    calc(100% + 12px);
+
+  right: 0;
+
+  z-index: 99999;
+
+  width:
+    min(390px, calc(100vw - 32px));
+
+  max-height:
+    min(620px, calc(100vh - 120px));
+
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+}
+
+/*
+ * SmartAlerts remains mounted so it can continue
+ * detecting new notifications even when closed.
+ */
+
+.notification-control
+  .smart-alerts-closed {
+  display: none;
+}
+
+.notification-control
+  .smart-alerts-open {
+  display: block;
+
+  animation:
+    smartAlertsReveal
+    0.22s
+    ease both;
+}
+
+@keyframes smartAlertsReveal {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(-8px)
+      scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
 }
 
 /* =========================================================
@@ -104,6 +445,7 @@
 
 .theme-control {
   position: relative;
+  z-index: 1002;
 }
 
 .theme-toggle {
@@ -159,25 +501,32 @@
 ========================================================= */
 
 .theme-menu {
-  position: absolute;
-  z-index: 100;
+  position: absolute !important;
+  z-index: 99999 !important;
 
-  top: calc(100% + 10px);
+  top: calc(100% + 12px);
   right: 0;
 
   width: 230px;
 
   padding: 7px;
 
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-strong) !important;
   border-radius: 15px;
 
-  background: var(--panel);
+  background: var(--panel) !important;
+  color: var(--text);
 
-  box-shadow: var(--shadow);
+  box-shadow:
+    0 24px 65px
+      rgba(0, 0, 0, 0.45);
+
+  opacity: 1 !important;
 
   animation:
     premiumReveal 0.2s ease both;
+
+  isolation: isolate;
 }
 
 .theme-menu button {
@@ -206,7 +555,8 @@
 
 .theme-menu button:hover,
 .theme-menu button.active {
-  background: var(--green-soft);
+  background:
+    var(--green-soft);
 }
 
 .theme-menu button > span {
@@ -218,9 +568,11 @@
 
   border-radius: 8px;
 
-  background: var(--panel-2);
+  background:
+    var(--panel-2);
 
-  color: var(--green);
+  color:
+    var(--green);
 
   font-size: 14px;
 }
@@ -239,13 +591,15 @@
 }
 
 .theme-menu small {
-  color: var(--muted);
+  color:
+    var(--muted);
 
   font-size: 8px;
 }
 
 .theme-menu b {
-  color: var(--green);
+  color:
+    var(--green);
 
   font-size: 12px;
 }
@@ -260,15 +614,18 @@
   border: 0;
   border-radius: 11px;
 
-  background: var(--green);
-  color: #061009;
+  background:
+    var(--green);
+
+  color:
+    #061009;
 
   font-size: 11px;
   font-weight: 800;
 
   box-shadow:
     0 8px 25px
-    rgba(74, 222, 128, 0.08);
+      rgba(74, 222, 128, 0.08);
 
   transition:
     transform 0.2s ease,
@@ -278,9 +635,10 @@
 .primary-action:hover {
   box-shadow:
     0 12px 35px
-    rgba(74, 222, 128, 0.2);
+      rgba(74, 222, 128, 0.2);
 
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 }
 
 .mobile-menu {
@@ -288,10 +646,271 @@
 }
 
 /* =========================================================
+   HEADER LAYERING
+========================================================= */
+
+.command-header {
+  position: relative;
+  z-index: 1000;
+}
+
+.header-actions {
+  position: relative;
+  z-index: 1001;
+}
+
+/* =========================================================
+   LIGHT MODE
+========================================================= */
+
+html[data-theme="light"]
+.command-header {
+  background:
+    linear-gradient(
+      180deg,
+      #e1eee6 0%,
+      #d9e9df 100%
+    );
+
+  border-bottom-color:
+    rgba(22, 70, 42, 0.12);
+}
+
+html[data-theme="light"]
+.header-overline {
+  color:
+    #159a50;
+}
+
+html[data-theme="light"]
+.command-header h1 {
+  color:
+    #17221c;
+}
+
+/* =========================================================
+   LIGHT MODE HEADER ICONS
+========================================================= */
+
+html[data-theme="light"]
+.header-icon {
+  border-color:
+    rgba(22, 42, 31, 0.09);
+
+  background:
+    #ffffff;
+
+  color:
+    #68766e;
+
+  box-shadow:
+    0 5px 18px
+      rgba(20, 45, 31, 0.035);
+}
+
+html[data-theme="light"]
+.header-icon:hover {
+  border-color:
+    rgba(21, 154, 80, 0.22);
+
+  background:
+    #f5faf7;
+
+  color:
+    #159a50;
+}
+
+/* =========================================================
+   LIGHT MODE NOTIFICATION
+========================================================= */
+
+html[data-theme="light"]
+.notification:not(.has-notifications) {
+  color:
+    #68766e;
+}
+
+html[data-theme="light"]
+.notification.has-notifications {
+  color:
+    #dc2626;
+
+  border-color:
+    rgba(220, 38, 38, 0.25);
+
+  background:
+    rgba(220, 38, 38, 0.055);
+
+  box-shadow:
+    0 0 20px
+      rgba(220, 38, 38, 0.055);
+}
+
+html[data-theme="light"]
+.notification.has-notifications:hover {
+  color:
+    #b91c1c;
+
+  border-color:
+    rgba(220, 38, 38, 0.4);
+
+  background:
+    rgba(220, 38, 38, 0.08);
+}
+
+html[data-theme="light"]
+.notification.active.has-notifications {
+  color:
+    #dc2626;
+
+  border-color:
+    rgba(220, 38, 38, 0.28);
+
+  background:
+    rgba(220, 38, 38, 0.055);
+}
+
+html[data-theme="light"]
+.notification-badge {
+  border-color:
+    #ffffff;
+}
+
+html[data-theme="light"]
+.notification-dot {
+  border-color:
+    #ffffff;
+}
+
+/* =========================================================
+   LIGHT MODE THEME TOGGLE
+========================================================= */
+
+html[data-theme="light"]
+.theme-toggle {
+  border-color:
+    rgba(22, 42, 31, 0.09);
+
+  background:
+    #ffffff;
+
+  color:
+    #17221c;
+
+  box-shadow:
+    0 5px 18px
+      rgba(20, 45, 31, 0.035);
+}
+
+html[data-theme="light"]
+.theme-toggle:hover {
+  border-color:
+    rgba(21, 154, 80, 0.22);
+
+  background:
+    #f5faf7;
+}
+
+html[data-theme="light"]
+.theme-toggle-icon {
+  color:
+    #159a50;
+}
+
+html[data-theme="light"]
+.theme-chevron {
+  color:
+    #8a958e;
+}
+
+/* =========================================================
+   LIGHT MODE THEME MENU
+========================================================= */
+
+html[data-theme="light"]
+.theme-menu {
+  border-color:
+    rgba(22, 42, 31, 0.10) !important;
+
+  background:
+    #ffffff !important;
+
+  color:
+    #17221c;
+
+  box-shadow:
+    0 24px 65px
+      rgba(16, 31, 23, 0.15);
+}
+
+html[data-theme="light"]
+.theme-menu button {
+  color:
+    #17221c;
+}
+
+html[data-theme="light"]
+.theme-menu button:hover,
+html[data-theme="light"]
+.theme-menu button.active {
+  background:
+    rgba(21, 154, 80, 0.07);
+}
+
+html[data-theme="light"]
+.theme-menu button > span {
+  background:
+    #f1f5f2;
+
+  color:
+    #159a50;
+}
+
+html[data-theme="light"]
+.theme-menu small {
+  color:
+    #68766e;
+}
+
+html[data-theme="light"]
+.theme-menu b {
+  color:
+    #159a50;
+}
+
+/* =========================================================
+   LIGHT MODE PRIMARY ACTION
+========================================================= */
+
+html[data-theme="light"]
+.primary-action {
+  background:
+    #159a50;
+
+  color:
+    #ffffff;
+
+  box-shadow:
+    0 8px 25px
+      rgba(21, 154, 80, 0.13);
+}
+
+html[data-theme="light"]
+.primary-action:hover {
+  background:
+    #147f42;
+
+  box-shadow:
+    0 12px 35px
+      rgba(21, 154, 80, 0.22);
+}
+
+/* =========================================================
    MOBILE
 ========================================================= */
 
 @media (max-width: 760px) {
+
   .command-header {
     height: 76px;
 
@@ -324,347 +943,97 @@
     width: 36px;
     height: 36px;
   }
+
+  html[data-theme="light"]
+  .command-header {
+    background:
+      linear-gradient(
+        180deg,
+        #e1eee6 0%,
+        #d9e9df 100%
+      );
+
+    border-bottom-color:
+      rgba(22, 70, 42, 0.12);
+  }
+
+  html[data-theme="light"]
+  .theme-toggle {
+    background:
+      #ffffff;
+  }
+
+  html[data-theme="light"]
+  .header-icon {
+    background:
+      #ffffff;
+  }
 }
 
+/* =========================================================
+   MOBILE NOTIFICATION PANEL
+========================================================= */
+
 @media (max-width: 500px) {
+
   .theme-control {
     order: 1;
   }
 
   .notification {
-    display: none;
+    display: grid;
   }
 
   .header-record-button {
     order: 2;
 
-    padding: 9px 11px;
+    padding:
+      9px 11px;
 
-    font-size: 9px;
+    font-size:
+      9px;
   }
 
   .record-arrow {
     display: none;
   }
-}
 
-@media (max-width: 390px) {
+  .notification-badge {
+    top:
+      -6px;
+
+    right:
+      -6px;
+  }
+
+  .notification-dot {
+    top:
+      6px;
+
+    right:
+      6px;
+  }
+
+  .notification-control
+    .smart-alerts {
+    top:
+      calc(100% + 10px);
+
+    right:
+      -8px;
+
+    width:
+      min(
+        360px,
+        calc(100vw - 24px)
+      );
+
+    max-height:
+      calc(100vh - 100px);
+  }
+
+  html[data-theme="light"]
   .header-record-button {
-    font-size: 8px;
-
-    padding: 8px 9px;
-  }
-
-  .command-header h1 {
-    font-size: 15px;
-  }
-}
-
-/* =========================================================
-   THEME DROPDOWN — FRONT LAYER
-========================================================= */
-
-.command-header {
-  position: relative;
-  z-index: 1000;
-}
-
-.header-actions {
-  position: relative;
-  z-index: 1001;
-}
-
-.theme-control {
-  position: relative;
-  z-index: 1002;
-}
-
-.theme-menu {
-  position: absolute !important;
-  z-index: 99999 !important;
-
-  top: calc(100% + 12px);
-  right: 0;
-
-  opacity: 1 !important;
-
-  background: var(--panel) !important;
-  color: var(--text);
-
-  border: 1px solid var(--line-strong) !important;
-
-  box-shadow:
-    0 24px 65px rgba(0, 0, 0, 0.45);
-
-  isolation: isolate;
-}
-
-html[data-theme="light"] .theme-menu {
-  box-shadow:
-    0 24px 65px rgba(16, 31, 23, 0.18);
-}
-
-
-/* =========================================================
-   SMART ALERTS
-========================================================= */
-
-.notification-control {
-  position: relative;
-  z-index: 1003;
-}
-
-.notification.active {
-  border-color: rgba(214, 174, 67, 0.42);
-  color: #d6ae43;
-  background: rgba(214, 174, 67, 0.07);
-}
-
-.notification.active i {
-  background: #d6ae43;
-  animation: none;
-}
-
-@media (max-width: 500px) {
-  .notification {
-    display: grid;
-  }
-}
-
-
-/* =========================================================
-   UPTREND HEADER — LIGHT MODE ONLY
-   ---------------------------------------------------------
-   Dark mode is intentionally untouched.
-========================================================= */
-
-/* =========================================================
-   HEADER BASE
-========================================================= */
-
-html[data-theme="light"] .command-header {
-  background:
-    rgba(247, 250, 248, 0.92);
-
-  border-bottom-color:
-    rgba(22, 42, 31, 0.08);
-}
-
-html[data-theme="light"] .header-overline {
-  color:
-    #159a50;
-}
-
-html[data-theme="light"] .command-header h1 {
-  color:
-    #17221c;
-}
-
-
-/* =========================================================
-   HEADER ICON BUTTONS
-========================================================= */
-
-html[data-theme="light"] .header-icon {
-  border-color:
-    rgba(22, 42, 31, 0.09);
-
-  background:
-    #ffffff;
-
-  color:
-    #68766e;
-
-  box-shadow:
-    0 5px 18px rgba(20, 45, 31, 0.035);
-}
-
-html[data-theme="light"] .header-icon:hover {
-  border-color:
-    rgba(21, 154, 80, 0.22);
-
-  background:
-    #f5faf7;
-
-  color:
-    #159a50;
-}
-
-
-/* =========================================================
-   NOTIFICATION
-========================================================= */
-
-html[data-theme="light"] .notification i {
-  background:
-    #159a50;
-
-  box-shadow:
-    0 0 0 3px rgba(21, 154, 80, 0.08);
-}
-
-html[data-theme="light"] .notification.active {
-  border-color:
-    rgba(168, 117, 14, 0.24);
-
-  color:
-    #a8750e;
-
-  background:
-    rgba(168, 117, 14, 0.055);
-}
-
-html[data-theme="light"] .notification.active i {
-  background:
-    #a8750e;
-}
-
-
-/* =========================================================
-   THEME TOGGLE
-========================================================= */
-
-html[data-theme="light"] .theme-toggle {
-  border-color:
-    rgba(22, 42, 31, 0.09);
-
-  background:
-    #ffffff;
-
-  color:
-    #17221c;
-
-  box-shadow:
-    0 5px 18px rgba(20, 45, 31, 0.035);
-}
-
-html[data-theme="light"] .theme-toggle:hover {
-  border-color:
-    rgba(21, 154, 80, 0.22);
-
-  background:
-    #f5faf7;
-}
-
-html[data-theme="light"] .theme-toggle-icon {
-  color:
-    #159a50;
-}
-
-html[data-theme="light"] .theme-chevron {
-  color:
-    #8a958e;
-}
-
-
-/* =========================================================
-   THEME MENU
-========================================================= */
-
-html[data-theme="light"] .theme-menu {
-  border-color:
-    rgba(22, 42, 31, 0.10) !important;
-
-  background:
-    #ffffff !important;
-
-  color:
-    #17221c;
-
-  box-shadow:
-    0 24px 65px
-    rgba(16, 31, 23, 0.15);
-}
-
-html[data-theme="light"] .theme-menu button {
-  color:
-    #17221c;
-}
-
-html[data-theme="light"] .theme-menu button:hover,
-html[data-theme="light"] .theme-menu button.active {
-  background:
-    rgba(21, 154, 80, 0.07);
-}
-
-html[data-theme="light"] .theme-menu button > span {
-  background:
-    #f1f5f2;
-
-  color:
-    #159a50;
-}
-
-html[data-theme="light"] .theme-menu small {
-  color:
-    #68766e;
-}
-
-html[data-theme="light"] .theme-menu b {
-  color:
-    #159a50;
-}
-
-
-/* =========================================================
-   RECORD SALE / PRIMARY ACTION
-========================================================= */
-
-html[data-theme="light"] .primary-action {
-  background:
-    #159a50;
-
-  color:
-    #ffffff;
-
-  box-shadow:
-    0 8px 25px
-    rgba(21, 154, 80, 0.13);
-}
-
-html[data-theme="light"] .primary-action:hover {
-  background:
-    #147f42;
-
-  box-shadow:
-    0 12px 35px
-    rgba(21, 154, 80, 0.22);
-}
-
-
-/* =========================================================
-   MOBILE HEADER
-========================================================= */
-
-@media (max-width: 760px) {
-
-  html[data-theme="light"] .command-header {
-    background:
-      rgba(247, 250, 248, 0.96);
-
-    border-bottom-color:
-      rgba(22, 42, 31, 0.08);
-  }
-
-  html[data-theme="light"] .theme-toggle {
-    background:
-      #ffffff;
-  }
-
-  html[data-theme="light"] .header-icon {
-    background:
-      #ffffff;
-  }
-}
-
-
-/* =========================================================
-   SMALL MOBILE RECORD BUTTON
-========================================================= */
-
-@media (max-width: 500px) {
-
-  html[data-theme="light"] .header-record-button {
     background:
       #159a50;
 
@@ -673,25 +1042,82 @@ html[data-theme="light"] .primary-action:hover {
 
     box-shadow:
       0 7px 20px
-      rgba(21, 154, 80, 0.12);
+        rgba(21, 154, 80, 0.12);
   }
 }
 
-
 /* =========================================================
-   HEADER — LIGHT MODE BACKGROUND
-   Same surface as the Light Mode Sidebar.
-   Dark mode remains untouched.
+   SMALL MOBILE
 ========================================================= */
 
-html[data-theme="light"] .command-header {
-  background:
-    linear-gradient(
-      180deg,
-      #e1eee6 0%,
-      #d9e9df 100%
-    );
+@media (max-width: 390px) {
 
-  border-bottom-color:
-    rgba(22, 70, 42, 0.12);
+  .header-record-button {
+    font-size:
+      8px;
+
+    padding:
+      8px 9px;
+  }
+
+  .command-header h1 {
+    font-size:
+      15px;
+  }
+
+  .notification-control
+    .smart-alerts {
+    right:
+      -4px;
+
+    width:
+      calc(100vw - 20px);
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .notification.ringing
+    .notification-icon {
+    animation:
+      none;
+  }
+
+  .notification-dot {
+    animation:
+      none;
+  }
+
+  .notification-badge {
+    animation:
+      none;
+  }
+
+  .notification-control
+    .smart-alerts-open {
+    animation:
+      none;
+  }
+}
+
+/* MOBILE SMART ALERTS — CENTERED VIEWPORT PANEL */
+@media (max-width: 760px) {
+  .notification-control .smart-alerts-open {
+    position: fixed !important;
+    top: max(76px, env(safe-area-inset-top)) !important;
+    left: 50% !important;
+    right: auto !important;
+    width: calc(100vw - 28px) !important;
+    max-width: 460px !important;
+    max-height: calc(100dvh - 150px) !important;
+    overflow-y: auto !important;
+    transform: translateX(-50%) !important;
+    animation: none !important;
+    z-index: 100000 !important;
+    box-sizing: border-box !important;
+  }
 }

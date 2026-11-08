@@ -11,20 +11,11 @@ function Sidebar({
   const [visible, setVisible] = useState(false);
   const [businessOpen, setBusinessOpen] = useState(
     [
-      "business-insights",
-      "advanced-reports",
-      "advanced-inventory",
-      "sales-expense-trends",
       "customers",
       "invoices",
       "business-targets",
       "credit-debt",
-      "suppliers",
       "exports",
-      "branches",
-      "users-permissions",
-      "audit-history",
-      "backups",
     ].includes(activePage)
   );
 
@@ -61,16 +52,22 @@ function Sidebar({
       color: "products",
     },
     {
-      id: "reports",
-      icon: "▤",
-      label: "Reports",
-      color: "reports",
+      id: "suppliers",
+      icon: "⇄",
+      label: "Suppliers",
+      color: "suppliers",
     },
     {
-      id: "finance",
-      icon: "₦",
-      label: "Finance",
-      color: "finance",
+      id: "transactions",
+      icon: "↔",
+      label: "Transactions",
+      color: "transactions",
+    },
+    {
+      id: "reports",
+      icon: "▤",
+      label: "Audit History",
+      color: "reports",
     },
     {
       id: "settings",
@@ -82,45 +79,10 @@ function Sidebar({
 
   const businessNavigation = [
     {
-      id: "business-insights",
-      icon: "✦",
-      label: "Business Insights",
-      color: "business-insights",
-      available: true,
-    },
-    {
-      id: "advanced-reports",
-      icon: "▥",
-      label: "Advanced Reports",
-      color: "advanced-reports",
-      available: false,
-    },
-    {
-      id: "advanced-inventory",
-      icon: "◆",
-      label: "Advanced Inventory",
-      color: "advanced-inventory",
-      available: true,
-    },
-    {
-      id: "sales-expense-trends",
-      icon: "◈",
-      label: "Sales & Expense Trends",
-      color: "sales-expense-trends",
-      available: true,
-    },
-    {
       id: "customers",
       icon: "♙",
       label: "Customers",
       color: "customers",
-      available: true,
-    },
-    {
-      id: "invoices",
-      icon: "▧",
-      label: "Invoices",
-      color: "invoices",
       available: true,
     },
     {
@@ -131,20 +93,6 @@ function Sidebar({
       available: true,
     },
     {
-      id: "credit-debt",
-      icon: "₦",
-      label: "Credit & Debt",
-      color: "credit-debt",
-      available: true,
-    },
-    {
-      id: "suppliers",
-      icon: "⇄",
-      label: "Suppliers",
-      color: "suppliers",
-      available: true,
-    },
-    {
       id: "exports",
       icon: "⇩",
       label: "Exports",
@@ -152,33 +100,12 @@ function Sidebar({
       available: true,
     },
     {
-      id: "branches",
-      icon: "⌘",
-      label: "Branches",
-      color: "branches",
-      available: false,
-    },
-    {
-      id: "users-permissions",
-      icon: "♙",
-      label: "Users & Permissions",
-      color: "users-permissions",
-      available: false,
-    },
-    {
-      id: "audit-history",
-      icon: "◷",
-      label: "Audit History",
-      color: "audit-history",
-      available: false,
-    },
-    {
-      id: "backups",
-      icon: "▰",
-      label: "Automated Backups",
-      color: "backups",
-      available: false,
-    },
+  id: "invoices",
+  icon: "▧",
+  label: "Invoices",
+  color: "invoices",
+  available: true,
+},
   ];
 
   useEffect(() => {

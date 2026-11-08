@@ -55,6 +55,8 @@ const percent = (value, total) =>
 function Finance() {
   const [sales, setSales] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [financeTransactions, setFinanceTransactions] = useState([]);
+
   const [finance, setFinance] = useState({
     openingBalance: 0,
   });
@@ -63,10 +65,43 @@ function Finance() {
   const [period, setPeriod] = useState("30d");
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
+
+  const [ledgerTypeFilter, setLedgerTypeFilter] = useState("all");
+  const [ledgerStatusFilter, setLedgerStatusFilter] =
+    useState("all");
+  const [ledgerSearch, setLedgerSearch] = useState("");
+
+  const [showTransactionModal, setShowTransactionModal] =
+    useState(false);
+
+  const [showTransactionDetails, setShowTransactionDetails] =
+    useState(false);
+
+  const [selectedTransaction, setSelectedTransaction] =
+    useState(null);
+
+  const [transactionForm, setTransactionForm] = useState({
+    type: "credit",
+    amount: "",
+    category: "",
+    description: "",
+    reference: "",
+  });
+
+  const [savingTransaction, setSavingTransaction] =
+    useState(false);
+
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
 
-  const loadData = async () => {
+  const loadData = async (options = {}) => {
+    const isRefresh = Boolean(options.refresh);
+
+    if (isRefresh) {
+      setRefreshing(true);
+    }
+
     try {
       setError("");
 
@@ -80,66 +115,130 @@ function Finance() {
       if (!user) {
         setSales([]);
         setExpenses([]);
+        setFinanceTransactions([]);
         setFinance({ openingBalance: 0 });
         setOpeningInput("");
         return;
       }
 
-      const [salesResult, expensesResult, financeResult] =
-        await Promise.all([
-          supabase
-            .from("sales")
-            .select("*")
-            .eq("user_id", user.id)
-            .order("sale_date", { ascending: false })
-            .order("created_at", { ascending: false }),
+      const [
+        salesResult,
+        expensesResult,
+        financeResult,
+        financeAccountResult,
+        financeTransactionsResult,
+      ] = await Promise.all([
+        supabase
+          .from("sales")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("sale_date", { ascending: false })
+          .order("created_at", { ascending: false }),
 
-          supabase
-            .from("expenses")
-            .select("*")
-            .eq("user_id", user.id)
-            .order("expense_date", { ascending: false })
-            .order("created_at", { ascending: false }),
+        supabase
+          .from("expenses")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("expense_date", { ascending: false })
+          .order("created_at", { ascending: false }),
 
-          supabase
-            .from("finance_settings")
-            .select("opening_balance")
-            .eq("user_id", user.id)
-            .maybeSingle(),
-        ]);
+        supabase
+          .from("finance_settings")
+          .select("opening_balance")
+          .eq("user_id", user.id)
+          .maybeSingle(),
 
-      if (salesResult.error) throw salesResult.error;
-      if (expensesResult.error) throw expensesResult.error;
-      if (financeResult.error) throw financeResult.error;
+        supabase.rpc(
+          "get_or_create_uptrend_finance_account"
+        ),
 
-      const mappedSales = (salesResult.data || []).map((sale) => ({
-        id: sale.id,
-        date: sale.sale_date,
-        productId: sale.product_id || "",
-        product: sale.product_name,
-        productName: sale.product_name,
-        quantity: Number(sale.quantity || 0),
-        costPrice: Number(sale.cost_price || 0),
-        totalCost:
-          Number(sale.cost_price || 0) *
-          Number(sale.quantity || 0),
-        sellingPrice: Number(sale.selling_price || 0),
-        totalSelling: Number(sale.total_selling || 0),
-        grossProfit: Number(sale.gross_profit || 0),
-        createdAt: sale.created_at,
-      }));
+        supabase
+          .from("uptrend_finance_transactions")
+          .select(
+            "id,type,amount,status,category,description,reference,external_reference,metadata,created_at,updated_at"
+          )
+          .eq("user_id", user.id)
+          .order("created_at", {
+            ascending: false,
+          }),
+      ]);
 
-      const mappedExpenses = (expensesResult.data || []).map(
-        (expense) => ({
-          id: expense.id,
-          name: expense.name,
-          amount: Number(expense.amount || 0),
-          category: expense.category || "Uncategorized",
-          note: expense.note || "",
-          date: expense.expense_date,
-          createdAt: expense.created_at,
+      if (salesResult.error)
+        throw salesResult.error;
+
+      if (expensesResult.error)
+        throw expensesResult.error;
+
+      if (financeResult.error)
+        throw financeResult.error;
+
+      if (financeAccountResult.error)
+        throw financeAccountResult.error;
+
+      if (financeTransactionsResult.error)
+        throw financeTransactionsResult.error;
+
+      const mappedSales = (salesResult.data || []).map(
+        (sale) => ({
+          id: sale.id,
+          date: sale.sale_date,
+          productId: sale.product_id || "",
+          product: sale.product_name,
+          productName: sale.product_name,
+          quantity: Number(sale.quantity || 0),
+          costPrice: Number(sale.cost_price || 0),
+          totalCost:
+            Number(sale.cost_price || 0) *
+            Number(sale.quantity || 0),
+          sellingPrice: Number(
+            sale.selling_price || 0
+          ),
+          totalSelling: Number(
+            sale.total_selling || 0
+          ),
+          grossProfit: Number(
+            sale.gross_profit || 0
+          ),
+          createdAt: sale.created_at,
         })
       );
+
+      const mappedExpenses = (
+        expensesResult.data || []
+      ).map((expense) => ({
+        id: expense.id,
+        name: expense.name,
+        amount: Number(expense.amount || 0),
+        category:
+          expense.category || "Uncategorized",
+        note: expense.note || "",
+        date: expense.expense_date,
+        createdAt: expense.created_at,
+      }));
+
+      const mappedFinanceTransactions = (
+        financeTransactionsResult.data || []
+      ).map((transaction) => ({
+        id: transaction.id,
+        type: transaction.type,
+        amount: Number(transaction.amount || 0),
+        status: transaction.status,
+        category:
+          transaction.category ||
+          "Uncategorized",
+        description:
+          transaction.description ||
+          "Financial transaction",
+        reference:
+          transaction.reference ||
+          transaction.external_reference ||
+          "—",
+        externalReference:
+          transaction.external_reference || "",
+        metadata: transaction.metadata || {},
+        createdAt: transaction.created_at,
+        updatedAt: transaction.updated_at,
+      }));
 
       const openingBalance = Number(
         financeResult.data?.opening_balance || 0
@@ -147,13 +246,21 @@ function Finance() {
 
       setSales(mappedSales);
       setExpenses(mappedExpenses);
+      setFinanceTransactions(
+        mappedFinanceTransactions
+      );
       setFinance({ openingBalance });
 
       setOpeningInput(
-        openingBalance ? String(openingBalance) : ""
+        openingBalance
+          ? String(openingBalance)
+          : ""
       );
     } catch (loadError) {
-      console.error("Finance data load failed:", loadError);
+      console.error(
+        "Finance data load failed:",
+        loadError
+      );
 
       setError(
         loadError?.message ||
@@ -161,6 +268,10 @@ function Finance() {
       );
     } finally {
       setLoading(false);
+
+      if (isRefresh) {
+        setRefreshing(false);
+      }
     }
   };
 
@@ -169,12 +280,26 @@ function Finance() {
 
     const handleFocus = () => loadData();
 
-    window.addEventListener("focus", handleFocus);
-    window.addEventListener("storage", handleFocus);
+    window.addEventListener(
+      "focus",
+      handleFocus
+    );
+
+    window.addEventListener(
+      "storage",
+      handleFocus
+    );
 
     return () => {
-      window.removeEventListener("focus", handleFocus);
-      window.removeEventListener("storage", handleFocus);
+      window.removeEventListener(
+        "focus",
+        handleFocus
+      );
+
+      window.removeEventListener(
+        "storage",
+        handleFocus
+      );
     };
   }, []);
 
@@ -190,18 +315,26 @@ function Finance() {
       };
     }
 
-    const start = customStart || "0000-01-01";
-    const end = customEnd || todayKey();
+    const start =
+      customStart || "0000-01-01";
+
+    const end =
+      customEnd || todayKey();
 
     return {
       sales: sales.filter((sale) => {
         const key = dateKey(sale.date);
+
         return key >= start && key <= end;
       }),
-      expenses: expenses.filter((expense) => {
-        const key = dateKey(expense.date);
-        return key >= start && key <= end;
-      }),
+
+      expenses: expenses.filter(
+        (expense) => {
+          const key = dateKey(expense.date);
+
+          return key >= start && key <= end;
+        }
+      ),
     };
   }, [
     sales,
@@ -238,40 +371,52 @@ function Finance() {
   );
 
   const analytics = useMemo(() => {
-    const revenue = filteredData.sales.reduce(
-      (sum, sale) =>
-        sum + Number(sale.totalSelling || 0),
-      0
-    );
+    const revenue =
+      filteredData.sales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(sale.totalSelling || 0),
+        0
+      );
 
-    const productCost = filteredData.sales.reduce(
-      (sum, sale) =>
-        sum + Number(sale.totalCost || 0),
-      0
-    );
+    const productCost =
+      filteredData.sales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(sale.totalCost || 0),
+        0
+      );
 
-    const grossProfit = filteredData.sales.reduce(
-      (sum, sale) =>
-        sum + Number(sale.grossProfit || 0),
-      0
-    );
+    const grossProfit =
+      filteredData.sales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(sale.grossProfit || 0),
+        0
+      );
 
-    const expensesTotal = filteredData.expenses.reduce(
-      (sum, expense) =>
-        sum + Number(expense.amount || 0),
-      0
-    );
+    const expensesTotal =
+      filteredData.expenses.reduce(
+        (sum, expense) =>
+          sum +
+          Number(expense.amount || 0),
+        0
+      );
 
     const expenseCategories = {};
 
-    filteredData.expenses.forEach((expense) => {
-      const category =
-        expense.category || "Uncategorized";
+    filteredData.expenses.forEach(
+      (expense) => {
+        const category =
+          expense.category ||
+          "Uncategorized";
 
-      expenseCategories[category] =
-        (expenseCategories[category] || 0) +
-        Number(expense.amount || 0);
-    });
+        expenseCategories[category] =
+          (expenseCategories[category] ||
+            0) +
+          Number(expense.amount || 0);
+      }
+    );
 
     const categoryRows = Object.entries(
       expenseCategories
@@ -279,18 +424,25 @@ function Finance() {
       .map(([name, amount]) => ({
         name,
         amount,
-        share: percent(amount, expensesTotal),
+        share: percent(
+          amount,
+          expensesTotal
+        ),
       }))
-      .sort((a, b) => b.amount - a.amount);
+      .sort(
+        (a, b) => b.amount - a.amount
+      );
 
     const transactionCount =
       filteredData.sales.length;
 
-    const unitsSold = filteredData.sales.reduce(
-      (sum, sale) =>
-        sum + Number(sale.quantity || 0),
-      0
-    );
+    const unitsSold =
+      filteredData.sales.reduce(
+        (sum, sale) =>
+          sum +
+          Number(sale.quantity || 0),
+        0
+      );
 
     const grossMargin =
       revenue > 0
@@ -304,55 +456,65 @@ function Finance() {
 
     const netMargin =
       revenue > 0
-        ? (displayedNetProfit / revenue) * 100
+        ? (displayedNetProfit / revenue) *
+          100
         : 0;
 
     const dayMap = {};
 
-    filteredData.sales.forEach((sale) => {
-      const key = dateKey(sale.date);
+    filteredData.sales.forEach(
+      (sale) => {
+        const key = dateKey(sale.date);
 
-      if (!key) return;
+        if (!key) return;
 
-      if (!dayMap[key]) {
-        dayMap[key] = {
-          date: key,
-          revenue: 0,
-          expenses: 0,
-          grossProfit: 0,
-        };
+        if (!dayMap[key]) {
+          dayMap[key] = {
+            date: key,
+            revenue: 0,
+            expenses: 0,
+            grossProfit: 0,
+          };
+        }
+
+        dayMap[key].revenue += Number(
+          sale.totalSelling || 0
+        );
+
+        dayMap[key].grossProfit +=
+          Number(
+            sale.grossProfit || 0
+          );
       }
+    );
 
-      dayMap[key].revenue += Number(
-        sale.totalSelling || 0
-      );
+    filteredData.expenses.forEach(
+      (expense) => {
+        const key = dateKey(
+          expense.date
+        );
 
-      dayMap[key].grossProfit += Number(
-        sale.grossProfit || 0
-      );
-    });
+        if (!key) return;
 
-    filteredData.expenses.forEach((expense) => {
-      const key = dateKey(expense.date);
+        if (!dayMap[key]) {
+          dayMap[key] = {
+            date: key,
+            revenue: 0,
+            expenses: 0,
+            grossProfit: 0,
+          };
+        }
 
-      if (!key) return;
-
-      if (!dayMap[key]) {
-        dayMap[key] = {
-          date: key,
-          revenue: 0,
-          expenses: 0,
-          grossProfit: 0,
-        };
+        dayMap[key].expenses += Number(
+          expense.amount || 0
+        );
       }
+    );
 
-      dayMap[key].expenses += Number(
-        expense.amount || 0
-      );
-    });
-
-    const daily = Object.values(dayMap).sort(
-      (a, b) => a.date.localeCompare(b.date)
+    const daily = Object.values(
+      dayMap
+    ).sort((a, b) =>
+      a.date.localeCompare(b.date)
     );
 
     const chartDays = daily.slice(-14);
@@ -366,17 +528,21 @@ function Finance() {
     );
 
     const recent = [
-      ...filteredData.sales.map((sale) => ({
-        id: `sale-${sale.id}`,
-        type: "sale",
-        label:
-          sale.productName || "Sale",
-        date: sale.date,
-        amount: Number(
-          sale.totalSelling || 0
-        ),
-        createdAt: sale.createdAt,
-      })),
+      ...filteredData.sales.map(
+        (sale) => ({
+          id: `sale-${sale.id}`,
+          type: "sale",
+          label:
+            sale.productName ||
+            "Sale",
+          date: sale.date,
+          amount: Number(
+            sale.totalSelling || 0
+          ),
+          createdAt:
+            sale.createdAt,
+        })
+      ),
 
       ...filteredData.expenses.map(
         (expense) => ({
@@ -390,7 +556,8 @@ function Finance() {
           amount: Number(
             expense.amount || 0
           ),
-          createdAt: expense.createdAt,
+          createdAt:
+            expense.createdAt,
         })
       ),
     ]
@@ -426,12 +593,364 @@ function Finance() {
       chartMax,
       recent,
     };
-  }, [filteredData, displayedNetProfit]);
+  }, [
+    filteredData,
+    displayedNetProfit,
+  ]);
 
-  const saveOpeningBalance = async (event) => {
+  const ledgerTransactions = useMemo(() => {
+    return financeTransactions.filter(
+      (transaction) => {
+        const transactionDate =
+          transaction.createdAt;
+
+        const matchesPeriod =
+          period === "custom"
+            ? (() => {
+                const start =
+                  customStart ||
+                  "0000-01-01";
+
+                const end =
+                  customEnd ||
+                  todayKey();
+
+                const key =
+                  dateKey(
+                    transactionDate
+                  );
+
+                return (
+                  key >= start &&
+                  key <= end
+                );
+              })()
+            : inRange(
+                transactionDate,
+                period
+              );
+
+        const matchesType =
+          ledgerTypeFilter === "all" ||
+          transaction.type ===
+            ledgerTypeFilter;
+
+        const matchesStatus =
+          ledgerStatusFilter ===
+            "all" ||
+          transaction.status ===
+            ledgerStatusFilter;
+
+        const search =
+          ledgerSearch.trim().toLowerCase();
+
+        const matchesSearch =
+          !search ||
+          [
+            transaction.description,
+            transaction.category,
+            transaction.reference,
+            transaction.externalReference,
+          ]
+            .filter(Boolean)
+            .some((value) =>
+              String(value)
+                .toLowerCase()
+                .includes(search)
+            );
+
+        return (
+          matchesPeriod &&
+          matchesType &&
+          matchesStatus &&
+          matchesSearch
+        );
+      }
+    );
+  }, [
+    financeTransactions,
+    period,
+    customStart,
+    customEnd,
+    ledgerTypeFilter,
+    ledgerStatusFilter,
+    ledgerSearch,
+  ]);
+
+  const exportLedgerCsv = () => {
+    if (ledgerTransactions.length === 0) {
+      setError("There are no ledger transactions to export.");
+      return;
+    }
+
+    const headers = [
+      "Date",
+      "Type",
+      "Status",
+      "Category",
+      "Description",
+      "Amount",
+      "Reference",
+      "External Reference",
+    ];
+
+    const escapeCsv = (value) => {
+      const text = String(value ?? "");
+      return `"${text.replace(/"/g, '""')}"`;
+    };
+
+    const rows = ledgerTransactions.map((transaction) => [
+      transaction.createdAt || "",
+      transaction.type === "credit"
+        ? "Money in"
+        : "Money out",
+      ledgerStatusLabel(transaction.status),
+      transaction.category || "",
+      transaction.description || "",
+      transaction.amount || 0,
+      transaction.reference === "—"
+        ? ""
+        : transaction.reference || "",
+      transaction.externalReference || "",
+    ]);
+
+    const csv = [
+      headers,
+      ...rows,
+    ]
+      .map((row) => row.map(escapeCsv).join(","))
+      .join("\n");
+
+    const blob = new Blob([csv], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `uptrend-finance-ledger-${todayKey()}.csv`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+  };
+
+  const openTransactionDetails = (transaction) => {
+    setSelectedTransaction(transaction);
+    setShowTransactionDetails(true);
+  };
+
+  useEffect(() => {
+    if (!showTransactionDetails) return;
+
+    const handleDetailsEscape = (event) => {
+      if (event.key === "Escape") {
+        setShowTransactionDetails(false);
+        setSelectedTransaction(null);
+      }
+    };
+
+    window.addEventListener(
+      "keydown",
+      handleDetailsEscape
+    );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleDetailsEscape
+      );
+    };
+  }, [showTransactionDetails]);
+
+  const reverseFinancialTransaction = async (transactionId) => {
+    if (!transactionId) return;
+
+    const confirmed = window.confirm(
+      "Reverse this completed transaction? The original record will remain in the ledger."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setError("");
+
+      const { error: reversalError } = await supabase.rpc(
+        "reverse_uptrend_financial_transaction",
+        {
+          p_transaction_id: transactionId,
+        }
+      );
+
+      if (reversalError) {
+        throw reversalError;
+      }
+
+      await loadData();
+    } catch (reversalError) {
+      console.error(
+        "Financial transaction reversal failed:",
+        reversalError
+      );
+
+      setError(
+        reversalError?.message ||
+          "Unable to reverse the transaction."
+      );
+    }
+  };
+
+  const ledgerSummary = useMemo(() => {
+    const completed = ledgerTransactions.filter(
+      (transaction) =>
+        transaction.status === "completed"
+    );
+
+    const moneyIn = completed
+      .filter(
+        (transaction) =>
+          transaction.type === "credit"
+      )
+      .reduce(
+        (sum, transaction) =>
+          sum + Number(transaction.amount || 0),
+        0
+      );
+
+    const moneyOut = completed
+      .filter(
+        (transaction) =>
+          transaction.type === "debit"
+      )
+      .reduce(
+        (sum, transaction) =>
+          sum + Number(transaction.amount || 0),
+        0
+      );
+
+    return {
+      moneyIn,
+      moneyOut,
+      balance: moneyIn - moneyOut,
+    };
+  }, [ledgerTransactions]);
+
+  const saveManualTransaction = async (event) => {
     event.preventDefault();
 
-    const amount = Number(openingInput);
+    const amount = Number(transactionForm.amount);
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setError("Enter a valid amount greater than zero.");
+      return;
+    }
+
+    if (!transactionForm.category.trim()) {
+      setError("Enter a category for this transaction.");
+      return;
+    }
+
+    try {
+      setSavingTransaction(true);
+      setError("");
+
+      const { error: transactionError } = await supabase.rpc(
+        "record_uptrend_manual_financial_transaction",
+        {
+          p_type: transactionForm.type,
+          p_amount: amount,
+          p_category: transactionForm.category.trim(),
+          p_description:
+            transactionForm.description.trim() || null,
+          p_reference:
+            transactionForm.reference.trim() || null,
+        }
+      );
+
+      if (transactionError) {
+        throw transactionError;
+      }
+
+      setTransactionForm({
+        type: "credit",
+        amount: "",
+        category: "",
+        description: "",
+        reference: "",
+      });
+
+      setShowTransactionModal(false);
+
+      await loadData();
+    } catch (transactionError) {
+      console.error(
+        "Manual finance transaction failed:",
+        transactionError
+      );
+
+      setError(
+        transactionError?.message ||
+          "Unable to record the transaction."
+      );
+    } finally {
+      setSavingTransaction(false);
+    }
+  };
+
+  const ledgerCashMovement = useMemo(() => {
+    const completed = ledgerTransactions.filter(
+      (transaction) =>
+        transaction.status === "completed"
+    );
+
+    const moneyIn = completed
+      .filter(
+        (transaction) =>
+          transaction.type === "credit"
+      )
+      .reduce(
+        (sum, transaction) =>
+          sum + Number(transaction.amount || 0),
+        0
+      );
+
+    const moneyOut = completed
+      .filter(
+        (transaction) =>
+          transaction.type === "debit"
+      )
+      .reduce(
+        (sum, transaction) =>
+          sum + Number(transaction.amount || 0),
+        0
+      );
+
+    return {
+      moneyIn,
+      moneyOut,
+      net: moneyIn - moneyOut,
+    };
+  }, [ledgerTransactions]);
+
+  const displayedCashAtHand =
+    Number(financial.cashAtHand || 0) +
+    ledgerCashMovement.net;
+
+  const displayedClosingBalance =
+    Number(financial.closingBalance || 0) +
+    ledgerCashMovement.net;
+
+  const saveOpeningBalance = async (
+    event
+  ) => {
+    event.preventDefault();
+
+    const amount = Number(
+      openingInput
+    );
 
     if (
       !Number.isFinite(amount) ||
@@ -471,13 +990,16 @@ function Finance() {
             }
           );
 
-      if (saveError) throw saveError;
+      if (saveError)
+        throw saveError;
 
       setFinance({
         openingBalance: amount,
       });
 
-      setOpeningInput(String(amount));
+      setOpeningInput(
+        String(amount)
+      );
     } catch (saveError) {
       console.error(
         "Opening balance save failed:",
@@ -493,7 +1015,10 @@ function Finance() {
 
   const periodLabel = useMemo(() => {
     if (period === "custom") {
-      if (customStart && customEnd) {
+      if (
+        customStart &&
+        customEnd
+      ) {
         return `${customStart} → ${customEnd}`;
       }
 
@@ -502,10 +1027,58 @@ function Finance() {
 
     return (
       PERIODS.find(
-        (item) => item.id === period
-      )?.label || "30 days"
+        (item) =>
+          item.id === period
+      )?.label ||
+      "30 days"
     );
-  }, [period, customStart, customEnd]);
+  }, [
+    period,
+    customStart,
+    customEnd,
+  ]);
+
+  const formatLedgerDate = (
+    value
+  ) => {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (
+      Number.isNaN(date.getTime())
+    ) {
+      return "—";
+    }
+
+    return date.toLocaleString(
+      "en-NG",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
+  };
+
+  const ledgerStatusLabel = (
+    status
+  ) => {
+    const labels = {
+      completed: "Completed",
+      pending: "Pending",
+      failed: "Failed",
+      reversed: "Reversed",
+    };
+
+    return (
+      labels[status] ||
+      status ||
+      "Unknown"
+    );
+  };
 
   if (loading) {
     return (
@@ -518,8 +1091,8 @@ function Finance() {
           </strong>
 
           <span>
-            Loading sales, expenses and cash
-            position.
+            Loading sales, expenses and
+            cash position.
           </span>
         </div>
       </div>
@@ -550,7 +1123,8 @@ function Finance() {
   const healthState =
     remainingExpenses > 0
       ? {
-          label: "Expenses are ahead",
+          label:
+            "Expenses are ahead",
           tone: "warning",
           text: `${money(
             remainingExpenses
@@ -566,7 +1140,8 @@ function Finance() {
           )} remains after recorded expenses.`,
         }
       : {
-          label: "Break-even position",
+          label:
+            "Break-even position",
           tone: "neutral",
           text:
             "Gross profit is currently fully absorbed by recorded expenses.",
@@ -584,93 +1159,15 @@ function Finance() {
           <h1>Finance</h1>
 
           <p>
-            See the movement of your money,
-            understand your margins, and know
-            the financial position of your
+            See the movement of your
+            money, understand your
+            margins, and know the
+            financial position of your
             business at a glance.
           </p>
         </div>
 
-        <div className="finance-header-status">
-          <span
-            className={`finance-status-dot ${healthState.tone}`}
-          />
-
-          <div>
-            <strong>
-              {healthState.label}
-            </strong>
-
-            <span>{periodLabel}</span>
-          </div>
-        </div>
       </header>
-
-      <section className="finance-command-bar">
-        <div className="finance-period-title">
-          <span>VIEWING</span>
-          <strong>{periodLabel}</strong>
-        </div>
-
-        <div className="finance-periods">
-          {PERIODS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={
-                period === item.id
-                  ? "active"
-                  : ""
-              }
-              onClick={() =>
-                setPeriod(item.id)
-              }
-            >
-              {item.label}
-            </button>
-          ))}
-
-          <button
-            type="button"
-            className={
-              period === "custom"
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              setPeriod("custom")
-            }
-          >
-            Custom
-          </button>
-        </div>
-
-        {period === "custom" && (
-          <div className="finance-custom-dates">
-            <input
-              type="date"
-              value={customStart}
-              onChange={(event) =>
-                setCustomStart(
-                  event.target.value
-                )
-              }
-            />
-
-            <span>to</span>
-
-            <input
-              type="date"
-              value={customEnd}
-              onChange={(event) =>
-                setCustomEnd(
-                  event.target.value
-                )
-              }
-            />
-          </div>
-        )}
-      </section>
 
       <section className="finance-cash-hero">
         <div className="finance-cash-main">
@@ -679,12 +1176,15 @@ function Finance() {
           </div>
 
           <div className="finance-cash-number">
-            {money(financial.cashAtHand)}
+            {money(
+              displayedCashAtHand
+            )}
           </div>
 
           <p>
-            Opening cash + money received from
-            sales − recorded expenses.
+            Opening cash + money
+            received from sales −
+            recorded expenses.
           </p>
 
           <div className="finance-cash-meter">
@@ -709,7 +1209,8 @@ function Finance() {
           </div>
 
           <span className="finance-meter-caption">
-            Live calculated cash position
+            Live calculated cash
+            position
           </span>
         </div>
 
@@ -738,7 +1239,10 @@ function Finance() {
             </span>
 
             <strong>
-              +{money(financial.cashIn)}
+              +
+              {money(
+                financial.cashIn
+              )}
             </strong>
           </div>
 
@@ -751,16 +1255,21 @@ function Finance() {
             </span>
 
             <strong>
-              −{money(financial.cashOut)}
+              −
+              {money(
+                financial.cashOut
+              )}
             </strong>
           </div>
 
           <div className="finance-flow-total">
-            <span>Closing cash</span>
+            <span>
+              Closing cash
+            </span>
 
             <strong>
               {money(
-                financial.closingBalance
+                displayedClosingBalance
               )}
             </strong>
           </div>
@@ -772,20 +1281,26 @@ function Finance() {
           <span>Revenue</span>
 
           <strong>
-            {money(analytics.revenue)}
+            {money(
+              analytics.revenue
+            )}
           </strong>
 
           <small>
-            {analytics.transactionCount} sales
-            transactions
+            {analytics.transactionCount}{" "}
+            sales transactions
           </small>
         </article>
 
         <article className="finance-kpi-card cost">
-          <span>Product Cost</span>
+          <span>
+            Product Cost
+          </span>
 
           <strong>
-            {money(analytics.productCost)}
+            {money(
+              analytics.productCost
+            )}
           </strong>
 
           <small>
@@ -797,10 +1312,14 @@ function Finance() {
         </article>
 
         <article className="finance-kpi-card profit">
-          <span>Gross Profit</span>
+          <span>
+            Gross Profit
+          </span>
 
           <strong>
-            {money(analytics.grossProfit)}
+            {money(
+              analytics.grossProfit
+            )}
           </strong>
 
           <small>
@@ -815,7 +1334,9 @@ function Finance() {
           <span>Expenses</span>
 
           <strong>
-            {money(analytics.expenses)}
+            {money(
+              analytics.expenses
+            )}
           </strong>
 
           <small>
@@ -827,10 +1348,14 @@ function Finance() {
         </article>
 
         <article className="finance-kpi-card net">
-          <span>Net Profit</span>
+          <span>
+            Net Profit
+          </span>
 
           <strong>
-            {money(displayedNetProfit)}
+            {money(
+              displayedNetProfit
+            )}
           </strong>
 
           <small>
@@ -853,11 +1378,14 @@ function Finance() {
           </span>
 
           <strong>
-            {money(remainingExpenses)}
+            {money(
+              remainingExpenses
+            )}
           </strong>
 
           <small>
-            {remainingExpenses > 0
+            {remainingExpenses >
+            0
               ? "Needs attention"
               : "Fully covered"}
           </small>
@@ -891,63 +1419,65 @@ function Finance() {
           </div>
 
           <div className="finance-chart">
-            {analytics.chartDays.length ===
-            0 ? (
+            {analytics.chartDays
+              .length === 0 ? (
               <div className="finance-empty-chart">
-                No financial movement in this
-                period.
+                No financial movement
+                in this period.
               </div>
             ) : (
-              analytics.chartDays.map((day) => (
-                <div
-                  className="finance-chart-day"
-                  key={day.date}
-                >
-                  <div className="finance-bars">
-                    <div
-                      className="finance-bar revenue-bar"
-                      style={{
-                        height: `${Math.max(
-                          4,
-                          (day.revenue /
-                            analytics.chartMax) *
-                            100
-                        )}%`,
-                      }}
-                      title={`Revenue ${money(
-                        day.revenue
-                      )}`}
-                    />
+              analytics.chartDays.map(
+                (day) => (
+                  <div
+                    className="finance-chart-day"
+                    key={day.date}
+                  >
+                    <div className="finance-bars">
+                      <div
+                        className="finance-bar revenue-bar"
+                        style={{
+                          height: `${Math.max(
+                            4,
+                            (day.revenue /
+                              analytics.chartMax) *
+                              100
+                          )}%`,
+                        }}
+                        title={`Revenue ${money(
+                          day.revenue
+                        )}`}
+                      />
 
-                    <div
-                      className="finance-bar expense-bar"
-                      style={{
-                        height: `${Math.max(
-                          4,
-                          (day.expenses /
-                            analytics.chartMax) *
-                            100
-                        )}%`,
-                      }}
-                      title={`Expenses ${money(
-                        day.expenses
-                      )}`}
-                    />
+                      <div
+                        className="finance-bar expense-bar"
+                        style={{
+                          height: `${Math.max(
+                            4,
+                            (day.expenses /
+                              analytics.chartMax) *
+                              100
+                          )}%`,
+                        }}
+                        title={`Expenses ${money(
+                          day.expenses
+                        )}`}
+                      />
+                    </div>
+
+                    <span>
+                      {new Date(
+                        `${day.date}T00:00:00`
+                      ).toLocaleDateString(
+                        "en-NG",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                        }
+                      )}
+                    </span>
                   </div>
-
-                  <span>
-                    {new Date(
-                      `${day.date}T00:00:00`
-                    ).toLocaleDateString(
-                      "en-NG",
-                      {
-                        day: "2-digit",
-                        month: "short",
-                      }
-                    )}
-                  </span>
-                </div>
-              ))
+                )
+              )
             )}
           </div>
         </div>
@@ -991,7 +1521,9 @@ function Finance() {
 
           <div className="finance-health-list">
             <div>
-              <span>Gross margin</span>
+              <span>
+                Gross margin
+              </span>
 
               <strong>
                 {analytics.grossMargin.toFixed(
@@ -1001,13 +1533,15 @@ function Finance() {
               </strong>
 
               <em>
-                Revenue kept after product
-                cost
+                Revenue kept after
+                product cost
               </em>
             </div>
 
             <div>
-              <span>Expense ratio</span>
+              <span>
+                Expense ratio
+              </span>
 
               <strong>
                 {analytics.expenseRatio.toFixed(
@@ -1017,12 +1551,15 @@ function Finance() {
               </strong>
 
               <em>
-                Revenue consumed by expenses
+                Revenue consumed by
+                expenses
               </em>
             </div>
 
             <div>
-              <span>Net margin</span>
+              <span>
+                Net margin
+              </span>
 
               <strong>
                 {analytics.netMargin.toFixed(
@@ -1049,21 +1586,24 @@ function Finance() {
               </span>
 
               <h2>
-                Where your money is going
+                Where your money is
+                going
               </h2>
             </div>
 
             <strong className="finance-panel-total">
-              {money(analytics.expenses)}
+              {money(
+                analytics.expenses
+              )}
             </strong>
           </div>
 
           <div className="finance-category-list">
-            {analytics.categoryRows.length ===
-            0 ? (
+            {analytics.categoryRows
+              .length === 0 ? (
               <div className="finance-empty">
-                No expenses recorded in this
-                period.
+                No expenses recorded
+                in this period.
               </div>
             ) : (
               analytics.categoryRows
@@ -1074,10 +1614,14 @@ function Finance() {
                     key={row.name}
                   >
                     <div className="finance-category-top">
-                      <span>{row.name}</span>
+                      <span>
+                        {row.name}
+                      </span>
 
                       <strong>
-                        {money(row.amount)}
+                        {money(
+                          row.amount
+                        )}
                       </strong>
                     </div>
 
@@ -1090,8 +1634,8 @@ function Finance() {
                     </div>
 
                     <small>
-                      {row.share}% of total
-                      expenses
+                      {row.share}% of
+                      total expenses
                     </small>
                   </div>
                 ))
@@ -1113,128 +1657,59 @@ function Finance() {
           </div>
 
           <div className="finance-activity-list">
-            {analytics.recent.length ===
-            0 ? (
+            {analytics.recent
+              .length === 0 ? (
               <div className="finance-empty">
-                No activity recorded in this
-                period.
+                No activity recorded
+                in this period.
               </div>
             ) : (
-              analytics.recent.map((item) => (
-                <div
-                  className="finance-activity-row"
-                  key={item.id}
-                >
+              analytics.recent.map(
+                (item) => (
                   <div
-                    className={`finance-activity-icon ${item.type}`}
+                    className="finance-activity-row"
+                    key={item.id}
                   >
-                    {item.type === "sale"
-                      ? "↑"
-                      : "↓"}
-                  </div>
+                    <div
+                      className={`finance-activity-icon ${item.type}`}
+                    >
+                      {item.type ===
+                      "sale"
+                        ? "↑"
+                        : "↓"}
+                    </div>
 
-                  <div className="finance-activity-info">
-                    <strong>
-                      {item.label}
+                    <div className="finance-activity-info">
+                      <strong>
+                        {item.label}
+                      </strong>
+
+                      <span>
+                        {item.date ||
+                          "No date"}
+                      </span>
+                    </div>
+
+                    <strong
+                      className={
+                        item.type ===
+                        "sale"
+                          ? "activity-in"
+                          : "activity-out"
+                      }
+                    >
+                      {item.type ===
+                      "sale"
+                        ? "+"
+                        : "−"}
+                      {money(
+                        item.amount
+                      )}
                     </strong>
-
-                    <span>
-                      {item.date ||
-                        "No date"}
-                    </span>
                   </div>
-
-                  <strong
-                    className={
-                      item.type === "sale"
-                        ? "activity-in"
-                        : "activity-out"
-                    }
-                  >
-                    {item.type === "sale"
-                      ? "+"
-                      : "−"}
-                    {money(item.amount)}
-                  </strong>
-                </div>
-              ))
+                )
+              )
             )}
-          </div>
-        </div>
-      </section>
-
-      <section className="finance-panel finance-position-panel">
-        <div className="finance-panel-heading">
-          <div>
-            <span>CARRY FORWARD</span>
-
-            <h2>
-              Opening → movement → closing
-            </h2>
-          </div>
-
-          <div className="finance-position-badge">
-            {periodLabel}
-          </div>
-        </div>
-
-        <div className="finance-position-flow">
-          <div>
-            <span>Opening balance</span>
-
-            <strong>
-              {money(
-                financial.openingBalance
-              )}
-            </strong>
-
-            <small>
-              Starting cash
-            </small>
-          </div>
-
-          <b>+</b>
-
-          <div>
-            <span>Cash in</span>
-
-            <strong>
-              {money(financial.cashIn)}
-            </strong>
-
-            <small>
-              Recorded sales receipts
-            </small>
-          </div>
-
-          <b>−</b>
-
-          <div>
-            <span>Cash out</span>
-
-            <strong>
-              {money(financial.cashOut)}
-            </strong>
-
-            <small>
-              Recorded expenses
-            </small>
-          </div>
-
-          <b>=</b>
-
-          <div className="closing">
-            <span>Closing cash</span>
-
-            <strong>
-              {money(
-                financial.closingBalance
-              )}
-            </strong>
-
-            <small>
-              Next period starting position
-            </small>
           </div>
         </div>
       </section>
@@ -1247,18 +1722,23 @@ function Finance() {
           </span>
 
           <h2>
-            Set your opening business cash
+            Set your opening business
+            cash
           </h2>
 
           <p>
-            Use this when you begin tracking a
-            business that already has cash
-            available. It becomes the starting
-            point for your cash position.
+            Use this when you begin
+            tracking a business that
+            already has cash available.
+            It becomes the starting
+            point for your cash
+            position.
           </p>
         </div>
 
-        <form onSubmit={saveOpeningBalance}>
+        <form
+          onSubmit={saveOpeningBalance}
+        >
           <label htmlFor="finance-opening">
             Opening cash
           </label>
@@ -1286,7 +1766,8 @@ function Finance() {
           </div>
 
           <small>
-            Current saved opening balance:{" "}
+            Current saved opening
+            balance:{" "}
             {money(
               financial.openingBalance
             )}

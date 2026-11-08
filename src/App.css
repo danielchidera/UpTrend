@@ -527,8 +527,6 @@ button:focus-visible {
 @media (max-width: 760px) {
   .command-app {
     display: block;
-
-    padding-bottom: 70px;
   }
 
   .command-main {

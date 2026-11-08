@@ -530,3 +530,651 @@
     width: 100%;
   }
 }
+
+.credit-customer-fixed {
+  display: grid;
+  gap: 7px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.credit-customer-fixed span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.credit-customer-fixed strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+
+/* Customer-specific Credit & Debit view */
+.customer-credit-panel {
+  margin-top: 4px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+}
+
+.customer-credit-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.customer-credit-panel-header h2 {
+  margin: 4px 0 5px;
+  color: var(--text);
+  font-size: 20px;
+}
+
+.customer-credit-panel-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.customer-credit-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.customer-credit-summary > div {
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.customer-credit-summary span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.customer-credit-summary strong {
+  color: var(--text);
+  font-size: 16px;
+}
+
+.customer-credit-empty {
+  display: grid;
+  gap: 5px;
+  padding: 28px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.customer-credit-empty strong {
+  color: var(--text);
+}
+
+.customer-credit-empty span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.customer-credit-list {
+  display: grid;
+  gap: 8px;
+}
+
+.customer-credit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.customer-credit-row-main {
+  min-width: 0;
+}
+
+.customer-credit-row-main strong {
+  display: block;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customer-credit-row-main span,
+.customer-credit-row-amount span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.customer-credit-row-amount {
+  text-align: right;
+}
+
+.customer-credit-row-amount strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.customer-credit-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.customer-credit-row-actions button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 9px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.customer-credit-row-actions button:hover {
+  border-color: var(--accent);
+}
+
+.customer-credit-global-hidden {
+  display: none;
+}
+
+@media (max-width: 620px) {
+  .customer-credit-panel {
+    padding: 14px;
+  }
+
+  .customer-credit-panel-header {
+    flex-direction: column;
+  }
+
+  .customer-credit-panel-header .credit-primary-btn {
+    width: 100%;
+  }
+
+  .customer-credit-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-credit-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .customer-credit-row-amount {
+    text-align: left;
+  }
+
+  .customer-credit-row-actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* =========================================================
+   CUSTOMER CREDIT & DEBT — PREMIUM FINANCIAL PANEL
+========================================================= */
+
+.customer-credit-panel {
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.customer-credit-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 0;
+}
+
+.customer-credit-panel-header h2 {
+  margin: 3px 0 5px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.customer-credit-panel-header p {
+  max-width: 520px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* Customer mode creates debt from a sale.
+   Do not manually create a second debt here. */
+.customer-credit-panel .credit-primary-btn {
+  display: none;
+}
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.customer-credit-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin-bottom: 12px;
+}
+
+.customer-credit-summary > div {
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--bg);
+}
+
+.customer-credit-summary > div:first-child {
+  border-color: rgba(255, 92, 92, 0.22);
+  background: rgba(255, 70, 70, 0.045);
+}
+
+.customer-credit-summary > div:nth-child(2) {
+  border-color: rgba(85, 217, 138, 0.18);
+  background: rgba(42, 180, 100, 0.045);
+}
+
+.customer-credit-summary span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.customer-credit-summary > div:first-child span,
+.customer-credit-summary > div:first-child strong {
+  color: #ff7373;
+}
+
+.customer-credit-summary > div:nth-child(2) strong {
+  color: #55d98a;
+}
+
+.customer-credit-summary strong {
+  display: block;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 850;
+}
+
+/* =========================================================
+   DEBT LIST
+========================================================= */
+
+.customer-credit-list {
+  display: grid;
+  gap: 8px;
+}
+
+.customer-credit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--bg);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.customer-credit-row:hover {
+  border-color: rgba(101, 220, 152, 0.2);
+  background: rgba(101, 220, 152, 0.025);
+  transform: translateY(-1px);
+}
+
+.customer-credit-row-main {
+  min-width: 0;
+}
+
+.customer-credit-row-main strong {
+  display: block;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customer-credit-row-main span,
+.customer-credit-row-amount span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+/* Outstanding balance */
+.customer-credit-row-amount {
+  min-width: 90px;
+  text-align: right;
+}
+
+.customer-credit-row-amount strong {
+  color: #ff7373;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+/* Pending debt is deliberately red */
+.customer-credit-row .credit-status-pending {
+  color: #ff7373;
+  background: rgba(255, 70, 70, 0.09);
+  border: 1px solid rgba(255, 92, 92, 0.14);
+}
+
+/* Partially paid = blue */
+.customer-credit-row .credit-status-partially_paid {
+  color: #72aaff;
+  background: rgba(80, 150, 255, 0.09);
+}
+
+/* Paid = green */
+.customer-credit-row .credit-status-paid {
+  color: #55d98a;
+  background: rgba(42, 180, 100, 0.09);
+}
+
+/* Overdue = stronger red */
+.customer-credit-row .credit-status-overdue {
+  color: #ff5f5f;
+  background: rgba(220, 70, 70, 0.11);
+}
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.customer-credit-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.customer-credit-row-actions button {
+  min-height: 29px;
+  padding: 0 8px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.customer-credit-row-actions button:hover {
+  transform: translateY(-1px);
+}
+
+/* View */
+.customer-credit-row-actions button:nth-child(1) {
+  border-color: rgba(101, 220, 152, 0.2);
+  background: rgba(101, 220, 152, 0.055);
+  color: #65dc98;
+}
+
+.customer-credit-row-actions button:nth-child(1):hover {
+  border-color: rgba(101, 220, 152, 0.4);
+  background: rgba(101, 220, 152, 0.1);
+}
+
+/* Payment */
+.customer-credit-row-actions button:nth-child(2) {
+  border-color: rgba(80, 150, 255, 0.22);
+  background: rgba(80, 150, 255, 0.055);
+  color: #72aaff;
+}
+
+.customer-credit-row-actions button:nth-child(2):hover {
+  border-color: rgba(80, 150, 255, 0.4);
+  background: rgba(80, 150, 255, 0.1);
+}
+
+/* Edit */
+.customer-credit-row-actions button:nth-child(3) {
+  border-color: rgba(214, 174, 67, 0.22);
+  background: rgba(214, 174, 67, 0.055);
+  color: #e5bd55;
+}
+
+.customer-credit-row-actions button:nth-child(3):hover {
+  border-color: rgba(214, 174, 67, 0.4);
+  background: rgba(214, 174, 67, 0.1);
+}
+
+/* Delete */
+.customer-credit-row-actions button:nth-child(4) {
+  border-color: rgba(255, 92, 92, 0.22);
+  background: rgba(255, 70, 70, 0.055);
+  color: #ff7373;
+}
+
+.customer-credit-row-actions button:nth-child(4):hover {
+  border-color: rgba(255, 92, 92, 0.42);
+  background: rgba(255, 70, 70, 0.1);
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.customer-credit-empty {
+  display: grid;
+  gap: 5px;
+  padding: 25px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.01);
+  text-align: center;
+}
+
+.customer-credit-empty strong {
+  color: var(--text);
+  font-size: 12px;
+}
+
+.customer-credit-empty span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* =========================================================
+   LIGHT MODE
+========================================================= */
+
+html[data-theme="light"] .customer-credit-summary > div:first-child,
+html[data-theme="light"] .customer-credit-row .credit-status-pending,
+html[data-theme="light"] .customer-credit-row-actions button:nth-child(4) {
+  background: rgba(200, 50, 50, 0.05);
+}
+
+html[data-theme="light"] .customer-credit-summary > div:nth-child(2) {
+  background: rgba(42, 180, 100, 0.05);
+}
+
+html[data-theme="light"] .customer-credit-row-actions button:nth-child(1) {
+  background: rgba(42, 180, 100, 0.045);
+}
+
+html[data-theme="light"] .customer-credit-row-actions button:nth-child(2) {
+  background: rgba(80, 150, 255, 0.045);
+}
+
+html[data-theme="light"] .customer-credit-row-actions button:nth-child(3) {
+  background: rgba(214, 174, 67, 0.045);
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 620px) {
+  .customer-credit-panel-header {
+    align-items: flex-start;
+  }
+
+  .customer-credit-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .customer-credit-summary > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .customer-credit-row {
+    grid-template-columns: 1fr auto;
+    gap: 9px;
+  }
+
+  .customer-credit-row-main {
+    grid-column: 1 / -1;
+  }
+
+  .customer-credit-row-amount {
+    text-align: left;
+  }
+
+  .customer-credit-row-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .customer-credit-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-credit-summary > div:last-child {
+    grid-column: auto;
+  }
+
+  .customer-credit-row {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-credit-row-actions {
+    justify-content: flex-start;
+  }
+}
+
+
+/* =========================================================
+   CUSTOMER DEBT — CONDITIONAL BALANCE COLORS
+========================================================= */
+
+/* Outstanding money = red */
+.customer-credit-row-amount strong.customer-credit-amount-outstanding {
+  color: #ff7373;
+}
+
+/* Fully paid money = blue */
+.customer-credit-row-amount strong.customer-credit-amount-paid {
+  color: #72aaff;
+}
+
+/* Paid status = blue in customer finance */
+.customer-credit-row .credit-status-paid {
+  color: #72aaff;
+  background: rgba(80, 150, 255, 0.1);
+  border: 1px solid rgba(80, 150, 255, 0.16);
+}
+
+/* Pending / still owed = red */
+.customer-credit-row .credit-status-pending,
+.customer-credit-row .credit-status-overdue {
+  color: #ff7373;
+  background: rgba(255, 70, 70, 0.09);
+  border: 1px solid rgba(255, 92, 92, 0.14);
+}
+
+/* Outstanding card: only red when money is actually owed */
+.customer-credit-summary-grid .credit-summary-card:first-child {
+  color: #72aaff;
+  border-color: rgba(114,170,255,.16);
+  background: rgba(114,170,255,.035);
+}
+
+.customer-credit-summary-grid .credit-summary-card:first-child strong {
+  color: #72aaff;
+}
+
+
+/* FIX: Outstanding summary card when balance is zero */
+.customer-credit-panel .credit-overview-grid .credit-stat-card:first-child,
+.customer-credit-panel .credit-overview-grid .credit-stat-card:first-child strong,
+.customer-credit-panel .credit-overview-grid .credit-stat-card:first-child .credit-stat-value {
+  color: #72aaff !important;
+  border-color: rgba(114,170,255,.16) !important;
+  background: rgba(114,170,255,.035) !important;
+}
+
+.customer-credit-panel .credit-overview-grid .credit-stat-card:first-child strong {
+  color: #72aaff !important;
+}
+
+
+/* =========================================================
+   CUSTOMER OUTSTANDING — TRUE CONDITIONAL COLOR
+========================================================= */
+
+/* No outstanding balance */
+.customer-credit-summary > div:first-child.no-outstanding {
+  border-color: rgba(114, 170, 255, 0.16) !important;
+  background: rgba(114, 170, 255, 0.035) !important;
+}
+
+.customer-credit-summary > div:first-child.no-outstanding span,
+.customer-credit-summary > div:first-child.no-outstanding strong {
+  color: #72aaff !important;
+}
+
+/* Actual outstanding balance */
+.customer-credit-summary > div:first-child.has-outstanding {
+  border-color: rgba(255, 92, 92, 0.22) !important;
+  background: rgba(255, 70, 70, 0.045) !important;
+}
+
+.customer-credit-summary > div:first-child.has-outstanding span,
+.customer-credit-summary > div:first-child.has-outstanding strong {
+  color: #ff7373 !important;
+}

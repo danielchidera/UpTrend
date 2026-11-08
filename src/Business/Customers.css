@@ -1030,3 +1030,367 @@
   background: rgba(214, 174, 67, 0.13);
   color: #f0cc67;
 }
+
+
+/* CUSTOMERS LIGHT MODE — BOLD TEXT */
+html[data-theme="light"] .customers-page,
+html[data-theme="light"] .customers-page h2,
+html[data-theme="light"] .customers-page h3,
+html[data-theme="light"] .customers-page h4,
+html[data-theme="light"] .customers-page p,
+html[data-theme="light"] .customers-page span,
+html[data-theme="light"] .customers-page strong,
+html[data-theme="light"] .customers-page label,
+html[data-theme="light"] .customers-page button,
+html[data-theme="light"] .customers-page input,
+html[data-theme="light"] .customers-page textarea {
+  font-weight: 700;
+}
+
+html[data-theme="light"] .customers-page input::placeholder,
+html[data-theme="light"] .customers-page textarea::placeholder {
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   CUSTOMERS LIGHT MODE
+   Dark text, readable surfaces, bold typography
+========================================================= */
+
+html[data-theme="light"] .customers-page {
+  color: #17231c;
+}
+
+html[data-theme="light"] .customers-page h2,
+html[data-theme="light"] .customers-page h3,
+html[data-theme="light"] .customers-page h4,
+html[data-theme="light"] .customers-page strong,
+html[data-theme="light"] .customers-page p,
+html[data-theme="light"] .customers-page span,
+html[data-theme="light"] .customers-page label,
+html[data-theme="light"] .customers-page button,
+html[data-theme="light"] .customers-page input,
+html[data-theme="light"] .customers-page textarea {
+  font-weight: 700;
+}
+
+html[data-theme="light"] .customers-page-top h2,
+html[data-theme="light"] .customer-card h3,
+html[data-theme="light"] .customers-count strong,
+html[data-theme="light"] .customer-financial-item strong,
+html[data-theme="light"] .customer-detail-identity h3,
+html[data-theme="light"] .customer-detail-stats strong,
+html[data-theme="light"] .customer-detail-invoice strong {
+  color: #17231c;
+}
+
+html[data-theme="light"] .customers-page-top p,
+html[data-theme="light"] .customers-count,
+html[data-theme="light"] .customer-card > span,
+html[data-theme="light"] .customer-card p,
+html[data-theme="light"] .customer-financial-item span,
+html[data-theme="light"] .customer-detail-contact span,
+html[data-theme="light"] .customer-detail-contact strong,
+html[data-theme="light"] .customer-detail-identity span,
+html[data-theme="light"] .customer-detail-invoice span,
+html[data-theme="light"] .customer-detail-empty,
+html[data-theme="light"] .customer-detail-notes p {
+  color: #52645a;
+}
+
+html[data-theme="light"] .premium-card,
+html[data-theme="light"] .customer-card {
+  border-color: rgba(23, 35, 28, 0.09);
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(31, 55, 42, 0.08);
+}
+
+html[data-theme="light"] .customers-search,
+html[data-theme="light"] .customer-financial-item,
+html[data-theme="light"] .customer-detail-contact > div,
+html[data-theme="light"] .customer-detail-stats button,
+html[data-theme="light"] .customer-detail-invoice,
+html[data-theme="light"] .customer-detail-notes {
+  border-color: rgba(23, 35, 28, 0.1);
+  background: #f2f7f3;
+}
+
+html[data-theme="light"] .customers-search input,
+html[data-theme="light"] .customer-form input,
+html[data-theme="light"] .customer-form textarea {
+  color: #17231c;
+}
+
+html[data-theme="light"] .customers-search input::placeholder,
+html[data-theme="light"] .customer-form input::placeholder,
+html[data-theme="light"] .customer-form textarea::placeholder {
+  color: #718078;
+  font-weight: 600;
+}
+
+html[data-theme="light"] .customer-card-actions button,
+html[data-theme="light"] .customer-detail-close,
+html[data-theme="light"] .customer-detail-actions button,
+html[data-theme="light"] .invoices-active-filter > button {
+  border-color: rgba(23, 35, 28, 0.12);
+  color: #52645a;
+}
+
+html[data-theme="light"] .customer-modal-card,
+html[data-theme="light"] .customer-detail-card {
+  border-color: rgba(23, 35, 28, 0.12);
+  background: #f8fbf9;
+}
+
+html[data-theme="light"] .customer-form label > span {
+  color: #52645a;
+}
+
+html[data-theme="light"] .customer-form input,
+html[data-theme="light"] .customer-form textarea {
+  border-color: rgba(23, 35, 28, 0.14);
+  background: #ffffff;
+}
+
+html[data-theme="light"] .customer-form-actions button:first-child {
+  border-color: rgba(23, 35, 28, 0.14);
+  color: #52645a;
+}
+
+html[data-theme="light"] .customer-detail-section-header h4 {
+  color: #17231c;
+}
+
+/* =========================================================
+   CUSTOMER DEBT FINANCIAL SUMMARY
+========================================================= */
+
+.customer-financial-item.customer-financial-debts {
+  border-color: rgba(255, 92, 92, 0.18);
+  background: rgba(255, 70, 70, 0.05);
+}
+
+.customer-financial-item.customer-financial-debts span,
+.customer-financial-item.customer-financial-debts span svg,
+.customer-financial-item.customer-financial-debts strong {
+  color: #ff7777;
+}
+
+.customer-financial-item.customer-financial-outstanding {
+  border-color: rgba(255, 92, 92, 0.16);
+  background: rgba(255, 70, 70, 0.04);
+}
+
+.customer-financial-item.customer-financial-outstanding span,
+.customer-financial-item strong.customer-outstanding {
+  color: #ff7777;
+}
+
+.customer-financial-item.customer-financial-paid strong.customer-paid {
+  color: #65dc98;
+}
+
+.customer-debt-summary {
+  border-color: rgba(255, 92, 92, 0.2) !important;
+  background: rgba(255, 70, 70, 0.06) !important;
+  color: #ff8b8b !important;
+}
+
+.customer-debt-summary:hover {
+  border-color: rgba(255, 92, 92, 0.34) !important;
+  background: rgba(255, 70, 70, 0.1) !important;
+}
+
+/* =========================================================
+   CUSTOMER PROFILE FINANCIAL STATS
+========================================================= */
+
+.customer-detail-stats .detail-stat-debts {
+  border-color: rgba(255, 92, 92, 0.18);
+  background: rgba(255, 70, 70, 0.05);
+}
+
+.customer-detail-stats .detail-stat-debts span,
+.customer-detail-stats .detail-stat-debts strong {
+  color: #ff7777;
+}
+
+.customer-detail-stats .detail-stat-paid strong {
+  color: #65dc98;
+}
+
+.customer-detail-stats .detail-stat-outstanding {
+  border-color: rgba(255, 92, 92, 0.18);
+  background: rgba(255, 70, 70, 0.05);
+}
+
+.customer-detail-stats .detail-stat-outstanding span,
+.customer-detail-stats .detail-stat-outstanding strong {
+  color: #ff7777;
+}
+
+/* =========================================================
+   CLEANER CREDIT & DEBT SECTION
+========================================================= */
+
+.customer-credit-debt-section {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.customer-credit-debt-section .customer-finance-helper {
+  margin: 7px 0 0;
+  padding: 0;
+  border: 0;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+html[data-theme="light"] .customer-financial-item.customer-financial-debts,
+html[data-theme="light"] .customer-financial-item.customer-financial-outstanding,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding {
+  border-color: rgba(200, 50, 50, 0.16);
+  background: rgba(220, 60, 60, 0.045);
+}
+
+html[data-theme="light"] .customer-financial-item.customer-financial-debts span,
+html[data-theme="light"] .customer-financial-item.customer-financial-debts span svg,
+html[data-theme="light"] .customer-financial-item.customer-financial-debts strong,
+html[data-theme="light"] .customer-financial-item.customer-financial-outstanding span,
+html[data-theme="light"] .customer-financial-item strong.customer-outstanding,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts span,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts strong,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding span,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding strong {
+  color: #c73535;
+}
+
+
+/* =========================================================
+   CONDITIONAL CUSTOMER DEBT COLORS
+========================================================= */
+
+/* Default = normal */
+.customer-financial-item.customer-financial-debts,
+.customer-financial-item.customer-financial-outstanding {
+  border-color: rgba(255, 255, 255, 0.055);
+  background: rgba(0, 0, 0, 0.13);
+}
+
+.customer-financial-item.customer-financial-debts span,
+.customer-financial-item.customer-financial-debts span svg,
+.customer-financial-item.customer-financial-debts strong,
+.customer-financial-item.customer-financial-outstanding span,
+.customer-financial-item.customer-financial-outstanding strong {
+  color: #ffffff;
+}
+
+/* Only active debts become red */
+.customer-financial-item.customer-financial-debts.has-debts {
+  border-color: rgba(255, 92, 92, 0.2);
+  background: rgba(255, 70, 70, 0.05);
+}
+
+.customer-financial-item.customer-financial-debts.has-debts span,
+.customer-financial-item.customer-financial-debts.has-debts span svg,
+.customer-financial-item.customer-financial-debts.has-debts strong {
+  color: #ff7373;
+}
+
+/* Only active outstanding becomes red */
+.customer-financial-item.customer-financial-outstanding.has-outstanding {
+  border-color: rgba(255, 92, 92, 0.2);
+  background: rgba(255, 70, 70, 0.05);
+}
+
+.customer-financial-item.customer-financial-outstanding.has-outstanding span,
+.customer-financial-item.customer-financial-outstanding.has-outstanding strong {
+  color: #ff7373;
+}
+
+/* Profile Debts */
+.customer-detail-stats .detail-stat-debts {
+  border-color: rgba(255, 255, 255, 0.055);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.customer-detail-stats .detail-stat-debts span,
+.customer-detail-stats .detail-stat-debts strong {
+  color: #ffffff;
+}
+
+.customer-detail-stats .detail-stat-debts.has-debts {
+  border-color: rgba(255, 92, 92, 0.2);
+  background: rgba(255, 70, 70, 0.05);
+}
+
+.customer-detail-stats .detail-stat-debts.has-debts span,
+.customer-detail-stats .detail-stat-debts.has-debts strong {
+  color: #ff7373;
+}
+
+/* Profile Outstanding */
+.customer-detail-stats .detail-stat-outstanding {
+  border-color: rgba(255, 255, 255, 0.055);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.customer-detail-stats .detail-stat-outstanding span,
+.customer-detail-stats .detail-stat-outstanding strong {
+  color: #ffffff;
+}
+
+.customer-detail-stats .detail-stat-outstanding.has-outstanding {
+  border-color: rgba(255, 92, 92, 0.2);
+  background: rgba(255, 70, 70, 0.05);
+}
+
+.customer-detail-stats .detail-stat-outstanding.has-outstanding span,
+.customer-detail-stats .detail-stat-outstanding.has-outstanding strong {
+  color: #ff7373;
+}
+
+/* Light mode */
+html[data-theme="light"] .customer-financial-item.customer-financial-debts,
+html[data-theme="light"] .customer-financial-item.customer-financial-outstanding,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding {
+  border-color: rgba(23, 35, 28, 0.1);
+  background: #f2f7f3;
+}
+
+html[data-theme="light"] .customer-financial-item.customer-financial-debts span,
+html[data-theme="light"] .customer-financial-item.customer-financial-debts span svg,
+html[data-theme="light"] .customer-financial-item.customer-financial-debts strong,
+html[data-theme="light"] .customer-financial-item.customer-financial-outstanding span,
+html[data-theme="light"] .customer-financial-item.customer-financial-outstanding strong,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts span,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts strong,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding span,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding strong {
+  color: #17231c;
+}
+
+html[data-theme="light"] .customer-financial-item.customer-financial-debts.has-debts,
+html[data-theme="light"] .customer-financial-item.customer-financial-outstanding.has-outstanding,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts.has-debts,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding.has-outstanding {
+  border-color: rgba(200, 50, 50, 0.16);
+  background: rgba(220, 60, 60, 0.045);
+}
+
+html[data-theme="light"] .customer-financial-item.customer-financial-debts.has-debts span,
+html[data-theme="light"] .customer-financial-item.customer-financial-debts.has-debts span svg,
+html[data-theme="light"] .customer-financial-item.customer-financial-debts.has-debts strong,
+html[data-theme="light"] .customer-financial-item.customer-financial-outstanding.has-outstanding span,
+html[data-theme="light"] .customer-financial-item.customer-financial-outstanding.has-outstanding strong,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts.has-debts span,
+html[data-theme="light"] .customer-detail-stats .detail-stat-debts.has-debts strong,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding.has-outstanding span,
+html[data-theme="light"] .customer-detail-stats .detail-stat-outstanding.has-outstanding strong {
+  color: #c73535;
+}

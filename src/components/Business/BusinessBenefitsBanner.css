@@ -1,0 +1,223 @@
+.business-benefits-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin: 24px 0;
+  border: 1px solid rgba(217, 184, 108, 0.24);
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(217, 184, 108, 0.13),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(18, 31, 24, 0.98),
+      rgba(9, 18, 13, 0.98)
+    );
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.business-benefits-glow {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  right: -90px;
+  top: -120px;
+  border-radius: 50%;
+  background: rgba(217, 184, 108, 0.08);
+  filter: blur(35px);
+  pointer-events: none;
+}
+
+.business-benefits-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.15fr 1.5fr auto;
+  gap: 28px;
+  align-items: center;
+  padding: 25px;
+}
+
+.business-benefits-copy {
+  min-width: 0;
+}
+
+.business-benefits-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: #d9b86c;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.business-benefits-copy h2 {
+  margin: 0;
+  color: #f5f8f6;
+  font-size: clamp(21px, 2.2vw, 29px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.business-benefits-copy h2 span {
+  color: #d9b86c;
+}
+
+.business-benefits-copy p {
+  max-width: 390px;
+  margin: 10px 0 0;
+  color: #91a098;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.business-benefits-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.business-benefit {
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.business-benefit-icon {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(217, 184, 108, 0.1);
+  color: #d9b86c;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.business-benefit strong,
+.business-benefit span {
+  display: block;
+}
+
+.business-benefit strong {
+  color: #e9efeb;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.business-benefit span {
+  margin-top: 3px;
+  color: #77877f;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.business-benefits-action {
+  min-width: 150px;
+}
+
+.business-benefits-action button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 11px;
+  background: #d9b86c;
+  color: #11100a;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.business-benefits-action button:hover {
+  background: #e6c97f;
+  transform: translateY(-1px);
+}
+
+.business-benefits-action button span {
+  font-size: 15px;
+}
+
+.business-benefits-action small {
+  display: block;
+  margin-top: 8px;
+  color: #687970;
+  font-size: 8px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.business-benefits-banner--compact {
+  margin: 16px 0;
+}
+
+.business-benefits-banner--compact
+  .business-benefits-content {
+  grid-template-columns: 1fr auto;
+}
+
+.business-benefits-banner--compact
+  .business-benefits-list {
+  display: none;
+}
+
+@media (max-width: 1050px) {
+  .business-benefits-content {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .business-benefits-copy p {
+    max-width: 600px;
+  }
+
+  .business-benefits-action {
+    max-width: 210px;
+  }
+
+  .business-benefits-banner--compact
+    .business-benefits-content {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (max-width: 650px) {
+  .business-benefits-content {
+    padding: 19px;
+  }
+
+  .business-benefits-list {
+    grid-template-columns: 1fr;
+  }
+
+  .business-benefits-action {
+    max-width: none;
+  }
+
+  .business-benefits-action button {
+    min-height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .business-benefits-action button {
+    transition: none;
+  }
+}
