@@ -1987,6 +1987,11 @@ const selectedCashDebtPayments =
       }
     );
 
+  const expenseChartPoints = chartPoints.map((point) => ({
+    ...point,
+    y: 88 - (point.expensesAmount / chartAxisMax) * 68,
+  }));
+
   const linePath = chartPoints.reduce((path, point, index, points) => {
     if (index === 0) {
       return `M ${point.x},${point.y}`;
@@ -2935,9 +2940,29 @@ const selectedCashDebtPayments =
                     title={`${point.label}: ${formatMoney(
                       point.amount
                     )}`}
-                  />
+                  >
+                    <span className="chart-value-label sales-value-label">
+                      {formatAxisMoney(point.amount)}
+                    </span>
+                  </span>
                 )
               )}
+
+              {expenseChartPoints.map((point) => (
+                <span
+                  key={`expense-${point.date}`}
+                  className="real-chart-point expense-chart-point"
+                  style={{
+                    left: `${point.x}%`,
+                    top: `${point.y}%`,
+                  }}
+                  title={`Expenses ${point.label}: ${formatMoney(point.expensesAmount)}`}
+                >
+                  <span className="chart-value-label expense-value-label">
+                    {formatAxisMoney(point.expensesAmount)}
+                  </span>
+                </span>
+              ))}
 
             </div>
 
@@ -3005,6 +3030,7 @@ const selectedCashDebtPayments =
                       <div className="comparison-bar-pair">
                         <span
                           className="comparison-bar bar-sales"
+                          data-value={formatAxisMoney(day.amount)}
                           style={{
                             height: `${Math.max(0, day.amount / comparisonAxisMax * 100)}%`,
                           }}
@@ -3012,6 +3038,7 @@ const selectedCashDebtPayments =
                         />
                         <span
                           className="comparison-bar bar-expenses"
+                          data-value={formatAxisMoney(day.expensesAmount)}
                           style={{
                             height: `${Math.max(0, day.expensesAmount / comparisonAxisMax * 100)}%`,
                           }}

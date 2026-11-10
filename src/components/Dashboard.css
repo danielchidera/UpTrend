@@ -5968,3 +5968,83 @@ html[data-theme="light"] .recent-transaction-icon.is-debit {
 html[data-theme="light"] .recent-transaction-amount.is-debit {
   color: #dc2626 !important;
 }
+
+
+/* =========================================================
+   CHART DATA LABELS AND EXPENSE MARKERS
+========================================================= */
+
+.chart-value-label {
+  position: absolute;
+  left: 50%;
+  z-index: 5;
+  width: max-content;
+  max-width: 72px;
+  color: #e8f4ec;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.sales-value-label {
+  bottom: calc(100% + 5px);
+  transform: translateX(-50%);
+  color: #8af0b2;
+}
+
+.expense-chart-point {
+  z-index: 3;
+  width: 7px;
+  height: 7px;
+  border: 2px solid #ff8588;
+  border-radius: 50%;
+  background: #351116;
+  box-shadow: 0 0 0 4px rgba(239, 83, 80, 0.09),
+              0 0 12px rgba(239, 83, 80, 0.4);
+}
+
+.expense-value-label {
+  top: calc(100% + 5px);
+  transform: translateX(-50%);
+  color: #ff999c;
+}
+
+.comparison-bar {
+  position: relative;
+}
+
+.comparison-bar::before {
+  content: attr(data-value);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%);
+  color: #e8f4ec;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.bar-sales::before {
+  color: #8af0b2;
+}
+
+.bar-expenses::before {
+  color: #ff999c;
+}
+
+@media (max-width: 520px) {
+  .chart-value-label {
+    font-size: 8px;
+  }
+
+  .comparison-bar::before {
+    font-size: 7px;
+  }
+}
