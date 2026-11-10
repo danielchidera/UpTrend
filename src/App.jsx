@@ -10,6 +10,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import { useRegisterSW } from "virtual:pwa-register/react";
+
 import "./App.css";
 
 import { supabase } from "./lib/supabase";
@@ -1672,6 +1674,71 @@ function AppContent() {
    APP ROOT
 ========================================================= */
 
+function PWAUpdatePrompt() {
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({ immediate: true });
+
+  if (!needRefresh) return null;
+
+  return (
+    <div
+      role="status"
+      style={{
+        position: "fixed",
+        left: "16px",
+        right: "16px",
+        bottom: "max(16px, env(safe-area-inset-bottom))",
+        zIndex: 99999,
+        padding: "16px",
+        borderRadius: "14px",
+        background: "#10251a",
+        color: "#ffffff",
+        border: "1px solid #3b9b65",
+        boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
+      }}
+    >
+      <div style={{ fontWeight: 700, marginBottom: "6px" }}>
+        UpTrend update available
+      </div>
+      <div style={{ fontSize: "13px", marginBottom: "14px", opacity: 0.85 }}>
+        A new version is ready. Update now to get the latest features.
+      </div>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button
+          type="button"
+          onClick={() => updateServiceWorker(true)}
+          style={{
+            flex: 1,
+            padding: "11px",
+            border: 0,
+            borderRadius: "8px",
+            background: "#55d98a",
+            color: "#062012",
+            fontWeight: 700,
+          }}
+        >
+          Update Now
+        </button>
+        <button
+          type="button"
+          onClick={() => setNeedRefresh(false)}
+          style={{
+            padding: "11px 16px",
+            border: "1px solid #668675",
+            borderRadius: "8px",
+            background: "transparent",
+            color: "#ffffff",
+          }}
+        >
+          Later
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   console.log("VIEWPORT:", {
     innerWidth: window.innerWidth,
@@ -1681,6 +1748,7 @@ function App() {
   });
   return (
     <ThemeProvider>
+      <PWAUpdatePrompt />
       <AppContent />
     </ThemeProvider>
   );
