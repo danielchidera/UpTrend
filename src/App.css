@@ -1416,3 +1416,311 @@ html[data-theme="light"] .command-header {
       rgba(22, 70, 42, 0.12);
   }
 }
+
+/* UPTREND LOGIN AND SIGNUP WELCOME POPUP */
+.uptrend-welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(3, 8, 6, 0.76);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: uptrendWelcomeFade 0.25s ease both;
+}
+
+.uptrend-welcome-modal {
+  position: relative;
+  width: min(430px, 100%);
+  padding: 38px 30px 30px;
+  text-align: center;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 25px;
+  background: linear-gradient(145deg, #17251e, #0d1511);
+  color: #f4f8f5;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+  animation: uptrendWelcomeRise 0.4s ease both;
+}
+
+.uptrend-welcome-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: 0;
+  background: transparent;
+  color: #a7b5ac;
+  font-size: 27px;
+  cursor: pointer;
+}
+
+.uptrend-welcome-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 19px;
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 20px;
+  background: rgba(74, 222, 128, 0.12);
+  color: #6ee7a0;
+  font-size: 32px;
+}
+
+.uptrend-welcome-label {
+  color: #75d99b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.uptrend-welcome-modal h2 {
+  margin: 13px 0 10px;
+  font-size: clamp(23px, 5vw, 29px);
+  letter-spacing: -0.8px;
+}
+
+.uptrend-welcome-modal p {
+  margin: 0 auto 25px;
+  max-width: 320px;
+  color: #b5c3ba;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.uptrend-welcome-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  min-height: 49px;
+  border: 0;
+  border-radius: 13px;
+  background: #42c77b;
+  color: #07150c;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.uptrend-welcome-button:hover {
+  transform: translateY(-2px);
+  background: #5bdb91;
+}
+
+@keyframes uptrendWelcomeFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes uptrendWelcomeRise {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 480px) {
+  .uptrend-welcome-modal {
+    padding: 34px 22px 24px;
+  }
+}
+
+
+/* GLOBAL IPHONE-STYLE QUICK ACTION DOCK */
+.global-quick-dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 9px 15px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 24px;
+  background: rgba(18,25,21,.78);
+  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.global-quick-dock button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 15px;
+  background: transparent;
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease;
+}
+
+.global-quick-dock button:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,.07);
+}
+
+.global-quick-dock button span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+}
+
+.global-quick-dock svg {
+  width: 21px;
+  height: 21px;
+}
+
+.global-quick-dock .dock-sale {
+  color: #4ade80;
+  background: rgba(74,222,128,.13);
+}
+
+.global-quick-dock .dock-expense {
+  color: #ff6b6b;
+  background: rgba(255,92,92,.13);
+}
+
+.global-quick-dock .dock-supplier {
+  color: #60a5fa;
+  background: rgba(59,130,246,.14);
+}
+
+/* ==========================================
+   UPTREND LUXURY EMERALD & GOLD WELCOME MODAL
+========================================== */
+
+.uptrend-welcome-overlay {
+  background:
+    radial-gradient(ellipse at center, rgba(12, 45, 30, .48), rgba(1, 7, 4, .88));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.uptrend-welcome-modal {
+  overflow: hidden;
+  padding: 42px 30px 30px;
+  border: 1px solid rgba(218, 184, 104, .48);
+  border-radius: 27px;
+  background:
+    radial-gradient(ellipse at 50% -15%, rgba(194, 153, 69, .16), transparent 48%),
+    linear-gradient(145deg, #102b1e 0%, #07180f 55%, #041009 100%);
+  box-shadow:
+    0 0 0 1px rgba(218, 184, 104, .08),
+    0 0 45px rgba(190, 148, 60, .12),
+    0 30px 100px rgba(0, 0, 0, .65);
+}
+
+.uptrend-welcome-modal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  width: 76%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #f2d58d, transparent);
+  box-shadow: 0 0 18px rgba(232, 195, 112, .65);
+}
+
+.uptrend-welcome-modal::after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -110px;
+  bottom: -110px;
+  border: 1px solid rgba(218, 184, 104, .12);
+  border-radius: 50%;
+  box-shadow: 0 0 0 18px rgba(218, 184, 104, .025),
+              0 0 0 38px rgba(218, 184, 104, .02);
+  pointer-events: none;
+}
+
+.uptrend-welcome-close {
+  z-index: 2;
+  color: #d9bd7c;
+  transition: color .2s ease, transform .2s ease;
+}
+
+.uptrend-welcome-close:hover {
+  color: #ffe7aa;
+  transform: rotate(90deg);
+}
+
+.uptrend-welcome-icon {
+  width: 76px;
+  height: 76px;
+  border: 1px solid rgba(229, 193, 111, .65);
+  border-radius: 23px;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255, 225, 157, .2), transparent 65%),
+    linear-gradient(145deg, #244b34, #102719);
+  color: #f0d18b;
+  font-size: 38px;
+  box-shadow:
+    0 0 25px rgba(221, 178, 91, .16),
+    inset 0 0 20px rgba(224, 185, 103, .09);
+  text-shadow: 0 0 15px rgba(244, 211, 137, .65);
+}
+
+.uptrend-welcome-label {
+  color: #d8b66d;
+  letter-spacing: 2.8px;
+  font-size: 10px;
+  text-shadow: 0 0 12px rgba(216, 182, 109, .25);
+}
+
+.uptrend-welcome-modal h2 {
+  color: #f5f0df;
+  font-weight: 750;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 18px rgba(218, 184, 104, .12);
+}
+
+.uptrend-welcome-modal p {
+  color: #b9c8ba;
+  line-height: 1.9;
+}
+
+.uptrend-welcome-button {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid rgba(255, 230, 170, .65);
+  background: linear-gradient(110deg, #b88b3e, #f0d28a 48%, #bd9147);
+  color: #152416;
+  box-shadow:
+    0 5px 22px rgba(195, 151, 64, .23),
+    inset 0 1px 0 rgba(255,255,255,.35);
+  font-weight: 850;
+}
+
+.uptrend-welcome-button:hover {
+  background: linear-gradient(110deg, #d0a653, #ffe7a7 48%, #d2a34e);
+  box-shadow: 0 8px 30px rgba(218, 177, 91, .32);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .uptrend-welcome-icon {
+    animation: welcomeGoldGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes welcomeGoldGlow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(221, 178, 91, .13),
+                  inset 0 0 18px rgba(224, 185, 103, .07);
+    }
+    50% {
+      box-shadow: 0 0 34px rgba(221, 178, 91, .3),
+                  inset 0 0 25px rgba(224, 185, 103, .15);
+    }
+  }
+}

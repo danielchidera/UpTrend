@@ -205,6 +205,7 @@ function AppContent() {
 
   const [authLoading, setAuthLoading] = useState(true);
   const [supabaseUser, setSupabaseUser] = useState(null);
+  const [welcomePopup, setWelcomePopup] = useState(null);
 
   /* =========================================================
      UPTREND SUBSCRIPTION STATE
@@ -947,6 +948,15 @@ function AppContent() {
     }
 
     setSupabaseUser(session.user);
+    setWelcomePopup({
+      type: "signup",
+      name: String(
+        session.user.user_metadata?.name ||
+        session.user.user_metadata?.full_name ||
+        session.user.user_metadata?.username ||
+        ""
+      ).trim().split(/\s+/)[0] || "there",
+    });
     setShowPublicHome(false);
     setPublicPage("dashboard");
     setActivePage("dashboard");
@@ -982,6 +992,15 @@ function AppContent() {
     }
 
     setSupabaseUser(session.user);
+    setWelcomePopup({
+      type: "signin",
+      name: String(
+        session.user.user_metadata?.name ||
+        session.user.user_metadata?.full_name ||
+        session.user.user_metadata?.username ||
+        ""
+      ).trim().split(/\s+/)[0] || "there",
+    });
     setShowPublicHome(false);
     setPublicPage("dashboard");
     setActivePage("dashboard");
@@ -1221,6 +1240,13 @@ function AppContent() {
     setSupplierToOpenPurchaseId(null);
   };
 
+  const handleRecordSupplierPurchase = () => {
+    setActivePage("suppliers");
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+    navigate("/suppliers");
+  };
+
   const openSaleRecord = (saleId) => {
     if (!saleId) return;
     setSaleToOpenId(saleId);
@@ -1444,6 +1470,7 @@ function AppContent() {
           <Dashboard
             onRecordSale={handleRecordSale}
             onRecordExpense={handleRecordExpense}
+            onRecordSupplierPurchase={handleRecordSupplierPurchase}
             onAddProduct={handleAddProduct}
             onViewReports={goToReports}
             subscription={subscription}
@@ -1661,10 +1688,78 @@ function AppContent() {
         setIsOpen={setMobileMenuOpen}
       />
 
+      {/* GLOBAL FLOATING QUICK ACTION DOCK */}
+      <nav className="global-quick-dock" aria-label="Quick actions">
+        <button type="button" aria-label="Record sale" title="Record Sale"
+          onClick={handleRecordSale}>
+          <span className="dock-sale"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6M10 21h.01M18 21h.01" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
+        </button>
+        <button type="button" aria-label="Record expense" title="Record Expense"
+          onClick={handleRecordExpense}>
+          <span className="dock-expense"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M8 8h8M8 12h8M8 16h3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></span>
+        </button>
+        <button type="button" aria-label="Suppliers" title="Suppliers"
+          onClick={handleRecordSupplierPurchase}>
+          <span className="dock-supplier"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 9-4 9 4v10l-9 4-9-4V7Z M3 7l9 4 9-4M12 11v10M7.5 5l9 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg></span>
+        </button>
+      </nav>
+
       <BusinessUpgradeModal
         open={businessUpgradeOpen}
         onClose={() => setBusinessUpgradeOpen(false)}
       />
+
+      {welcomePopup && (
+        <div
+          className="uptrend-welcome-overlay"
+          onClick={() => setWelcomePopup(null)}
+        >
+          <div
+            className="uptrend-welcome-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="uptrend-welcome-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="uptrend-welcome-close"
+              onClick={() => setWelcomePopup(null)}
+              aria-label="Close welcome message"
+            >
+              ×
+            </button>
+
+            <div className="uptrend-welcome-icon">✦</div>
+
+            <span className="uptrend-welcome-label">
+              {welcomePopup.type === "signup"
+                ? "WELCOME TO UPTREND"
+                : "SUCCESSFULLY SIGNED IN"}
+            </span>
+
+            <h2 id="uptrend-welcome-title">
+              {welcomePopup.type === "signup"
+                ? `Welcome, ${welcomePopup.name}!`
+                : `Welcome back, ${welcomePopup.name}!`}
+            </h2>
+
+            <p>
+              Your business workspace is ready.
+              Let's make today productive and keep your business moving forward.
+            </p>
+
+            <button
+              type="button"
+              className="uptrend-welcome-button"
+              onClick={() => setWelcomePopup(null)}
+            >
+              Let's get started
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

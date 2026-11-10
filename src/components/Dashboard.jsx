@@ -21,6 +21,7 @@ import BusinessGate from "../Business/BusinessGate";
 function Dashboard({
   onRecordSale,
   onRecordExpense,
+  onRecordSupplierPurchase,
   onAddProduct,
   subscription,
   onUpgrade,
@@ -42,6 +43,7 @@ function Dashboard({
   const [customers, setCustomers] = useState([]);
   const [financeTransactions, setFinanceTransactions] = useState([]);
   const [inventoryActivity, setInventoryActivity] = useState([]);
+  const [userFirstName, setUserFirstName] = useState("there");
 
   const [finance, setFinance] =
     useState({
@@ -80,6 +82,19 @@ function Dashboard({
       } = await supabase.auth.getSession();
 
       const user = session?.user;
+
+      if (user) {
+        const profileName = String(
+          user.user_metadata?.name ||
+          user.user_metadata?.full_name ||
+          user.user_metadata?.username ||
+          ""
+        ).trim();
+
+        setUserFirstName(
+          profileName ? profileName.split(/\s+/)[0] : "there"
+        );
+      }
 
       if (authError) {
         throw authError;
@@ -2134,9 +2149,28 @@ const selectedCashDebtPayments =
 
   if (loading) {
     return (
-      <div className="dashboard-page">
-        <div className="dashboard-panel">
-          Loading dashboard...
+      <div className="dashboard-page dashboard-loading">
+        <div className="dashboard-skeleton-header">
+          <div className="dashboard-skeleton skeleton-title" />
+          <div className="dashboard-skeleton skeleton-short" />
+        </div>
+        <div className="dashboard-skeleton-hero">
+          <div className="dashboard-skeleton skeleton-label" />
+          <div className="dashboard-skeleton skeleton-balance" />
+          <div className="dashboard-skeleton skeleton-short" />
+        </div>
+        <div className="dashboard-skeleton-grid">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div className="dashboard-skeleton-card" key={index}>
+              <div className="dashboard-skeleton skeleton-label" />
+              <div className="dashboard-skeleton skeleton-value" />
+              <div className="dashboard-skeleton skeleton-short" />
+            </div>
+          ))}
+        </div>
+        <div className="dashboard-skeleton-chart">
+          <div className="dashboard-skeleton skeleton-title" />
+          <div className="dashboard-skeleton skeleton-chart-area" />
         </div>
       </div>
     );
@@ -2158,6 +2192,11 @@ const selectedCashDebtPayments =
       <section className="dashboard-hero">
 
         <div className="dashboard-hero-copy">
+
+          <div className="dashboard-welcome">
+            <h2>Welcome back, {userFirstName} 👋</h2>
+            <p>It's good to have you here. Let's keep your business moving forward.</p>
+          </div>
 
           <span className="eyebrow">
             BUSINESS OVERVIEW
@@ -2417,8 +2456,6 @@ const selectedCashDebtPayments =
         </article>
 
       </section>
-
-
 
       {/* CUSTOMER FINANCE */}
       <section className="dashboard-customer-finance">
