@@ -1,12 +1,24 @@
+
+import { useState } from "react";
 import "./BusinessUpgradeModal.css";
 
 function BusinessUpgradeModal({
   open,
   onClose,
+  userEmail,
+  onSimulatePayment,
+  onPaystackPayment,
 }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   if (!open) {
     return null;
   }
+
+  const isTestAccount =
+    userEmail?.trim().toLowerCase() ===
+    "booksupdates32@gmail.com";
 
   const benefits = [
     {
@@ -27,6 +39,39 @@ function BusinessUpgradeModal({
     },
   ];
 
+  async function handleSimulatePayment() {
+    if (!isTestAccount || loading) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      await onSimulatePayment();
+    } catch (err) {
+      setError(
+        err?.message || "Payment simulation failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handlePaystackPayment() {
+    if (loading) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      await onPaystackPayment();
+    } catch (err) {
+      setError(
+        err?.message || "Could not connect to Paystack. Please try again."
+      );
+      setLoading(false);
+    }
+  }
+
   return (
     <div
       className="business-upgrade-overlay"
@@ -41,6 +86,7 @@ function BusinessUpgradeModal({
           className="business-upgrade-close"
           onClick={onClose}
           aria-label="Close"
+          disabled={loading}
         >
           ×
         </button>
@@ -68,39 +114,51 @@ function BusinessUpgradeModal({
               <span>✓</span>
 
               <div>
-                <strong>
-                  {benefit.title}
-                </strong>
-
-                <p>
-                  {benefit.text}
-                </p>
+                <strong>{benefit.title}</strong>
+                <p>{benefit.text}</p>
               </div>
             </div>
           ))}
         </div>
 
         <div className="business-upgrade-plan">
-
           <div>
             <span>BUSINESS PLAN</span>
-            <strong>Coming soon</strong>
+            <strong>₦2,000 / 30 days</strong>
           </div>
 
           <small>
-            Secure upgrade and payment will be
-            connected here.
+            {isTestAccount
+              ? "Test account: temporary simulation is also available."
+              : "Upgrade securely through Paystack."}
           </small>
-
         </div>
+
+        {error && (
+          <p role="alert" className="business-upgrade-error">
+            {error}
+          </p>
+        )}
 
         <button
           type="button"
           className="business-upgrade-primary"
-          onClick={onClose}
+          onClick={handlePaystackPayment}
+          disabled={loading}
         >
-          Got it
+          {loading ? "Connecting to Paystack..." : "Pay with Paystack"}
         </button>
+
+        {isTestAccount && (
+          <button
+            type="button"
+            className="business-upgrade-primary"
+            onClick={handleSimulatePayment}
+            disabled={loading}
+          >
+            {loading ? "Activating Business..." : "Simulate Payment"}
+          </button>
+        )}
 
       </div>
     </div>

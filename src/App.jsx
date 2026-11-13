@@ -49,6 +49,7 @@ import Exports from "./Business/Exports";
 import BusinessInsights from "./Business/BusinessInsights";
 import BusinessUpgradeModal from "./components/Business/BusinessUpgradeModal";
 import OfflineDiagnostics from "./components/OfflineDiagnostics";
+import OnboardingTour from "./components/onboarding/OnboardingTour";
 
 /* =========================================================
    REAL URL ROUTES
@@ -234,6 +235,104 @@ function AppContent() {
   const handleUpgrade = () => {
     setBusinessUpgradeOpen(true);
   };
+
+
+
+const handleSimulatePayment = async () => {
+  if (
+    supabaseUser?.email?.trim().toLowerCase() !==
+    "booksupdates32@gmail.com"
+  ) {
+    throw new Error("You are not authorised to use test payments.");
+  }
+
+  const { data, error } = await supabase.functions.invoke(
+    "simulate-business-upgrade"
+  );
+
+  if (error) {
+    throw new Error(
+      error.message || "Could not complete simulated payment."
+    );
+  }
+
+  if (!data?.success) {
+    throw new Error(
+      data?.error || "Business activation failed."
+    );
+  }
+
+  // Fetch the updated membership from Supabase.
+  const { data: updatedSubscription, error: refreshError } =
+    await supabase
+      .from("uptrend_subscriptions")
+      .select(`
+        id,
+        user_id,
+        plan,
+        status,
+        started_at,
+        trial_started_at,
+        trial_ends_at,
+        expires_at,
+        created_at,
+        updated_at
+      `)
+      .eq("user_id", supabaseUser.id)
+      .maybeSingle();
+
+  if (refreshError || !updatedSubscription) {
+    throw new Error(
+      "Payment was processed, but membership could not be refreshed. Please reload the app."
+    );
+  }
+
+  setSubscription(updatedSubscription);
+
+  await saveCachedSubscription(
+    supabaseUser.id,
+    updatedSubscription
+  );
+
+  setBusinessUpgradeOpen(false);
+};
+
+
+const handlePaystackPayment = async () => {
+  try {
+    if (!supabaseUser?.id || !supabaseUser?.email) {
+      throw new Error("Please sign in before making payment.");
+    }
+
+    const { data, error } = await supabase.functions.invoke(
+      "initialize-paystack-payment"
+    );
+
+    if (error) throw error;
+    if (!data?.success || !data?.authorization_url) {
+      throw new Error(data?.error || "Could not start payment.");
+    }
+
+    window.location.assign(data.authorization_url);
+  } catch (error) {
+  console.error("Paystack checkout error:", error);
+
+  let message = error.message || "Unable to start payment.";
+
+  if (error.context) {
+    try {
+      const details = await error.context.json();
+      message = details.error || message;
+      console.error("Paystack response:", details);
+    } catch {
+      // Keep the original error message.
+    }
+  }
+
+  alert(message);
+}
+};
+
 
   /* =========================================================
      PUBLIC / AUTH STATE
@@ -1704,10 +1803,22 @@ function AppContent() {
         </button>
       </nav>
 
-      <BusinessUpgradeModal
-        open={businessUpgradeOpen}
-        onClose={() => setBusinessUpgradeOpen(false)}
+      <OnboardingTour
+        activePage={activePage}
+        userId={supabaseUser?.id}
+        enabled={Boolean(supabaseUser) && !welcomePopup && !authLoading}
       />
+
+
+
+<BusinessUpgradeModal
+  onPaystackPayment={handlePaystackPayment}
+  open={businessUpgradeOpen}
+  onClose={() => setBusinessUpgradeOpen(false)}
+  userEmail={supabaseUser?.email}
+  onSimulatePayment={handleSimulatePayment}
+/>
+
 
       {welcomePopup && (
         <div
@@ -1769,70 +1880,392 @@ function AppContent() {
    APP ROOT
 ========================================================= */
 
+
+
+/* =========================================================
+   UPTREND RELEASE NOTES
+
+   Whenever you deploy a new update:
+   1. Change the version.
+   2. Update the title and summary.
+   3. Describe the actual changes in simple language.
+========================================================= */
+
+const RELEASE_NOTES = {
+  version: "1.0.1",
+
+  title: "What's New in UpTrend?",
+
+  summary:
+    "We've made some improvements to give you a better experience.",
+
+  updates: [
+    {
+      heading: "Improved App Experience",
+      description:
+        "We've made improvements to make UpTrend easier and more comfortable to use.",
+    },
+    {
+      heading: "Better Performance",
+      description:
+        "We've worked on improving the app's performance so your business activities feel smoother.",
+    },
+    {
+      heading: "Visual Improvements",
+      description:
+        "We've refreshed parts of the app to give you a cleaner and more organised appearance.",
+    },
+  ],
+};
+
+
 function PWAUpdatePrompt() {
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({ immediate: true });
 
-  if (!needRefresh) return null;
+  const [showReleaseNotes, setShowReleaseNotes] =
+    useState(false);
+
+  /* =========================================================
+     CHECK WHETHER A NEW UPDATE HAS JUST BEEN INSTALLED
+
+     The marker survives the website refresh.
+     The new version then displays its release notes.
+  ========================================================= */
+
+  useEffect(() => {
+    try {
+      const updatePending = localStorage.getItem(
+        "uptrend_pending_release_notes"
+      );
+
+      if (updatePending !== "true") return;
+
+      localStorage.removeItem(
+        "uptrend_pending_release_notes"
+      );
+
+      const acknowledgedVersion = localStorage.getItem(
+        "uptrend_release_notes_seen"
+      );
+
+      if (
+        acknowledgedVersion !== RELEASE_NOTES.version
+      ) {
+        setShowReleaseNotes(true);
+      }
+    } catch (error) {
+      console.error(
+        "Could not check UpTrend release notes:",
+        error
+      );
+    }
+  }, []);
+
+  /* =========================================================
+     INSTALL UPDATE
+
+     Your existing service-worker update mechanism remains
+     unchanged. We only add a marker before refreshing.
+  ========================================================= */
+
+  const handleUpdate = async () => {
+    try {
+      localStorage.setItem(
+        "uptrend_pending_release_notes",
+        "true"
+      );
+
+      await updateServiceWorker(true);
+    } catch (error) {
+      localStorage.removeItem(
+        "uptrend_pending_release_notes"
+      );
+
+      console.error(
+        "UpTrend update failed:",
+        error
+      );
+    }
+  };
+
+  /* =========================================================
+     CLOSE RELEASE NOTES
+  ========================================================= */
+
+  const closeReleaseNotes = () => {
+    try {
+      localStorage.setItem(
+        "uptrend_release_notes_seen",
+        RELEASE_NOTES.version
+      );
+    } catch (error) {
+      console.error(
+        "Could not save release acknowledgement:",
+        error
+      );
+    }
+
+    setShowReleaseNotes(false);
+  };
 
   return (
-    <div
-      role="status"
-      style={{
-        position: "fixed",
-        left: "16px",
-        right: "16px",
-        bottom: "max(16px, env(safe-area-inset-bottom))",
-        zIndex: 99999,
-        padding: "16px",
-        borderRadius: "14px",
-        background: "#10251a",
-        color: "#ffffff",
-        border: "1px solid #3b9b65",
-        boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
-      }}
-    >
-      <div style={{ fontWeight: 700, marginBottom: "6px" }}>
-        UpTrend update available
-      </div>
-      <div style={{ fontSize: "13px", marginBottom: "14px", opacity: 0.85 }}>
-        A new version is ready. Update now to get the latest features.
-      </div>
-      <div style={{ display: "flex", gap: "10px" }}>
-        <button
-          type="button"
-          onClick={() => updateServiceWorker(true)}
+    <>
+      {/* EXISTING UPDATE NOTIFICATION */}
+
+      {needRefresh && (
+        <div
+          role="status"
           style={{
-            flex: 1,
-            padding: "11px",
-            border: 0,
-            borderRadius: "8px",
-            background: "#55d98a",
-            color: "#062012",
-            fontWeight: 700,
-          }}
-        >
-          Update Now
-        </button>
-        <button
-          type="button"
-          onClick={() => setNeedRefresh(false)}
-          style={{
-            padding: "11px 16px",
-            border: "1px solid #668675",
-            borderRadius: "8px",
-            background: "transparent",
+            position: "fixed",
+            left: "16px",
+            right: "16px",
+            bottom: "max(16px, env(safe-area-inset-bottom))",
+            zIndex: 99999,
+            padding: "16px",
+            borderRadius: "14px",
+            background: "#10251a",
             color: "#ffffff",
+            border: "1px solid #3b9b65",
+            boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
           }}
         >
-          Later
-        </button>
-      </div>
-    </div>
+          <div
+            style={{
+              fontWeight: 700,
+              marginBottom: "6px",
+            }}
+          >
+            UpTrend update available
+          </div>
+
+          <div
+            style={{
+              fontSize: "13px",
+              marginBottom: "14px",
+              opacity: 0.85,
+            }}
+          >
+            A new version is ready. Update now to enjoy
+            the latest improvements.
+          </div>
+
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button
+              type="button"
+              onClick={handleUpdate}
+              style={{
+                flex: 1,
+                padding: "11px",
+                border: 0,
+                borderRadius: "8px",
+                background: "#55d98a",
+                color: "#062012",
+                fontWeight: 700,
+              }}
+            >
+              Update Now
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setNeedRefresh(false)}
+              style={{
+                padding: "11px 16px",
+                border: "1px solid #668675",
+                borderRadius: "8px",
+                background: "transparent",
+                color: "#ffffff",
+              }}
+            >
+              Later
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* WHAT'S NEW POPUP */}
+
+      {showReleaseNotes && (
+        <div
+          role="presentation"
+          onClick={closeReleaseNotes}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 100000,
+            background: "rgba(0,0,0,0.75)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "18px",
+            backdropFilter: "blur(5px)",
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="uptrend-release-title"
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: "440px",
+              maxHeight: "85vh",
+              overflowY: "auto",
+              background: "#10251a",
+              color: "#ffffff",
+              border: "1px solid #347c50",
+              borderRadius: "20px",
+              padding: "24px",
+              boxShadow: "0 20px 70px rgba(0,0,0,0.45)",
+            }}
+          >
+            <div
+              style={{
+                width: "52px",
+                height: "52px",
+                borderRadius: "15px",
+                background: "rgba(85,217,138,0.15)",
+                display: "grid",
+                placeItems: "center",
+                fontSize: "27px",
+                marginBottom: "18px",
+              }}
+            >
+              ✨
+            </div>
+
+            <div
+              style={{
+                color: "#55d98a",
+                fontSize: "11px",
+                fontWeight: 800,
+                letterSpacing: "1.5px",
+                marginBottom: "8px",
+              }}
+            >
+              UPTREND HAS BEEN UPDATED
+            </div>
+
+            <h2
+              id="uptrend-release-title"
+              style={{
+                fontSize: "23px",
+                margin: "0 0 10px",
+                lineHeight: 1.3,
+              }}
+            >
+              {RELEASE_NOTES.title}
+            </h2>
+
+            <p
+              style={{
+                fontSize: "13px",
+                lineHeight: 1.7,
+                color: "#c5d7cb",
+                margin: "0 0 22px",
+              }}
+            >
+              {RELEASE_NOTES.summary}
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gap: "17px",
+              }}
+            >
+              {RELEASE_NOTES.updates.map(
+                (item, index) => (
+                  <div
+                    key={`${RELEASE_NOTES.version}-${index}`}
+                    style={{
+                      display: "flex",
+                      gap: "12px",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "25px",
+                        height: "25px",
+                        flexShrink: 0,
+                        borderRadius: "50%",
+                        background: "rgba(85,217,138,0.15)",
+                        color: "#55d98a",
+                        display: "grid",
+                        placeItems: "center",
+                        fontSize: "13px",
+                        fontWeight: 800,
+                      }}
+                    >
+                      ✓
+                    </div>
+
+                    <div>
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        {item.heading}
+                      </div>
+
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          lineHeight: 1.7,
+                          color: "#c5d7cb",
+                        }}
+                      >
+                        {item.description}
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={closeReleaseNotes}
+              style={{
+                width: "100%",
+                marginTop: "26px",
+                padding: "14px",
+                border: 0,
+                borderRadius: "11px",
+                background: "#55d98a",
+                color: "#062012",
+                fontWeight: 800,
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
+            >
+              Got it, thanks!
+            </button>
+
+            <div
+              style={{
+                textAlign: "center",
+                color: "#829b8b",
+                fontSize: "10px",
+                marginTop: "12px",
+              }}
+            >
+              Thank you for using UpTrend.
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
+
 
 function App() {
   console.log("VIEWPORT:", {

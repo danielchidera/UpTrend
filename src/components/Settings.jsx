@@ -1,5 +1,5 @@
 import "./Settings.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import BackupCenter from "./BackupCenter";
 import { supabase } from "../lib/supabase";
@@ -72,6 +72,83 @@ function Settings({
 
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
+
+  const previousSettingsSection = useRef(activeSection);
+
+  useEffect(() => {
+    if (previousSettingsSection.current === activeSection) return;
+    previousSettingsSection.current = activeSection;
+
+    const guides = {
+      appearance: [
+        { target: ".theme-options", title: "Choose Your Theme", text: "Select Dark, Light or Scheduled mode. Your selection is applied automatically across UpTrend." },
+        { target: ".theme-option:nth-child(1)", title: "Dark Mode", text: "Choose Dark to keep the UpTrend interface in dark mode at all times." },
+        { target: ".theme-option:nth-child(2)", title: "Light Mode", text: "Choose Light to use a bright interface at all times." },
+        { target: ".theme-option:nth-child(3)", title: "Scheduled Mode", text: "Scheduled mode automatically uses Light from 6:00 AM to 6:00 PM and Dark from 6:00 PM to 6:00 AM." },
+        { target: ".current-theme", title: "Current Appearance", text: "This indicator shows the theme currently being applied." },
+        { target: ".schedule-preview", title: "Automatic Theme Schedule", text: "Review the scheduled switch times. The schedule is fixed at 6:00 AM and 6:00 PM." },
+        { target: ".settings-note", title: "Saved Automatically", text: "Your appearance preference is saved automatically and remains after refreshing UpTrend." }
+      ],
+      profile: [
+        { target: ".settings-card-header", title: "Personal Information", text: "Manage the name and username connected to your UpTrend account." },
+        { target: ".settings-profile-fields label:nth-child(1)", title: "Your Name", text: "Enter the name you want associated with your UpTrend profile." },
+        { target: ".settings-profile-fields label:nth-child(2)", title: "Username", text: "Enter or update your account username." },
+        { target: ".settings-profile-fields label:nth-child(3)", title: "Email Address", text: "Your account email is displayed here but cannot be edited from this form." },
+        { target: ".settings-save-button", title: "Save Profile Changes", text: "Click Save Changes to update your name and username. Both fields are required." },
+        { target: ".settings-form-error", title: "Profile Errors", text: "Validation or account errors appear here. Correct the issue before trying to save again." },
+        { target: ".settings-form-success", title: "Profile Updated", text: "A success message appears here when your profile update is completed." }
+      ],
+      account: [
+        { target: ".account-details-card", title: "Signed-in Account", text: "This card displays the email address currently signed in to UpTrend." },
+        { target: ".account-detail-copy", title: "Account Email", text: "Check this email to confirm which account is currently active on this device." },
+        { target: ".account-access-row", title: "Account Access", text: "This section contains the logout action for your current UpTrend session." },
+        { target: ".settings-logout-button", title: "Log Out", text: "Use this button to sign out of UpTrend on this device. Make sure your work is saved before logging out." }
+      ],
+      notifications: [
+        { target: ".notification-preference-list", title: "Smart Alerts", text: "Choose which business events UpTrend should bring to your attention. Change the switches and save your preferences." },
+        { target: ".notification-preference.master", title: "Master Smart Alerts Switch", text: "Turn this off to disable the business alert preferences below. Turn it on to enable the individual alert controls." },
+        { target: ".notification-preference:nth-child(2)", title: "Inventory Alerts", text: "Control alerts about stock, low stock and stock received." },
+        { target: ".notification-preference:nth-child(3)", title: "Payment Alerts", text: "Control supplier and customer credit payment alerts." },
+        { target: ".notification-preference:nth-child(4)", title: "Sales and Expenses Alerts", text: "Control alerts about revenue, profit, margin and expenses." },
+        { target: ".notification-preference:nth-child(5)", title: "Business Target Alerts", text: "Control alerts relating to revenue, profit, units and expense limits." },
+        { target: ".settings-save-button", title: "Save Notification Preferences", text: "Save your selected alert preferences. UpTrend confirms when they have been saved successfully." }
+      ],
+      security: [
+        { target: ".security-status-card", title: "Password Protection", text: "This card confirms that your UpTrend account is protected by its authentication password." },
+        { target: ".security-password-card", title: "Change Your Password", text: "Use this section to replace your current account password. Choose a strong password with at least eight characters." },
+        { target: ".security-password-fields", title: "Password Fields", text: "Enter your new password, then enter it again to confirm. Both entries must match." },
+        { target: ".security-password-input:nth-of-type(1)", title: "New Password", text: "Enter the new password you want to use. It must contain at least eight characters." },
+        { target: ".security-password-input:nth-of-type(2)", title: "Confirm Password", text: "Re-enter the new password exactly as entered above." },
+        { target: ".security-password-toggle", title: "Show or Hide Password", text: "Use Show to reveal the password while checking it, or Hide to conceal it again." },
+        { target: ".settings-save-button", title: "Update Password", text: "Click Update Password to submit the change. UpTrend checks that both fields are filled, contain at least eight characters and match." }
+      ],
+      backups: [
+        { target: ".backup-center-hero", title: "UpTrend Backup Center", text: "Welcome to Backup Center. This area helps protect your business data by creating downloadable backup files and restoring data from a previously saved UpTrend backup." },
+        { target: ".backup-center-status", title: "Last Backup", text: "This shows the date and time of the latest backup recorded in the backup history on this device. If no backup has been created, it displays No backup yet." },
+        { target: ".backup-center-actions", title: "Backup and Restore Actions", text: "There are two main actions here: create a backup of your current business data or restore data from a previously downloaded backup file." },
+        { target: ".backup-action-card:nth-child(1)", title: "Create a Backup", text: "This creates a full UpTrend JSON backup containing your current products, sales, expenses and finance data." },
+        { target: ".backup-primary-button", title: "Backup Now", text: "Click Backup Now to create and download your backup file. Keep the downloaded JSON file somewhere safe so you can use it later if needed." },
+        { target: ".backup-action-card:nth-child(2)", title: "Restore a Backup", text: "Use this option to select a previously downloaded UpTrend JSON backup file. UpTrend asks for confirmation before replacing the current data." },
+        { target: ".backup-secondary-button", title: "Select Restore File", text: "Click Restore and choose a valid UpTrend JSON backup file. Confirm only when you are certain you want to replace the current business data on this device. A successful restore reloads UpTrend." },
+        { target: ".backup-included", title: "What Is Protected", text: "The current backup file includes four data groups: Products and inventory, Sales records, Expenses and Finance data. Other account information and business records are not included in this backup implementation." },
+        { target: ".backup-data-grid", title: "Included Data Categories", text: "These four items identify the data groups saved in the backup file: products and inventory, sales, expenses and finance." },
+        { target: ".backup-warning", title: "Important Restore Warning", text: "Restoring a backup replaces the current business data on this device. Keep backup files somewhere safe and make sure you select the correct file before confirming restoration." },
+        { target: ".backup-history", title: "Recent Backup History", text: "This section appears after backups have been created. It lists recent backup dates and times. UpTrend keeps up to ten backup history entries on this device." },
+        { target: ".backup-history-item", title: "Individual Backup Record", text: "Each entry identifies a full UpTrend backup and shows when it was created. The history records the backup event; the downloaded JSON file itself should be kept separately." }
+      ]
+    };
+
+    const steps = guides[activeSection];
+    if (!steps) return;
+
+    window.dispatchEvent(new CustomEvent("uptrend:open-context-tour", {
+      detail: {
+        page: "settings",
+        context: "settings-" + activeSection,
+        steps
+      }
+    }));
+  }, [activeSection]);
 
   const themes = [
     {

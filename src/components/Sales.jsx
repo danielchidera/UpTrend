@@ -1,3 +1,4 @@
+import { isBusinessSubscriptionActive } from "../utils/subscription";
 import "./Sales.css";
 
 import { useEffect, useMemo, useState } from "react";
@@ -21,12 +22,7 @@ function Sales({
   subscription,
   onUpgrade,
 }) {
-  const isBusiness =
-    subscription?.plan === "business" &&
-    (
-      subscription?.status === "active" ||
-      subscription?.status === "trialing"
-    );
+  const isBusiness = isBusinessSubscriptionActive(subscription);
 
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);

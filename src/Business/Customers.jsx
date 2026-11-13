@@ -1,3 +1,4 @@
+import { isBusinessSubscriptionActive } from "../utils/subscription";
 import { useEffect, useMemo, useState } from "react";
 import {
   Search,
@@ -44,12 +45,7 @@ function Customers({
     notes: "",
   });
 
-  const isBusiness =
-    subscription?.plan === "business" &&
-    (
-      subscription?.status === "active" ||
-      subscription?.status === "trialing"
-    );
+  const isBusiness = isBusinessSubscriptionActive(subscription);
 
   const loadCustomers = async () => {
     setLoading(true);

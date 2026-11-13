@@ -1,3 +1,4 @@
+import { isBusinessSubscriptionActive } from "../utils/subscription";
 import "./Dashboard.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -26,12 +27,7 @@ function Dashboard({
   subscription,
   onUpgrade,
 }) {
-  const isBusiness =
-    subscription?.plan === "business" &&
-    (
-      subscription?.status === "active" ||
-      subscription?.status === "trialing"
-    );
+  const isBusiness = isBusinessSubscriptionActive(subscription);
   const [sales, setSales] = useState([]);
   const [products, setProducts] = useState([]);
   const [expenses, setExpenses] = useState([]);

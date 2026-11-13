@@ -1,3 +1,4 @@
+import { isBusinessSubscriptionActive } from "../utils/subscription";
 import "./RecordSale.css";
 
 import { useEffect, useMemo, useState } from "react";
@@ -89,12 +90,7 @@ function RecordSale({
   const [receiptSale, setReceiptSale] =
     useState(null);
 
-  const isBusiness =
-    subscription?.plan === "business" &&
-    (
-      subscription?.status === "active" ||
-      subscription?.status === "trialing"
-    );
+  const isBusiness = isBusinessSubscriptionActive(subscription);
 
   const isEditing = Boolean(editingSale);
 
@@ -427,6 +423,33 @@ function RecordSale({
 
     setModalOpen(true);
   };
+
+  useEffect(() => {
+    if (!modalOpen) return;
+
+    window.dispatchEvent(new CustomEvent("uptrend:open-context-tour", {
+      detail: {
+        page: "record",
+        context: "sale-wizard",
+        steps: [
+          { target: ".record-modal-header", title: "Record Sale Form", text: "This is the sale recording wizard. It guides you through five stages. Complete each stage and select Continue to move forward. You can use Back to correct earlier information." },
+          { target: ".record-step-indicator", title: "The Five Steps", text: "The progress indicator shows where you are: Date, Product, Quantity, Price and Payment. The highlighted stage is your current step. Completed stages are marked with a check." },
+          { target: ".record-wizard-step", title: "Step 1 — Sale Date", text: "Choose the actual date the sale happened. Free accounts are restricted to today and the previous seven days for backdated sales. UpTrend Business unlocks older dates." },
+          { target: ".record-field", title: "Customer Selection", text: "Customer is optional. Select an existing customer to associate the sale with their record, or leave Walk-in sale / No customer selected when the buyer is not registered." },
+          { target: ".record-product-picker", title: "Step 2 — Select a Product", text: "Choose the product the customer purchased from your inventory. Each option displays its product name and available stock. Products with no stock cannot normally be selected for a new sale." },
+          { target: ".record-quantity-field", title: "Step 3 — Quantity", text: "Enter the number of units sold. Quantity must be a whole number of at least one and cannot exceed available stock. UpTrend checks stock before allowing you to continue." },
+          { target: ".record-wizard-calculation", title: "Step 4 — Selling Price and Profit", text: "Enter the total selling amount for the sale, not the price per unit. UpTrend calculates total product cost from cost price multiplied by quantity, then shows the estimated gross profit or loss." },
+          { target: ".payment-method-options", title: "Step 5 — Choose a Payment Method", text: "Cash means the customer pays physically. Transfer means payment comes through the bank. Cash + Transfer allows the customer to split the payment between both methods." },
+          { target: ".transfer-link-box", title: "Enter and Link Payments", text: "Enter the amount received now. For split payments, enter both the cash and transfer portions. A transfer must be linked to a matching completed bank money-in transaction already recorded in Transactions." },
+          { target: ".split-payment-summary", title: "Split Payment Breakdown", text: "For a split payment, Sale Total is the full selling amount, Paid is the combined cash and transfer received, and Remaining is the unpaid balance. Both payment portions must be positive and must not exceed the sale total." },
+          { target: ".customer-payment-summary", title: "Initial Payment and Outstanding Balance", text: "This summary compares the full sale value with the amount received and the amount still outstanding. Any unpaid balance remains a customer debt." },
+          { target: ".record-field", title: "Payment Due Date", text: "When the customer has an outstanding balance, choose the date the remaining amount is expected. The due date cannot be earlier than the sale date." },
+          { target: ".record-modal-footer", title: "Save Your Sale", text: "Continue validates the current step. Back returns to the previous step. On the final step, Save Sale records the transaction. Record Another Sale saves this one and clears the form for another entry using the same sale date. Update Sale appears when editing an existing record." },
+          { target: ".record-success", title: "Sale Saved Successfully", text: "A success message confirms that the sale has been recorded or updated. UpTrend then closes the form, or prepares a fresh form if you selected Record Another Sale." }
+        ]
+      }
+    }));
+  }, [modalOpen]);
 
   const closeRecorder = () => {
     setSaved(false);

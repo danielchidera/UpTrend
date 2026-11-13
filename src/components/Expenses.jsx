@@ -1,3 +1,4 @@
+import { isBusinessSubscriptionActive } from "../utils/subscription";
 import { useEffect, useMemo, useState } from "react";
 import "./Expenses.css";
 import BusinessBenefitsBanner from "./Business/BusinessBenefitsBanner";
@@ -50,12 +51,7 @@ function Expenses({
   const [availableDebits, setAvailableDebits] = useState([]);
   const [loadingExpenses, setLoadingExpenses] = useState(true);
 
-  const isBusiness =
-    subscription?.plan === "business" &&
-    (
-      subscription?.status === "active" ||
-      subscription?.status === "trialing"
-    );
+  const isBusiness = isBusinessSubscriptionActive(subscription);
 
   const [historicalAccessOpen, setHistoricalAccessOpen] =
     useState(false);
@@ -123,6 +119,56 @@ function Expenses({
   });
 
   const [recurringError, setRecurringError] = useState("");
+
+  useEffect(() => {
+    if (!showForm) return;
+
+    window.dispatchEvent(new CustomEvent("uptrend:open-context-tour", {
+      detail: {
+        page: "expenses",
+        context: "expense-entry",
+        steps: [
+          { target: ".expense-form-card", title: "Record Expenses", text: "Use this form to record one expense or enter multiple expenses together. Complete the required fields before saving." },
+          { target: ".expense-form-heading", title: "Expense Form", text: "The heading identifies whether you are recording new expenses or editing an existing expense. Use the close button to leave the form." },
+          { target: ".expense-form-card > div:nth-child(2)", title: "Recording Date", text: "For a new batch, choose the date that applies to the expenses. New expense rows use this date by default. Free accounts can use today and the previous seven days; older dates require UpTrend Business." },
+          { target: ".expense-form-grid .expense-field:nth-child(1)", title: "Expense Date", text: "Choose the date the expense occurred. This is the date used in your expense records." },
+          { target: ".expense-form-grid .expense-field:nth-child(2)", title: "Expense Name", text: "Enter a clear name describing what the business paid for, such as Transport, Shop Rent or Electricity." },
+          { target: ".expense-form-grid .expense-field:nth-child(3)", title: "Expense Category", text: "Choose the category that best describes the expense. Categories help organise and analyse your business spending." },
+          { target: ".expense-form-grid .expense-field:nth-child(4)", title: "Amount", text: "Enter the amount paid in naira. The amount is required and must be a valid non-negative number. When editing an existing expense, this field is locked." },
+          { target: ".expense-form-grid .expense-field:nth-child(5)", title: "Payment Method", text: "Choose Cash if the expense was paid from cash, or Bank transfer if it was paid through your bank account. The choice determines whether a bank debit must be linked." },
+          { target: ".expense-form-grid .expense-field:nth-child(6)", title: "Matching Bank Debit", text: "For a bank transfer, select the completed bank debit that matches this expense amount. Each debit can only be linked once, and the amount must match exactly." },
+          { target: ".expense-field-full", title: "Optional Note", text: "Add any extra explanation, reference or detail that will help you identify the expense later. This field is optional." },
+          { target: ".expense-form-footer", title: "Save and Manage Expense Rows", text: "Add Another creates an additional expense row. Cancel closes the form and clears the current entry. Save All Expenses submits the batch. When editing, Update Expense saves the changes to the selected record." },
+          { target: ".expense-form-footer .expense-save", title: "Save Expenses", text: "Before saving, UpTrend checks required fields, amounts, historical-date access and bank debit matching. Correct any validation message before submitting." },
+          { target: ".expense-form-card > div:last-child", title: "Batch Total", text: "This summary displays the number of expense rows in the batch and their combined amount. It updates as you add or change expenses." }
+        ]
+      }
+    }));
+  }, [showForm]);
+
+  useEffect(() => {
+    if (!showRecurringForm) return;
+
+    window.dispatchEvent(new CustomEvent("uptrend:open-context-tour", {
+      detail: {
+        page: "expenses",
+        context: "recurring-expense-form",
+        steps: [
+          { target: ".recurring-expense-form", title: "Recurring Expense Setup", text: "Create a schedule for a regular business cost. Complete the details so UpTrend knows what expense to record and when it becomes due." },
+          { target: ".recurring-expense-form .expense-field:nth-child(1)", title: "Expense Name", text: "Enter the name of the regular cost, such as Shop Rent, Staff Salary or Internet Subscription." },
+          { target: ".recurring-expense-form .expense-field:nth-child(2)", title: "Category", text: "Select the category that best describes this recurring cost. This helps organise your expense reports." },
+          { target: ".recurring-expense-form .expense-field:nth-child(3)", title: "Amount", text: "Enter the amount expected for each occurrence of this expense." },
+          { target: ".recurring-expense-form .expense-field:nth-child(4)", title: "Frequency", text: "Choose Daily, Weekly, Monthly or Yearly to define how often the expense repeats." },
+          { target: ".recurring-expense-form .expense-field:nth-child(5)", title: "Start Date", text: "Choose the date the recurring expense schedule should begin. This date also becomes its initial next due date." },
+          { target: ".recurring-expense-form .expense-field:nth-child(6)", title: "Time to Record", text: "Choose the time of day the scheduled expense should be recorded." },
+          { target: ".recurring-expense-form .expense-field:nth-child(7)", title: "Payment Method", text: "Choose whether this regular expense is paid using cash or bank transfer." },
+          { target: ".recurring-expense-form .expense-field-full", title: "Optional Note", text: "Add extra information about the recurring expense. This field is optional." },
+          { target: ".recurring-expense-form .expense-form-footer", title: "Save Recurring Expense", text: "Save Recurring Expense creates the schedule. Cancel closes the form without saving it. The schedule will appear in your recurring expenses list." }
+        ]
+      }
+    }));
+  }, [showRecurringForm]);
+
 
   useEffect(() => {
     let mounted = true;

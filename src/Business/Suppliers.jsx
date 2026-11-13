@@ -270,6 +270,109 @@ function Suppliers({
   const [openingDebtForm, setOpeningDebtForm] = useState(getOpeningDebtForm());
   const [accountPaymentForm, setAccountPaymentForm] = useState(getAccountPaymentForm());
 
+
+  useEffect(() => {
+    const openTour = (context, steps) => {
+      window.dispatchEvent(
+        new CustomEvent("uptrend:open-context-tour", {
+          detail: {
+            page: "suppliers",
+            context,
+            steps,
+          },
+        })
+      );
+    };
+
+    if (showSupplierForm) {
+      openTour("supplier-form", [
+        { target: ".supplier-modal-header", title: editingSupplier ? "Edit Supplier" : "Add Supplier", text: "Use this form to register a new supplier or update an existing supplier's information." },
+        { target: ".supplier-form-grid label:nth-child(1)", title: "Supplier Name", text: "Enter the supplier's personal or trading name. This is the required field used to identify the supplier." },
+        { target: ".supplier-form-grid label:nth-child(2)", title: "Company Name", text: "Enter the registered or trading company name, if different from the supplier's name." },
+        { target: ".supplier-form-grid label:nth-child(3)", title: "Phone Number", text: "Enter a phone number you can use to contact the supplier." },
+        { target: ".supplier-form-grid label:nth-child(4)", title: "Email Address", text: "Enter the supplier's email address. It must be a valid email format." },
+        { target: ".supplier-form-full:nth-of-type(1)", title: "Supplier Address", text: "Enter the supplier's business or contact address." },
+        { target: ".supplier-form-grid label:nth-child(6)", title: "Supplier Status", text: "Choose Active if you currently do business with this supplier. Choose Inactive if the supplier should no longer appear among available suppliers for new purchases." },
+        { target: ".supplier-form-grid label:last-child", title: "Additional Notes", text: "Add useful information about the supplier that you may need to refer to later." },
+        { target: ".supplier-form-actions", title: "Save or Cancel", text: "Cancel closes the form without saving. Add Supplier creates the supplier record; Save Changes updates the existing record." }
+      ]);
+    }
+
+    if (showPurchaseForm) {
+      openTour("supplier-purchase", [
+        { target: ".supplier-modal-header", title: "Record Multiple Purchases", text: "Use this form to record one delivery containing several products from the same supplier. Each item is recorded as a purchase and increases inventory." },
+        { target: ".supplier-batch-form > label:first-child", title: "Choose Supplier", text: "Select the active supplier who delivered these goods. All items in this batch will be linked to this supplier." },
+        { target: ".supplier-batch-items", title: "Purchase Items", text: "Add every product included in the delivery. You can combine existing products and newly introduced products in one batch." },
+        { target: ".supplier-batch-item", title: "Individual Purchase Item", text: "Each item has its own product selection, quantity, unit cost and calculated total. Add another item for every additional product in the delivery." },
+        { target: ".supplier-batch-mode-toggle", title: "Existing or New Product", text: "Choose Existing Product to add stock to a product already in your inventory. Choose New Product to introduce a product that does not yet exist." },
+        { target: ".supplier-batch-item select", title: "Select Existing Product", text: "Choose the product being delivered. The available stock and current cost are displayed when an existing product is selected." },
+        { target: ".selected-product-info", title: "Current Product Information", text: "Review the product's current stock quantity and recorded cost price before entering the new delivery." },
+        { target: ".supplier-batch-item input", title: "New Product Details", text: "When New Product is selected, enter the name of the product you are introducing." },
+        { target: ".supplier-batch-item-grid", title: "Quantity and Unit Cost", text: "Enter a whole-number quantity and the cost of one unit. Both values must be greater than zero." },
+        { target: ".supplier-batch-item-total", title: "Item Total", text: "UpTrend calculates this item's purchase value by multiplying quantity by cost per unit." },
+        { target: ".supplier-batch-add-btn", title: "Add Another Item", text: "Add another product to the same delivery. You can also remove an item if it was added by mistake." },
+        { target: ".supplier-batch-summary", title: "Batch Summary", text: "Review the total number of items, total units, combined purchase cost and remaining balance for the entire delivery." },
+        { target: ".supplier-batch-payment", title: "Initial Payment", text: "Enter the amount already paid for the batch. You can pay by cash, bank transfer or a combination of both. Leave both amounts at zero if the purchase is unpaid." },
+        { target: ".supplier-batch-payment-grid", title: "Cash and Transfer Amounts", text: "Enter the cash portion and transfer portion separately. Their combined amount cannot exceed the total purchase cost." },
+        { target: ".supplier-batch-transfer-select", title: "Match Bank Debit", text: "If you enter a transfer amount, select the existing bank debit for exactly that amount. UpTrend links the debit rather than creating another bank transaction." },
+        { target: ".supplier-payment-preview", title: "Payment Preview", text: "Check the cash amount, transfer amount, total paid and remaining balance before saving the batch." },
+        { target: ".supplier-batch-form > label:nth-last-child(3)", title: "Purchase Date", text: "Select the date the goods were purchased or received. This date is used in purchase records." },
+        { target: ".supplier-batch-form > label:nth-last-child(2)", title: "Due Date", text: "Enter the date payment is due, if applicable. UpTrend uses this date to identify overdue purchase balances." },
+        { target: ".supplier-batch-form > label:last-child", title: "Purchase Notes", text: "Add optional delivery details or other notes that should be stored with this batch." },
+        { target: ".supplier-batch-footer", title: "Record All Purchases", text: "Cancel closes the form. Record All Purchases saves the batch. Check the supplier, products, quantities, costs and payment details before submitting." }
+      ]);
+    }
+
+    if (showPaymentForm && selectedPurchase) {
+      openTour("purchase-payment", [
+        { target: ".supplier-modal-header", title: "Record Purchase Payment", text: "Use this form to pay some or all of the outstanding balance on the selected supplier purchase." },
+        { target: ".supplier-payment-summary", title: "Purchase Summary", text: "Confirm the purchase, supplier and outstanding amount before recording payment." },
+        { target: ".supplier-form-grid label:nth-child(1)", title: "Cash Amount", text: "Enter the amount paid in cash. The amount cannot exceed the remaining purchase balance." },
+        { target: ".supplier-form-grid label:nth-child(2)", title: "Transfer Amount", text: "Enter the amount paid by bank transfer. If you enter a transfer, you must link its matching recorded bank debit." },
+        { target: ".supplier-form-grid label.supplier-form-full", title: "Matching Bank Debit", text: "Select the existing bank debit matching the transfer amount. Linking it prevents the same bank transaction from being recorded twice." },
+        { target: ".supplier-payment-preview", title: "Payment Preview", text: "Review the cash, transfer, total payment and remaining balance after this payment." },
+        { target: ".supplier-form-grid label:nth-last-child(3)", title: "Payment Date", text: "Select the date the supplier payment was made." },
+        { target: ".supplier-form-grid label:nth-last-child(2)", title: "Payment Reference", text: "Enter an optional transaction reference to make this payment easier to identify later." },
+        { target: ".supplier-form-grid label:last-child", title: "Payment Notes", text: "Add optional information about this payment." },
+        { target: ".supplier-form-actions", title: "Save Payment", text: "Cancel closes the form. Record Payment saves the payment and updates the purchase's outstanding balance and payment status." }
+      ]);
+    }
+
+    if (showOpeningDebtForm) {
+      openTour("supplier-opening-debt", [
+        { target: ".supplier-modal-header", title: "Record Existing Debt", text: "Use this form to enter an amount your business already owed this supplier before recording it in UpTrend. This does not create a purchase or add inventory." },
+        { target: ".supplier-payment-summary", title: "Supplier and Current Balance", text: "Confirm the supplier and review the existing outstanding balance before adding the opening debt." },
+        { target: ".supplier-form-grid label:nth-child(2)", title: "Existing Amount Owed", text: "Enter the amount already owed to this supplier. The amount must be greater than zero." },
+        { target: ".supplier-form-grid label:nth-child(3)", title: "Debt Date", text: "Select the date this existing debt relates to." },
+        { target: ".supplier-form-grid label:last-child", title: "Debt Notes", text: "Add optional details explaining the debt or its origin." },
+        { target: ".supplier-form-actions", title: "Record Existing Debt", text: "Cancel closes the form. Record Existing Debt saves the opening debt to the supplier account ledger without changing inventory." }
+      ]);
+    }
+
+    if (showAccountPaymentForm) {
+      openTour("supplier-account-payment", [
+        { target: ".supplier-modal-header", title: "Pay Supplier Account", text: "This form records a general payment against the supplier's combined outstanding balance. Use purchase-specific payment history when paying an individual purchase." },
+        { target: ".supplier-payment-summary", title: "Supplier Balance", text: "Review the supplier, current outstanding balance and estimated balance after the payment." },
+        { target: ".supplier-form-grid label:nth-child(1)", title: "Cash Amount", text: "Enter the cash portion of the payment. UpTrend checks that sufficient cash is available and that the payment does not exceed the outstanding balance." },
+        { target: ".supplier-form-grid label:nth-child(2)", title: "Transfer Amount", text: "Enter the bank transfer portion. A matching existing bank debit must be selected." },
+        { target: ".supplier-form-grid label.supplier-form-full", title: "Match Bank Debit", text: "Select the existing bank debit for the exact transfer amount. UpTrend links the debit instead of recording it a second time." },
+        { target: ".supplier-payment-preview", title: "Payment Preview", text: "Review cash, transfer, total payment and remaining supplier balance." },
+        { target: ".supplier-form-grid label:nth-last-child(3)", title: "Payment Date", text: "Select the date the payment was made." },
+        { target: ".supplier-form-grid label:nth-last-child(2)", title: "Payment Reference", text: "Enter an optional payment or bank transaction reference." },
+        { target: ".supplier-form-grid label:last-child", title: "Payment Notes", text: "Add optional details about the payment." },
+        { target: ".supplier-form-actions", title: "Record Account Payment", text: "Cancel closes the form. Record Account Payment saves the payment and reduces the supplier's outstanding account balance." }
+      ]);
+    }
+  }, [
+    showSupplierForm,
+    showPurchaseForm,
+    showPaymentForm,
+    showOpeningDebtForm,
+    showAccountPaymentForm,
+    editingSupplier,
+    selectedPurchaseId
+  ]);
+
   const loadData = async () => {
     setLoading(true);
 

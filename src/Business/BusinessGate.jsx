@@ -1,4 +1,5 @@
 import { LockKeyhole, Sparkles } from "lucide-react";
+import { isBusinessSubscriptionActive } from "../utils/subscription";
 
 function BusinessGate({
   subscription,
@@ -8,12 +9,7 @@ function BusinessGate({
     "Upgrade to UpTrend Business to unlock this feature.",
   onUpgrade,
 }) {
-  const isBusiness =
-    subscription?.plan === "business" &&
-    (
-      subscription?.status === "active" ||
-      subscription?.status === "trialing"
-    );
+  const isBusiness = isBusinessSubscriptionActive(subscription);
 
   if (isBusiness) {
     return children;

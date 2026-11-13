@@ -1,3 +1,4 @@
+import { isBusinessSubscriptionActive } from "../utils/subscription";
 import "./Products.css";
 
 import { useEffect, useMemo, useState } from "react";
@@ -16,12 +17,7 @@ function Products({ onOpenSupplier, subscription, onUpgrade }) {
   const [error, setError] = useState("");
   const [activityFilter, setActivityFilter] = useState("all");
 
-  const isBusiness =
-    subscription?.plan === "business" &&
-    (
-      subscription?.status === "active" ||
-      subscription?.status === "trialing"
-    );
+  const isBusiness = isBusinessSubscriptionActive(subscription);
 
   const formatMoney = (value) =>
     `₦${Number(value || 0).toLocaleString("en-NG", {
