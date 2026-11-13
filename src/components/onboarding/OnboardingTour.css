@@ -1,0 +1,252 @@
+.uptrend-tour-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100500;
+  pointer-events: none;
+  font-family: inherit;
+}
+
+.uptrend-tour-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 12, 9, .78);
+  pointer-events: auto;
+}
+
+.uptrend-tour-spotlight {
+  position: fixed;
+  border: 2px solid #d9b45b;
+  border-radius: 15px;
+  box-shadow: 0 0 0 9999px rgba(2, 12, 9, .78), 0 0 24px rgba(217, 180, 91, .35);
+  pointer-events: none;
+  z-index: 1;
+  transition: all .22s ease;
+}
+
+.uptrend-tour-card {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  width: min(410px, calc(100vw - 32px));
+  padding: 22px;
+  border: 1px solid rgba(220, 184, 99, .7);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #10271f, #07130f 75%);
+  color: #f5f5ef;
+  box-shadow: 0 18px 65px rgba(0, 0, 0, .5), 0 0 28px rgba(192, 155, 72, .12);
+  pointer-events: auto;
+  z-index: 2;
+  animation: uptrendTourIn .25s ease-out;
+}
+
+.uptrend-tour-card.centered {
+  left: 50%;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+}
+
+.uptrend-tour-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #dfbd70;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.uptrend-tour-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #e4c778, #a87c2b);
+  color: #102018;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.uptrend-tour-close {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: #b8c4bc;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.uptrend-tour-progress {
+  height: 4px;
+  margin: 18px 0 15px;
+  border-radius: 10px;
+  background: #263a30;
+  overflow: hidden;
+}
+
+.uptrend-tour-progress span {
+  display: block;
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #a77b2e, #f0d58c);
+  transition: width .2s;
+}
+
+.uptrend-tour-count {
+  margin: 0 0 8px;
+  color: #d9b45b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.uptrend-tour-card h2 {
+  margin: 0 0 9px;
+  color: #fff;
+  font-size: 21px;
+  line-height: 1.25;
+}
+
+.uptrend-tour-description {
+  margin: 0;
+  color: #c4d0c8;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.uptrend-tour-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.uptrend-tour-navigation {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.uptrend-tour-actions button {
+  cursor: pointer;
+  font: inherit;
+}
+
+.uptrend-tour-skip,
+.uptrend-tour-back {
+  border: 0;
+  background: transparent;
+  color: #b8c4bc;
+  font-size: 12px;
+}
+
+.uptrend-tour-next {
+  padding: 10px 17px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #e5c879, #b88a37);
+  color: #172018;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 5px 16px rgba(196, 157, 70, .2);
+}
+
+.uptrend-tour-next:hover {
+  filter: brightness(1.08);
+}
+
+@keyframes uptrendTourIn {
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@media (max-width: 600px) {
+  .uptrend-tour-card {
+    right: 12px;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    width: calc(100vw - 24px);
+    padding: 19px;
+  }
+
+  .uptrend-tour-card.centered {
+    right: auto;
+    bottom: auto;
+    width: calc(100vw - 28px);
+  }
+
+  .uptrend-tour-card h2 {
+    font-size: 19px;
+  }
+}
+
+/* Floating Help & Support */
+.uptrend-floating-help {
+  position: fixed;
+  right: 24px;
+  bottom: 105px;
+  z-index: 9990;
+  width: 58px;
+  height: 58px;
+  border: 2px solid #d6b45c;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #075b43, #022f25);
+  color: #f4d77c;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3),
+              0 0 16px rgba(214, 180, 92, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 29px;
+  font-weight: 800;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.uptrend-floating-help:active {
+  cursor: grabbing;
+}
+
+.uptrend-floating-help:hover {
+  transform: scale(1.09);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.38),
+              0 0 22px rgba(214, 180, 92, 0.38);
+}
+
+.uptrend-floating-help-label {
+  position: absolute;
+  right: 68px;
+  padding: 8px 13px;
+  border: 1px solid rgba(214, 180, 92, 0.55);
+  border-radius: 9px;
+  background: #063c30;
+  color: #f4d77c;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(6px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.uptrend-floating-help:hover .uptrend-floating-help-label {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+@media (max-width: 600px) {
+  .uptrend-floating-help {
+    width: 52px;
+    height: 52px;
+    right: 16px;
+    bottom: 90px;
+  }
+}
+
