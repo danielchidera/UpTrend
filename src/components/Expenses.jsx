@@ -1151,11 +1151,12 @@ function Expenses({
           await supabase
             .from("expenses")
             .update({
-              name: updatedExpense.name,
-              category: updatedExpense.category,
-              note: updatedExpense.note,
-              expense_date: updatedExpense.date,
-            })
+  name: updatedExpense.name,
+  amount: updatedExpense.amount,
+  category: updatedExpense.category,
+  note: updatedExpense.note,
+  expense_date: updatedExpense.date,
+})
             .eq("id", editingId)
             .eq("user_id", user.id);
 
